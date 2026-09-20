@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniRoute | Universal Cross-Chain Swap & Bridge Wallet Resolver</title>
+  <meta name="description" content="Lacak alamat wallet tujuan swap dan bridge di berbagai protokol (Relay, Li.Fi, Jumper, Across, LayerZero). Analisis genealogy, genesis funder, dan cash out outflow wallet.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-lang="id">
+  <!-- Ambient Lime & Blue Glows -->
+  <div class="glow-ambient top-left"></div>
+  <div class="glow-ambient bottom-right"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Top Navigation / Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7H14C16.2091 7 18 8.79086 18 11V11C18 13.2091 16.2091 15 14 15H10" stroke="#06080C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 4L4 7L7 10" stroke="#06080C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 20L20 17L17 14" stroke="#06080C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 17H10C7.79086 17 6 15.2091 6 13V13" stroke="#06080C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">OmniRoute</h1>
+            <span class="badge-omni">UNIVERSAL</span>
+          </div>
+          <p class="brand-subtitle" data-i18n="tagline">Cross-Chain Swap & Bridge Wallet Resolver</p>
+        </div>
+      </div>
+
+      <!-- Right Nav: Language Toggle & Creator Attributions -->
+      <div class="header-actions">
+        <!-- Language Switcher Pill -->
+        <div class="lang-switch-wrap">
+          <button class="lang-btn active" id="langIdBtn" onclick="setLanguage('id')" title="Bahasa Indonesia">
+            <span class="flag">🇮🇩</span> <span>ID</span>
+          </button>
+          <button class="lang-btn" id="langEnBtn" onclick="setLanguage('en')" title="English">
+            <span class="flag">🇬🇧</span> <span>EN</span>
+          </button>
+        </div>
+
+        <!-- Creator Links -->
+        <div class="creator-badge">
+          <span class="built-by-text" data-i18n="built_by">Built by</span>
+          <div class="creator-links">
+            <a href="https://x.com/Prasetyo_HK" target="_blank" rel="noopener noreferrer" class="social-btn x-btn" title="Follow Prasetyo HK on X">
+              <i class="fa-brands fa-x-twitter"></i>
+              <span>@Prasetyo_HK</span>
+            </a>
+            <a href="https://github.com/prasetyohk" target="_blank" rel="noopener noreferrer" class="social-btn gh-btn" title="GitHub prasetyohk">
+              <i class="fa-brands fa-github"></i>
+              <span>prasetyohk</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span data-i18n="hero_badge">Multi-Protocol Cross-Chain Tracker & Genealogy</span>
+      </div>
+      <h2 class="hero-title">
+        <span data-i18n="hero_title_1">Lacak Alamat</span> 
+        <span class="text-lime" data-i18n="hero_title_lime">Wallet Tujuan</span> 
+        <span data-i18n="hero_title_2">& Alur Kas Keluar</span>
+      </h2>
+      <p class="hero-desc" data-i18n="hero_desc">
+        Bongkar alur transaksi cross-chain dari pengirim, router protokol, hingga dompet penerima tujuan. Lacak sumber modal awal (Genesis Funder) dan cash out keluar (CEX/DEX).
+      </p>
+
+      <!-- Protocol Support Badges -->
+      <div class="protocols-bar">
+        <span class="protocols-label" data-i18n="supported_protocols">Protokol Didukung:</span>
+        <div class="protocol-tags">
+          <span class="proto-tag"><i class="fa-solid fa-arrows-split-up-and-left"></i> Relay.link</span>
+          <span class="proto-tag"><i class="fa-solid fa-diamond"></i> Li.Fi</span>
+          <span class="proto-tag"><i class="fa-solid fa-shuffle"></i> Jumper Exchange</span>
+          <span class="proto-tag"><i class="fa-solid fa-bridge-water"></i> Across Protocol</span>
+          <span class="proto-tag"><i class="fa-solid fa-layer-group"></i> LayerZero / Stargate</span>
+          <span class="proto-tag"><i class="fa-solid fa-dna text-lime"></i> Wallet Genealogy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    <!-- Mode Tabs (3 Tabs Architecture) -->
+    <div class="tabs-nav">
+      <!-- Tab 1: TX Breakdown -->
+      <button class="tab-btn active" id="tabBtnTx" onclick="switchTab('tx')">
+        <div class="tab-icon-wrap">
+          <i class="fa-solid fa-route"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_tx_title">Multi-Protocol TX Breakdown</span>
+          <span class="tab-hint" data-i18n="tab_tx_desc">From Wallet ➔ Router ➔ Wallet Tujuan (*Recipient)</span>
+        </div>
+      </button>
+
+      <!-- Tab 2: Target & Address Verifier -->
+      <button class="tab-btn" id="tabBtnAddress" onclick="switchTab('address')">
+        <div class="tab-icon-wrap">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_addr_title">Target & Address Verifier</span>
+          <span class="tab-hint" data-i18n="tab_addr_desc">EIP-55 Checksum, Router Guard & RPC Balance</span>
+        </div>
+      </button>
+
+      <!-- Tab 3: Wallet Cluster & Relationship Tracer -->
+      <button class="tab-btn" id="tabBtnGenealogy" onclick="switchTab('genealogy')">
+        <div class="tab-icon-wrap" style="color: var(--accent-lime);">
+          <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_genealogy_title">Wallet Cluster & Relationship Tracer</span>
+          <span class="tab-hint" data-i18n="tab_genealogy_desc">Single & Batch Cross-Wallet Relationship Resolver</span>
+        </div>
+      </button>
+
+      <!-- Tab 4: Exchange Deposit Inflow Tracer -->
+      <button class="tab-btn" id="tabBtnDeposit" onclick="switchTab('deposit')">
+        <div class="tab-icon-wrap" style="color: var(--accent-cyan);">
+          <i class="fa-solid fa-vault"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_deposit_title">Exchange Deposit Inflow Tracer</span>
+          <span class="tab-hint" data-i18n="tab_deposit_desc">Cumulative Sender Aggregator & Spam Filter</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: MULTI-PROTOCOL TX TRACKER ==================== -->
+    <section id="tabContentTx" class="tab-section active">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-magnifying-glass-chart text-lime"></i> 
+              <span data-i18n="search_title">Lacak Transaksi & Wallet Penerima</span>
+            </h3>
+            <p class="card-desc" data-i18n="search_desc">
+              Paste link explorer (RobinScan, Etherscan, Arbiscan, BaseScan, BscScan, Polygonscan, Solscan) atau raw TX Hash.
+            </p>
+          </div>
+
+          <!-- Quick Sample Buttons -->
+          <div class="samples-group">
+            <span class="samples-label" data-i18n="quick_examples">Contoh Cepat:</span>
+            <button class="btn btn-sample" onclick="loadSample('relay')">
+              <i class="fa-solid fa-bolt text-lime"></i> Relay: Robinhood ➔ Solana
+            </button>
+            <button class="btn btn-sample" onclick="loadSample('lifi')">
+              <i class="fa-solid fa-shuffle text-lime"></i> Li.Fi / Jumper: BSC Swap
+            </button>
+          </div>
+        </div>
+
+        <form id="txTrackForm" onsubmit="handleTxSubmit(event)" class="search-form">
+          <div class="input-wrapper">
+            <i class="fa-solid fa-link input-icon"></i>
+            <input 
+              type="text" 
+              id="txInput" 
+              class="main-input" 
+              placeholder="https://robin.etherscan.io/tx/0x2a17... atau 0x... / Solana signature" 
+              autocomplete="off"
+              required
+            />
+            <button type="button" class="clear-btn" id="btnClearTx" onclick="clearTxInput()" title="Clear">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitTx">
+            <span class="btn-text">
+              <i class="fa-solid fa-crosshairs"></i> 
+              <span data-i18n="btn_track">Lacak Wallet Tujuan Sekarang</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> 
+              <span data-i18n="btn_loading">Memindai Semua Protokol...</span>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Result Container -->
+      <div id="txResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+
+    <!-- ==================== TAB 2: TARGET VERIFIER ==================== -->
+    <section id="tabContentAddress" class="tab-section">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-shield-virus text-lime"></i> 
+              <span data-i18n="verifier_title">Verifikasi Target Sebelum Swap / Bridge</span>
+            </h3>
+            <p class="card-desc" data-i18n="verifier_desc">
+              Cegah salah kirim. Pastikan alamat valid checksum, periksa apakah dompet biasa (EOA) atau kontrak router (Uniswap, Li.Fi, 1inch, Across, Relay, dll.).
+            </p>
+          </div>
+        </div>
+
+        <form id="addressVerifyForm" onsubmit="handleAddressSubmit(event)" class="search-form">
+          <div class="input-group-row">
+            <div class="input-wrapper flex-grow">
+              <i class="fa-solid fa-wallet input-icon"></i>
+              <input 
+                type="text" 
+                id="addressInput" 
+                class="main-input" 
+                placeholder="0x... atau Solana Base58 address" 
+                autocomplete="off"
+                required
+              />
+            </div>
+            <div class="select-wrapper">
+              <select id="chainSelect" class="chain-select">
+                <option value="ethereum">Ethereum (Mainnet)</option>
+                <option value="arbitrum">Arbitrum One</option>
+                <option value="base">Base</option>
+                <option value="bsc">BNB Chain</option>
+                <option value="robinhood">Robinhood Chain</option>
+                <option value="optimism">Optimism</option>
+                <option value="polygon">Polygon</option>
+                <option value="avalanche">Avalanche</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitAddress">
+            <span class="btn-text">
+              <i class="fa-solid fa-shield-check"></i> 
+              <span data-i18n="btn_verify">Periksa Keamanan Alamat</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> 
+              <span data-i18n="btn_verifying">Memeriksa Bytecode...</span>
+            </span>
+          </button>
+        </form>
+
+        <div class="popular-routers-bar">
+          <span class="tags-title" data-i18n="popular_routers">Coba Router Terkenal:</span>
+          <button type="button" class="router-chip" onclick="fillAddress('0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE', 'base')">Li.Fi Diamond Proxy</button>
+          <button type="button" class="router-chip" onclick="fillAddress('0x4cD00E387622C35bDDB9b4c962C136462338BC31', 'robinhood')">Relay Solver</button>
+          <button type="button" class="router-chip" onclick="fillAddress('0x1111111254EEB25477B68fb85Ed929f73A960582', 'arbitrum')">1inch Router V5</button>
+          <button type="button" class="router-chip" onclick="fillAddress('0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', 'arbitrum')">Uniswap Universal</button>
+        </div>
+      </div>
+
+      <!-- Address Result Container -->
+      <div id="addressResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+
+    <!-- ==================== TAB 3: WALLET CLUSTER & RELATIONSHIP TRACER ==================== -->
+    <section id="tabContentGenealogy" class="tab-section">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-diagram-project text-lime"></i> 
+              <span data-i18n="sybil_title">Wallet Cluster & Relationship Tracer</span>
+            </h3>
+            <p class="card-desc" data-i18n="sybil_desc">
+              Single & Batch Cross-Wallet Relationship Resolver. Lacak silsilah modal (Genesis Funder), rotasi dompet, hub konsolidasi, dan ekspor instan ke GMGN Watchlist untuk copy-trading.
+            </p>
+          </div>
+
+          <div class="samples-group">
+            <span class="samples-label" data-i18n="quick_examples">Coba Alamat:</span>
+            <button class="btn btn-sample" onclick="fillGenealogy('0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a', 'base')">
+              <i class="fa-solid fa-wallet text-lime"></i> 0x0532da9a... (Base)
+            </button>
+            <button class="btn btn-sample" onclick="fillGenealogy('2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h', 'solana')">
+              <i class="fa-brands fa-hive text-lime"></i> 2S1zLXpp... (Solana)
+            </button>
+            <button class="btn btn-sample" onclick="fillBatchSample()">
+              <i class="fa-solid fa-layer-group text-lime"></i> <span data-i18n="batch_sample_btn">Batch Cluster Demo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Multi-Angle Discovery Mode Bar -->
+        <div class="discovery-mode-bar">
+          <button type="button" class="mode-pill active" id="btnModeSingle" onclick="setDiscoveryMode('single')">
+            <i class="fa-solid fa-user-astronaut"></i> 
+            <span data-i18n="batch_mode_a_pill">Mode A: Silsilah Modal & Exit (Single Wallet)</span>
+          </button>
+          <button type="button" class="mode-pill" id="btnModeBatch" onclick="setDiscoveryMode('batch')">
+            <i class="fa-solid fa-users-viewfinder"></i> 
+            <span data-i18n="batch_mode_b_pill">Mode B: Batch Relationship Overlap (2-20 Wallets)</span>
+          </button>
+        </div>
+
+        <form id="genealogyForm" onsubmit="handleGenealogySubmit(event)" class="search-form">
+          <!-- Single Wallet Input -->
+          <div id="singleInputGroup" class="input-group-row">
+            <div class="input-wrapper flex-grow">
+              <i class="fa-solid fa-fingerprint input-icon"></i>
+              <input 
+                type="text" 
+                id="genealogyInput" 
+                class="main-input" 
+                placeholder="Paste alamat wallet (0x... atau Solana public key) untuk melacak funder & exit..." 
+                autocomplete="off"
+              />
+            </div>
+            <div class="select-wrapper">
+              <select id="genealogyChainSelect" class="chain-select">
+                <option value="base">Base</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="arbitrum">Arbitrum</option>
+                <option value="optimism">Optimism</option>
+                <option value="polygon">Polygon</option>
+                <option value="solana">Solana</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Batch Multi-Wallet Textarea -->
+          <div id="batchInputGroup" style="display: none; margin-bottom: 16px;">
+            <div style="margin-bottom: 8px; font-size: 0.82rem; color: var(--text-dim);">
+              <i class="fa-solid fa-info-circle text-lime"></i> <span data-i18n="batch_textarea_hint">Tempel 2 hingga 20 alamat wallet (satu alamat per baris) untuk memindai klaster relasi, shared genesis funder, dan hub konsolidasi:</span>
+            </div>
+            <textarea 
+              id="genealogyBatchInput" 
+              class="batch-textarea" 
+              rows="4" 
+              placeholder="0x91ac...c4b2&#10;0x82f9...91d0&#10;0x3fC7...7FAD"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitGenealogy">
+            <span class="btn-text">
+              <i class="fa-solid fa-diagram-project"></i> 
+              <span id="submitGenealogyLabel" data-i18n="btn_analyze_single">Trace Wallet Relationships & Exit</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> 
+              <span data-i18n="btn_analyzing">Memindai Klaster & Relasi...</span>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Genealogy & Sybil Result Container -->
+      <div id="genealogyResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+
+    <!-- ==================== TAB 4: EXCHANGE DEPOSIT INFLOW TRACER ==================== -->
+    <section id="tabContentDeposit" class="tab-section">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-vault text-lime"></i> 
+              <span data-i18n="deposit_section_title">Exchange Deposit Inflow Tracer</span>
+            </h3>
+            <p class="card-desc" data-i18n="deposit_section_desc">
+              Lacak semua dompet pengirim ke alamat deposit exchange (Solana & EVM), agregasi volume kumulatif all-time, dan filter dust attack / token spam airdrop.
+            </p>
+          </div>
+
+          <!-- Quick Samples for Deposit Tracer -->
+          <div class="samples-group">
+            <span class="samples-label" data-i18n="quick_examples">Contoh Cepat:</span>
+            <button class="btn btn-sample" onclick="loadDepositSample('solana')">
+              <i class="fa-solid fa-bolt text-lime"></i> Solana CEX Deposit
+            </button>
+            <button class="btn btn-sample" onclick="loadDepositSample('evm')">
+              <i class="fa-solid fa-cube text-lime"></i> Base EVM Deposit
+            </button>
+            <button class="btn btn-sample" onclick="loadDepositSample('csv')">
+              <i class="fa-solid fa-file-csv text-lime"></i> Sample CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode Switcher Pills: Mode A vs Mode B -->
+        <div class="batch-mode-toggle" style="margin-bottom: 20px;">
+          <button type="button" class="mode-pill active" id="depositModeAPill" onclick="switchDepositMode('address')">
+            <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="deposit_mode_a">Mode A: Live Address Scanner (Solana & EVM)</span>
+          </button>
+          <button type="button" class="mode-pill" id="depositModeBPill" onclick="switchDepositMode('manual')">
+            <i class="fa-solid fa-file-csv"></i> <span data-i18n="deposit_mode_b">Mode B: Manual TX History Upload (CSV / Paste)</span>
+          </button>
+        </div>
+
+        <!-- Scope & Valuation Disclaimer Banner -->
+        <div class="disclaimer-banner" style="margin-bottom: 20px; background: rgba(18, 18, 26, 0.85); border: 1px solid rgba(220, 255, 0, 0.2); padding: 12px 18px; border-radius: 10px; display: flex; align-items: flex-start; gap: 12px;">
+          <i class="fa-solid fa-circle-info text-lime" style="font-size: 1.1rem; margin-top: 2px;"></i>
+          <span style="font-size: 0.84rem; color: var(--text-dim); line-height: 1.5;" data-i18n="deposit_scope_notice">
+            Cakupan Alamat Deposit Personal: Memindai hingga 100 transaksi terbaru secara langsung. Valuasi USD menggunakan estimasi harga pasar saat ini. Untuk volume tinggi atau riwayat lengkap, gunakan Mode B (CSV Upload).
+          </span>
+        </div>
+
+        <form id="depositTraceForm" onsubmit="handleDepositSubmit(event)" class="search-form">
+          <!-- Mode A Input Container -->
+          <div id="depositAddressInputWrap">
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+              <div class="input-wrapper" style="flex: 1; min-width: 280px;">
+                <i class="fa-solid fa-wallet input-icon"></i>
+                <input 
+                  type="text" 
+                  id="depositAddressInput" 
+                  class="main-input" 
+                  placeholder="Tempel alamat deposit exchange (0x... atau Solana Base58 public key)..." 
+                  autocomplete="off"
+                >
+                <button type="button" class="clear-btn" onclick="clearDepositInput()" title="Bersihkan input">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <!-- Chain Selector -->
+              <div style="min-width: 180px;">
+                <select id="depositChainSelect" class="chain-select" style="width: 100%; height: 54px; background: #0c0d14; border: 1px solid var(--border-color); color: #fff; border-radius: 12px; padding: 0 14px;">
+                  <option value="auto" data-i18n="chain_auto">Auto-Detect Chain</option>
+                  <option value="solana">Solana (SVM)</option>
+                  <option value="base">Base</option>
+                  <option value="ethereum">Ethereum</option>
+                  <option value="arbitrum">Arbitrum</option>
+                  <option value="bsc">BNB Chain</option>
+                  <option value="polygon">Polygon</option>
+                  <option value="optimism">Optimism</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mode B CSV/Text Container -->
+          <div id="depositManualInputWrap" style="display: none; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label for="depositCsvTextarea" style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="csv_paste_label">
+                Format: <code>from, to, amount, token_symbol, token_decimal, timestamp, tx_hash</code>
+              </label>
+              <button type="button" class="btn btn-sample" style="padding: 4px 10px; font-size: 0.78rem;" onclick="loadDepositSample('csv')">
+                <i class="fa-solid fa-code"></i> <span data-i18n="load_sample_csv">Load Sample CSV</span>
+              </button>
+            </div>
+            <textarea 
+              id="depositCsvTextarea" 
+              class="batch-textarea" 
+              rows="6"
+              placeholder="from,to,amount,token_symbol,token_decimal,timestamp,tx_hash&#10;0x123...,0xDepositVault,500,USDC,6,1710000000,0xabc...&#10;SolanaSender...,SolanaDeposit...,15.5,SOL,9,1710000000,5xyz..."
+            ></textarea>
+          </div>
+
+          <!-- Filter & Threshold Settings Bar -->
+          <div class="card" style="padding: 16px 20px; margin-bottom: 20px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-lime); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-sliders"></i> <span data-i18n="filter_settings_title">Pengaturan Filter & Ambang Batas Spam (Aggregated Level)</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; align-items: center;">
+              <!-- Min Threshold USD Slider -->
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="font-size: 0.82rem; color: var(--text-muted);" data-i18n="min_threshold_label">Ambang Batas Min. Total (USD):</span>
+                  <strong class="text-lime" id="minThresholdDisplay">$50 USD</strong>
+                </div>
+                <input 
+                  type="range" 
+                  id="minThresholdSlider" 
+                  min="0" 
+                  max="500" 
+                  step="5" 
+                  value="50" 
+                  style="width: 100%; accent-color: var(--accent-lime);" 
+                  oninput="updateThresholdDisplay(this.value)"
+                >
+              </div>
+
+              <!-- Exclude Single-Tx Dust Toggle -->
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="excludeDustCheck" checked style="width: 18px; height: 18px; accent-color: var(--accent-lime); cursor: pointer;">
+                <label for="excludeDustCheck" style="font-size: 0.82rem; color: var(--text-pure); cursor: pointer;" data-i18n="exclude_dust_label">
+                  Filter Dust Attack (1x kirim receh &lt; $5)
+                </label>
+              </div>
+
+              <!-- Phishing Token Filter Toggle -->
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="filterPhishingCheck" checked style="width: 18px; height: 18px; accent-color: var(--accent-lime); cursor: pointer;">
+                <label for="filterPhishingCheck" style="font-size: 0.82rem; color: var(--text-pure); cursor: pointer;" data-i18n="filter_phishing_label">
+                  Blacklist Token Phishing / Spam Airdrop
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitDeposit">
+            <span class="btn-text">
+              <i class="fa-solid fa-vault"></i> 
+              <span id="submitDepositLabel" data-i18n="btn_trace_deposit">Trace Deposit Inflows & Aggregate Senders</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> 
+              <span data-i18n="btn_tracing_deposit">Memindai & Mengagregasi Inflow...</span>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Deposit Inflow Result Container -->
+      <div id="depositResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg">Tersalin ke clipboard!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="brand-footer">
+          <span class="brand-title">OmniRoute</span>
+          <span class="badge-omni">PRO</span>
+        </div>
+        <p class="footer-desc" data-i18n="footer_desc">
+          Universal Cross-Chain Swap & Bridge Target Wallet Resolver & Genealogy Analyzer. Mendukung Relay, Li.Fi, Jumper, Across, LayerZero, dan on-chain EVM router.
+        </p>
+      </div>
+
+      <div class="footer-right">
+        <div class="footer-creator">
+          <span data-i18n="built_with_passion">Built with passion by</span>
+          <a href="https://x.com/Prasetyo_HK" target="_blank" rel="noopener noreferrer" class="credit-pill">
+            <i class="fa-brands fa-x-twitter"></i> Prasetyo HK (@Prasetyo_HK)
+          </a>
+          <a href="https://github.com/prasetyohk" target="_blank" rel="noopener noreferrer" class="credit-pill gh">
+            <i class="fa-brands fa-github"></i> github/prasetyohk
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+env/
+venv/
+.venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Flask / App runtime
+instance/
+.webassets-cache
+flask_session/
+
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# API Keys & Config (jangan pernah diupload!)
+config.py
+secrets.py
+api_keys.py
+local_settings.py
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.pid
+
+# OS
+desktop.ini
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Node (kalau ada)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Byte-compiled / optimized files
+*.pyc
+*.pyd
+*.pyo
+
+# Distribution / packaging
+.cache/
+.mypy_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Test artifacts
+.tox/
+nosetests.xml
+*.mo
+*.pot
