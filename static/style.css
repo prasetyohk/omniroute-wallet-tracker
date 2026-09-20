@@ -166,12 +166,50 @@ body {
   color: var(--text-muted);
 }
 
-/* Header Actions: Language & Creator */
+/* Header Actions: Language, Navigation & Creator */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
+}
+
+/* App Window Navigation Controls (Back, Forward, Refresh) */
+.app-nav-controls {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+}
+
+.app-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.app-nav-btn:hover {
+  color: var(--accent-lime);
+  background: rgba(158, 255, 0, 0.12);
+  border-color: var(--border-lime);
+  box-shadow: 0 0 10px rgba(158, 255, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+.app-nav-btn:active {
+  transform: scale(0.92);
 }
 
 /* Language Switcher */
