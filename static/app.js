@@ -2017,6 +2017,7 @@ function renderDepositResults(data, container) {
                   <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; ${
                     f.filter_reason === 'phishing_spam_token' ? 'background: rgba(255,50,50,0.18); color: #ff5566;' :
                     (f.filter_reason === 'single_tx_dust' ? 'background: rgba(255,160,0,0.18); color: #ffaa33;' : 'background: rgba(255,255,255,0.08); color: var(--text-dim);')
+                  }">
                     ${f.filter_reason === 'phishing_spam_token' ? dict.reason_phishing : (f.filter_reason === 'single_tx_dust' ? dict.reason_single_dust : `${dict.reason_below_min} ($${summary.min_threshold_usd})`)}
                   </span>
                 </td>
