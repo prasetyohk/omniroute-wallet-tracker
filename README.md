@@ -1,10 +1,12 @@
 # OmniRoute — Universal Cross-Chain Wallet Intelligence Tool
 
-> **Bahasa Indonesia 🇮🇩 | English 🇬🇧** — Panduan lengkap tersedia dalam dua bahasa di bawah.
+> **Bahasa Indonesia 🇮🇩 | English 🇬🇧** — Panduan lengkap dan visual alur kerja tersedia dalam dua bahasa di bawah.
 
-**Built with passion by Prasetyo HK**
+**Built with passion by Prasetyo HK**  
 [![X (Twitter)](https://img.shields.io/badge/X-@Prasetyo_HK-black?style=flat&logo=x)](https://x.com/Prasetyo_HK)
 [![GitHub](https://img.shields.io/badge/GitHub-prasetyohk-181717?style=flat&logo=github)](https://github.com/prasetyohk)
+
+![OmniRoute Header & Analytics Engines](assets/omniroute_hero_tabs.png)
 
 ---
 
@@ -12,133 +14,119 @@
 
 ### Tentang OmniRoute
 
-**OmniRoute** adalah alat intelijen wallet cross-chain berbasis Python yang berjalan lokal di komputer Anda. Alat ini dirancang untuk menelusuri, memverifikasi, dan menganalisis wallet serta transaksi lintas rantai dengan akurasi tinggi. Antarmukanya menggunakan gaya **FinTech X** (latar hitam obsidian `#06080C` + aksen *electric lime* `#9EFF00`) dengan dukungan bilingual Bahasa Indonesia dan Inggris.
+**OmniRoute** adalah platform intelijen dan pelacak wallet lintas rantai (*cross-chain*) berbasis Python yang berjalan 100% secara lokal dan privat di komputer Anda. Dirancang khusus untuk membedah transaksi jembatan (*bridge*), memverifikasi keaslian wallet vs smart contract, menelusuri klaster pendanaan (*wallet genealogy*), serta mengaudit aliran deposit exchange dengan filter anti-spam multi-tier.
+
+Antarmuka dirancang dengan standar **FinTech X** (latar hitam obsidian `#06080C` dipadukan dengan aksen *electric lime* `#9EFF00`) yang responsif, modern, dan dilengkapi dukungan dwibahasa (ID/EN).
 
 ---
 
-### Fitur Utama — 4 Tab Analisis
+### 🔄 Diagram Alur Kerja Sistem (Workflow Architecture)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           OmniRoute Intelligence Core                           │
+└─────────────────────────────────────┬───────────────────────────────────────────┘
+                                      │
+       ┌──────────────────────────────┼─────────────────────────────┐
+       ▼                              ▼                             ▼
+┌──────────────┐              ┌──────────────┐              ┌──────────────┐
+│    Tab 1     │              │    Tab 3     │              │    Tab 4     │
+│Route Resolver│              │Wallet Cluster│              │Deposit Tracer│
+└──────┬───────┘              └──────┬───────┘              └──────┬───────┘
+       │                             │                             │
+       ▼                             ▼                             ▼
+[Parse TX Hash/URL]           [Trace Genealogy]             [Auto Multi-Chain]
+  - Origin Sender               - Genesis Funder              - Parallel 5 EVM Chains
+  - Protocol Solver             - All-Time Senders            - Solana ATA Resolution
+  - Destination Target          - Cashout / Exit Hub          - Multi-Tier Spam Filter
+  - Fill Settlement TX          - GMGN Watchlist Sync         - DexScreener USD Valuation
+```
+
+---
+
+### Fitur Utama & Cara Kerja — 4 Mesin Analisis
+
+---
 
 #### 🔁 Tab 1: Route Resolver (Pelacak Rute Swap & Bridge)
 
-Lacak rute transaksi swap/bridge dari wallet pengirim ➔ router protokol ➔ wallet tujuan penerima akhir.
+Lacak rute transaksi swap atau bridge dari wallet pengirim ➔ router/solver protokol ➔ dompet penerima di rantai tujuan.
 
-**Yang bisa dianalisis:**
-- Protokol: **Relay.link**, **Li.Fi / Jumper Exchange**, **Across Protocol**, **LayerZero / Stargate**, dan **Universal On-Chain EVM Fallback**
-- Paste link explorer (Etherscan, Arbiscan, BaseScan, BscScan, Polygonscan, Solscan, RobinScan) atau raw TX hash
-- Breakdown 3 langkah: **From (Pengirim) ➔ Router / Solver / Bridge ➔ Wallet Tujuan**
-- Menampilkan aset yang dikirim dan aset yang diterima di chain tujuan (termasuk nama token, jumlah, dan estimasi USD)
-- Tombol copy 1x klik untuk wallet tujuan, TX hash origin, dan TX hash penerimaan (fill settlement)
-- Link explorer langsung ke chain tujuan (Solscan untuk Solana, Basescan untuk Base, dll.)
+![Route Resolver Breakdown](assets/omniroute_route_breakdown.png)
 
-```
-Contoh input yang didukung:
-• https://robin.etherscan.io/tx/0x2a17e...
-• https://basescan.org/tx/0xabc...
-• 0xda166887e41e61838ae518bedc05c7735270f84d7...
-```
+**Cara Kerja & Alur Analisis:**
+1. Masukkan tautan block explorer (RobinScan, Etherscan, Arbiscan, Basescan, Bscscan, Polygonscan, Solscan) atau langsung TX hash mentah.
+2. Mesin OmniRoute membaca calldata, mendeteksi protokol bridge (**Relay.link**, **Li.Fi / Jumper Exchange**, **Across Protocol**, **LayerZero / Stargate**, atau **Universal EVM Fallback**).
+3. Menguraikan 3 simpul utama:
+   * **From (Pengirim):** Wallet asal, jaringan pengirim, dan aset yang didepositkan.
+   * **Router / Solver / Bridge:** Kontrak pintar atau solver relay yang memfasilitasi pertukaran.
+   * **Destination Wallet:** Alamat penerima akhir di chain tujuan, jumlah token yang diterima, serta tautan TX penyelesaian (*fill settlement*).
+4. Tombol 1-klik untuk menyalin wallet tujuan, membuka explorer tujuan, serta opsi *"Analyze Wallet Flow"* untuk meneruskan analisis ke Tab 3.
 
 ---
 
-#### 🔍 Tab 2: Address Verifier (Verifikasi Alamat & Target)
+#### 🔍 Tab 2: Target & Address Verifier (Verifikasi Alamat & Target)
 
-Verifikasi apakah suatu alamat adalah **dompet biasa (EOA)** atau **smart contract** sebelum melakukan transfer.
+Verifikasi apakah suatu alamat merupakan **dompet pribadi (EOA)** atau **smart contract** sebelum melakukan transaksi atau penyalinan alamat.
 
-**Fitur:**
-- **EIP-55 Checksum Address** — format checksum resmi alamat EVM
-- **Router Guard** — deteksi bytecode on-chain untuk membedakan EOA vs smart contract
-- **Saldo Native** — tampilkan saldo ETH/BNB/MATIC/SOL via RPC langsung
-- Label protokol terkenal (Uniswap, Li.Fi, 1inch, Across, Relay, dll.)
-- Mendukung EVM multi-chain dan Solana
+**Cara Kerja & Fitur:**
+* **EIP-55 Checksum Guard:** Menghasilkan format huruf besar/kecil resmi untuk mencegah salah kirim dana.
+* **On-Chain Bytecode Inspector:** Memeriksa RPC langsung ke blockchain untuk memastikan apakah target memiliki bytecode kontrak atau merupakan EOA murni.
+* **Known Protocol Registry:** Otomatis menandai jika alamat tersebut adalah router publik (Uniswap, 1inch, Across, Relay, dll.) atau hot wallet bursa terpusat.
+* **Live Native Balance:** Menampilkan saldo asli (ETH, SOL, BNB, POL) langsung dari node RPC publik.
 
 ---
 
-#### 🕸️ Tab 3: Wallet Cluster & Relationship Tracer (Pelacak Relasi Dompet)
+#### 🕸️ Tab 3: Wallet Cluster & Relationship Tracer (Pelacak Silsilah & Relasi Dompet)
 
-Lacak silsilah modal (genesis funder), relasi antar-dompet, dan target pencairan dana (exit/cashout) secara all-time.
+Lacak asal modal pertama (*genesis funder*), relasi antar-dompet, dan muara pencairan dana (*cashout exit*) secara menyeluruh.
 
-**Mode A — Analisis Dompet Tunggal:**
-- **Genesis / First Funder**: Siapa wallet pertama yang mengirim gas native ke dompet ini?
-- **Top Senders (All-Time Inflow)**: Siapa yang paling banyak mengirim dana ke dompet ini?
-  → Setiap baris memiliki **tombol copy** agar bisa dilacak mandiri
-- **Exit & Outflow Targets**: Kemana saja dana dari dompet ini dikirim?
-  → Setiap baris memiliki **tombol copy** (hijau untuk inflow, merah untuk outflow)
-- **Exit Pattern Detected**: Badge yang mendeteksi pola cashout (CEX, Private, Bridge, Mixer, dll.)
-- **GMGN Sync**: Export daftar wallet terhubung ke format GMGN Watchlist (copy semua atau unduh CSV)
+![Wallet Cluster Tracer](assets/omniroute_wallet_cluster.png)
 
-**Mode B — Analisis Relasi Batch (2–20 Dompet):**
-- Analisis apakah ada irisan **genesis funder atau consolidation hub** yang sama
-- **Confidence Score** (0–100%): Seberapa kuat indikasi relasi pribadi antar-dompet
-- **False Positive Guard**: Hot wallet CEX (Binance, Bybit, OKX, Coinbase) dan faucet publik dikecualikan
-- Badge "Possible Sybil Pattern" hanya muncul jika confidence ≥ 85%
-
-> ⚠️ Klaster relasi adalah estimasi korelasi on-chain publik. Wallet bisa terhubung karena alasan legit. Selalu DYOR sebelum menarik kesimpulan.
+**Cara Kerja & Fitur:**
+* **Genesis Funder (Gas Provider Pertama):** Mengidentifikasi wallet root yang pertama kali mendanai gas native ke wallet target.
+* **Top Senders (All-Time Inflow):** Mengagregasi penyumbang dana terbesar dengan tombol salin alamat per-baris.
+* **Exit & Outflow Targets (Cash Out):** Menampilkan ke mana saja dana dialirkan, lengkap dengan persentase dominasi dan deteksi pola (CEX, DEX Liquidity, Bridge, Mixer).
+* **Batch Relationship Analysis (2–20 Wallets):** Membandingkan beberapa wallet sekaligus untuk mendeteksi apakah memiliki kesamaan *genesis funder* atau *consolidation hub*.
+* **Confidence Score (0–100%):** Skor probabilitas relasi pribadi yang aman dari *false positive* (CEX hot wallet & faucet publik dikecualikan secara otomatis).
+* **GMGN Watchlist Export:** Export seluruh wallet terkait ke format CSV atau copy langsung untuk dimasukkan ke GMGN.
 
 ---
 
 #### 📥 Tab 4: Exchange Deposit Inflow Tracer (Pelacak Aliran Masuk Deposit)
 
-Berikan satu alamat deposit exchange, sistem akan menemukan semua wallet pengirim dan mengagregasi total volume kumulatif.
+Berikan satu alamat deposit bursa (misal deposit Binance, Bybit, OKX, atau personal vault), OmniRoute akan membedah seluruh pengirim dana dan total volume kumulatifnya.
 
-**Mode A — Pemindaian Alamat Langsung:**
-- Support Solana (base58) dan EVM (0x) dengan deteksi chain otomatis
-- Memindai hingga **100 transaksi terbaru**
-- Resolusi ATA → wallet owner untuk Solana SPL token
-- Valuasi USD via DexScreener (diurutkan berdasarkan likuiditas pool tertinggi)
+![Exchange Deposit Inflow Tracer](assets/omniroute_deposit_tracer.png)
 
-**Mode B — Upload CSV Manual:**
-- Format: `from, to, amount, token_symbol, token_decimal, timestamp, tx_hash`
-
-**Filter Spam & Dust (Level Agregasi Kumulatif):**
-- Ambang batas minimum USD (slider $0–$500, default $50)
-- Filter Dust Attack (1x kirim < $5)
-- Blacklist token phishing / airdrop spam
-- Filtered Log Drawer: semua wallet yang dibuang ditampilkan dengan alasan filternya
-
-**Output:**
-- Tabel Qualified Senders: ranking, total deposit USD, breakdown token, jumlah TX, tanggal kirim
-- Per baris: tombol copy alamat, link explorer, tombol "Trace Relationship (Tab 3)"
-- Badge **Smart Contract / Vault Detected** jika alamat target adalah kontrak publik
-- Catatan: valuasi USD menggunakan harga saat ini, bukan harga historis saat transaksi
+**Cara Kerja & Alur Pemindaian:**
+1. **Multi-Chain EVM Auto-Scan:**
+   * Saat memilih mode `auto` pada alamat EVM, OmniRoute **memindai 5 chain EVM sekaligus secara paralel** (Ethereum, Arbitrum One, Base, Polygon, Optimism) menggunakan `ThreadPoolExecutor`.
+   * Mendukung Solana dengan resolusi ATA (*Associated Token Account*) ke *owner* wallet asli.
+2. **Multi-Tier Anti-Spam & Dust Engine:**
+   * **Cumulative Min Threshold:** Menyaring berdasarkan akumulasi total deposit pengirim (bukan per transaksi).
+   * **Single-Tx Dust Attack Filter:** Membuang transaksi spam microrate (< $5).
+   * **Phishing Token Blacklist:** Mengeliminasi airdrop scam dengan regex pola URL / homoglyph token palsu.
+3. **Filtered Senders Drawer:**
+   * Transparansi penuh: semua transaksi yang disaring disimpan dalam *drawer* khusus dengan alasan jelas (*below min threshold*, *single-tx dust*, atau *phishing token*).
+4. **Export & Deep Trace:**
+   * Setiap baris pengirim yang lolos kualifikasi dilengkapi tombol salin, tautan explorer spesifik chain, serta tombol pintas *"Trace in Tab 3"*.
 
 ---
 
 ### Cara Menjalankan
 
-#### Cara 1: Double-click `.bat` (Windows)
-1. Buka folder proyek
-2. Klik ganda **`start_omniroute.bat`**
-3. Browser akan otomatis terbuka ke `http://127.0.0.1:5000`
+#### Cara 1: Double-Click Launcher (Windows)
+1. Buka folder proyek.
+2. Klik ganda **`start_omniroute.bat`**.
+3. Browser akan otomatis terbuka ke `http://127.0.0.1:5000`.
 
-#### Cara 2: Manual via Terminal
+#### Cara 2: Terminal / Command Prompt
 ```bash
 pip install -r requirements.txt
 python app.py
 ```
-Buka browser: `http://127.0.0.1:5000`
-
----
-
-### API Key yang Dibutuhkan
-
-Edit `relay_core.py` atau set sebagai environment variable:
-
-| API | Digunakan untuk | Cara dapatkan |
-|-----|----------------|---------------|
-| `HELIUS_API_KEY` | Solana RPC + parsed tx | [helius.dev](https://helius.dev) |
-| `ALCHEMY_API_KEY` | EVM RPC (Ethereum, Base, dll.) | [alchemy.com](https://alchemy.com) |
-| `ETHERSCAN_API_KEY` | EVM TX data fallback | [etherscan.io/apis](https://etherscan.io/apis) |
-
-> DexScreener (price lookup) tidak memerlukan API key.
-
----
-
-### Tech Stack
-
-- **Backend**: Python 3.10+ / Flask
-- **Frontend**: Vanilla HTML + CSS + JavaScript
-- **Font**: Plus Jakarta Sans + JetBrains Mono (Google Fonts)
-- **Icons**: Font Awesome 6
-- **Chain Support**: EVM (Ethereum, Base, Arbitrum, BSC, Polygon, Optimism) + Solana
+Akses di browser: `http://127.0.0.1:5000`
 
 ---
 
@@ -148,134 +136,138 @@ Edit `relay_core.py` atau set sebagai environment variable:
 
 ### About OmniRoute
 
-**OmniRoute** is a locally-run Python-based cross-chain wallet intelligence tool. It traces, verifies, and analyzes wallets and cross-chain transactions with high accuracy. The interface uses a **FinTech X** aesthetic (obsidian black `#06080C` + electric lime `#9EFF00`) with full bilingual support.
+**OmniRoute** is a locally-hosted, privacy-first cross-chain wallet intelligence platform built with Python. It is engineered to decode complex cross-chain bridge swaps, verify wallet vs contract authenticity, map funder genealogy, and inspect centralized exchange deposit inflows with multi-tier spam filtering.
+
+Crafted with a sleek **FinTech X** UI (obsidian black `#06080C` with vibrant electric lime `#9EFF00`), OmniRoute offers zero-latency local execution and seamless bilingual support (Indonesian & English).
 
 ---
 
-### Key Features — 4 Analysis Tabs
+### 🔄 System Architecture & Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           OmniRoute Intelligence Core                           │
+└─────────────────────────────────────┬───────────────────────────────────────────┘
+                                      │
+       ┌──────────────────────────────┼─────────────────────────────┐
+       ▼                              ▼                             ▼
+┌──────────────┐              ┌──────────────┐              ┌──────────────┐
+│    Tab 1     │              │    Tab 3     │              │    Tab 4     │
+│Route Resolver│              │Wallet Cluster│              │Deposit Tracer│
+└──────┬───────┘              └──────┬───────┘              └──────┬───────┘
+       │                             │                             │
+       ▼                             ▼                             ▼
+[Parse TX Hash/URL]           [Trace Genealogy]             [Auto Multi-Chain]
+  - Origin Sender               - Genesis Funder              - Parallel 5 EVM Chains
+  - Protocol Solver             - All-Time Senders            - Solana ATA Resolution
+  - Destination Target          - Cashout / Exit Hub          - Multi-Tier Spam Filter
+  - Fill Settlement TX          - GMGN Watchlist Sync         - DexScreener USD Valuation
+```
+
+---
+
+### Key Features & Mechanics — 4 Analytics Engines
+
+---
 
 #### 🔁 Tab 1: Route Resolver
 
-Trace transaction routes from sender wallet ➔ bridge/protocol router ➔ final destination wallet.
+Decodes complex cross-chain bridges and swaps, revealing the exact path from source sender ➔ solver/router contract ➔ final destination wallet on the target chain.
 
-**Supported:**
-- Protocols: **Relay.link**, **Li.Fi / Jumper Exchange**, **Across Protocol**, **LayerZero / Stargate**, **Universal On-Chain EVM Fallback**
-- Paste any explorer link or raw TX hash
-- 3-step breakdown: **From (Sender) ➔ Router / Solver / Bridge ➔ Destination Wallet**
-- Shows sent asset and received asset on the destination chain (token name, amount, USD estimate)
-- One-click copy buttons for destination wallet, origin TX hash, and fill/settlement TX hash
-- Direct explorer links to the destination chain
+![Route Resolver Breakdown](assets/omniroute_route_breakdown.png)
+
+**Workflow & Core Capabilities:**
+1. Paste any explorer URL (RobinScan, Etherscan, Arbiscan, Basescan, Bscscan, Polygonscan, Solscan) or raw transaction hash.
+2. Protocol-aware decoding supports **Relay.link**, **Li.Fi / Jumper Exchange**, **Across Protocol**, **LayerZero / Stargate**, and generic **Universal EVM Fallback**.
+3. 3-node visual breakdown:
+   * **From (Sender):** Origin address, source blockchain, and deposited asset valuation.
+   * **Router / Solver / Bridge:** Intermediary smart contract or relay solver handling the cross-chain execution.
+   * **Destination Wallet:** Final recipient wallet on the target network, received token amount, USD equivalent, and the fill settlement transaction link.
+4. Instant copy actions for destination wallet, origin TX hash, and settlement TX, plus a direct shortcut to analyze fund flow in Tab 3.
 
 ---
 
-#### 🔍 Tab 2: Address Verifier
+#### 🔍 Tab 2: Target & Address Verifier
 
-Verify whether an address is a **regular EOA wallet** or a **smart contract** before sending funds.
+Validates address integrity and detects whether a target is a **personal wallet (EOA)** or a **smart contract** before sending transactions.
 
-**Features:**
-- EIP-55 Checksum Address
-- Router Guard (on-chain bytecode detection)
-- Native Balance via direct RPC
-- Known protocol labels (Uniswap, Li.Fi, 1inch, Across, Relay, etc.)
-- Multi-chain EVM + Solana support
+**Workflow & Capabilities:**
+* **EIP-55 Checksum Enforcement:** Converts raw hex to official mixed-case checksum format to prevent typos.
+* **On-Chain Bytecode Inspector:** Queries live blockchain nodes to determine contract code presence vs pure EOA.
+* **Known Entity & Router Guard:** Flags recognized routers, DEX pools, CEX deposit gateways, and bridge contracts.
+* **Live Native Balance:** Fetches real-time ETH, SOL, BNB, or POL balance directly from RPC.
 
 ---
 
 #### 🕸️ Tab 3: Wallet Cluster & Relationship Tracer
 
-Trace capital genealogy (genesis funder), cross-wallet relationships, and cashout destination targets.
+Maps capital genealogy, detects shared funding origins, and identifies cashout destinations across all historical activity.
 
-**Mode A — Single Wallet Analysis:**
-- **Genesis / First Funder**: Who first sent native gas to this wallet?
-- **Top Senders (All-Time Inflow)**: Who sent the most funds to this wallet?
-  → Each row has a **copy button** for independent tracking
-- **Exit & Outflow Targets**: Where has this wallet sent its funds?
-  → Each row has a **copy button** (lime for inflow, red for outflow)
-- **Exit Pattern Detected**: Badge for cashout patterns (CEX, Private, Bridge, Mixer, etc.)
-- **GMGN Sync**: Export linked wallets to GMGN Watchlist format (copy all or download CSV)
+![Wallet Cluster Tracer](assets/omniroute_wallet_cluster.png)
 
-**Mode B — Batch Relationship Analysis (2–20 Wallets):**
-- Check for shared private genesis funders or consolidation hubs
-- **Confidence Score** (0–100%)
-- **False Positive Guard**: Major CEX hot wallets (Binance, Bybit, OKX, Coinbase) and public faucets excluded
-- "Possible Sybil Pattern" badge only appears when confidence ≥ 85%
-
-> ⚠️ Relationship clusters are probabilistic on-chain correlation estimates. Always DYOR.
+**Workflow & Capabilities:**
+* **Genesis Funder (Root Wallet):** Pinpoints the earliest transaction that funded native gas into the target address.
+* **Top Senders (All-Time Inflows):** Aggregates major depositors with individual copy controls.
+* **Exit & Outflow Destinations:** Analyzes cashout behaviors with automatic category classification (CEX, DEX Liquidity, Bridge, Mixer).
+* **Batch Cluster Analysis (2–20 Wallets):** Tests multiple wallets for common private genesis funders or consolidation hubs.
+* **False-Positive Resistant Confidence Scoring (0–100%):** Excludes noisy public entities (CEX hot wallets, faucets) to prevent erroneous clustering.
+* **GMGN Watchlist Export:** One-click CSV download or clipboard copy formatted for direct import into GMGN.
 
 ---
 
 #### 📥 Tab 4: Exchange Deposit Inflow Tracer
 
-Given a single exchange deposit address, find all wallets that sent funds to it and aggregate cumulative volumes.
+Given an exchange deposit address, OmniRoute scans and aggregates all incoming funding wallets and their cumulative volume.
 
-**Mode A — Direct Address Scan:**
-- Solana (base58) and EVM (0x) with automatic chain detection
-- Up to **100 recent transactions** via Helius API / Alchemy / Infura
-- ATA → wallet owner resolution for Solana SPL tokens
-- USD valuation via DexScreener (sorted by highest pool liquidity)
+![Exchange Deposit Inflow Tracer](assets/omniroute_deposit_tracer.png)
 
-**Mode B — Manual CSV Upload:**
-- Format: `from, to, amount, token_symbol, token_decimal, timestamp, tx_hash`
-
-**Spam & Dust Filters (Cumulative Level):**
-- Minimum USD threshold slider ($0–$500, default $50)
-- Dust Attack Filter (single tx < $5)
-- Phishing Token Blacklist
-- Filtered Log Drawer: transparent display of all filtered wallets with reasons
-
-**Output:**
-- Qualified Senders table: rank, total deposit USD, token breakdown, TX count, first/last deposit date
-- Per row: copy address button, explorer link, "Trace Relationship (Tab 3)" button
-- **Smart Contract / Vault Detected** badge if target is a public contract
-- Note: USD valuation uses current price (not historical price at time of transaction)
+**Workflow & Scanning Pipeline:**
+1. **Parallel Multi-Chain EVM Scanning:**
+   * When `auto` chain is selected for EVM addresses, OmniRoute **queries 5 major chains simultaneously** (Ethereum, Arbitrum One, Base, Polygon, Optimism) via `ThreadPoolExecutor`.
+   * Full Solana support with automated Associated Token Account (ATA) to wallet owner resolution.
+2. **Multi-Tier Anti-Spam & Phishing Filter:**
+   * **Cumulative USD Filter:** Evaluates total deposit volume per sender rather than individual transactions.
+   * **Dust Attack Filter:** Removes single micro-transactions (< $5).
+   * **Phishing Token Guard:** Regex blacklist filters out spam airdrops and deceptive zero-value tokens.
+3. **Transparent Filtered Log Drawer:**
+   * Inspect all excluded wallets and review exact filter reasons (*below threshold*, *dust attack*, or *phishing token*).
+4. **Actionable Registry:**
+   * Displays qualified senders sorted by deposit volume with chain badges, explorer links, and direct *"Trace in Tab 3"* shortcuts.
 
 ---
 
 ### How to Run
 
-#### Option 1: Double-click `.bat` (Windows)
-1. Open the project folder
-2. Double-click **`start_omniroute.bat`**
-3. Browser auto-opens at `http://127.0.0.1:5000`
+#### Option 1: Double-Click Launcher (Windows)
+1. Open the project folder.
+2. Double-click **`start_omniroute.bat`**.
+3. Your default browser will automatically open `http://127.0.0.1:5000`.
 
-#### Option 2: Manual via Terminal
+#### Option 2: Command Line
 ```bash
 pip install -r requirements.txt
 python app.py
 ```
-Open browser: `http://127.0.0.1:5000`
-
----
-
-### Required API Keys
-
-Edit `relay_core.py` or set as environment variables:
-
-| API | Used for | How to get |
-|-----|----------|------------|
-| `HELIUS_API_KEY` | Solana RPC + parsed transactions | [helius.dev](https://helius.dev) |
-| `ALCHEMY_API_KEY` | EVM RPC (Ethereum, Base, etc.) | [alchemy.com](https://alchemy.com) |
-| `ETHERSCAN_API_KEY` | EVM TX data fallback | [etherscan.io/apis](https://etherscan.io/apis) |
-
-> DexScreener (price lookup) requires no API key.
+Open `http://127.0.0.1:5000` in your browser.
 
 ---
 
 ### Tech Stack
 
 - **Backend**: Python 3.10+ / Flask
-- **Frontend**: Vanilla HTML + CSS + JavaScript (no heavy frameworks)
-- **Font**: Plus Jakarta Sans + JetBrains Mono (Google Fonts)
-- **Icons**: Font Awesome 6
-- **Chain Support**: EVM (Ethereum, Base, Arbitrum, BSC, Polygon, Optimism) + Solana
+- **Concurrency**: `concurrent.futures.ThreadPoolExecutor` for high-speed multi-chain querying
+- **Pricing Engine**: DexScreener API (highest-liquidity pair selection) + CoinGecko
+- **Frontend**: Vanilla HTML5 + CSS3 (Glassmorphism / FinTech X Design System) + Modern JavaScript
+- **Typography**: Google Fonts (Plus Jakarta Sans & JetBrains Mono)
+- **Icons**: Font Awesome 6 Pro Free CDN
+- **Chains Supported**: Ethereum, Base, Arbitrum One, BNB Chain, Polygon, Optimism, Solana
 
 ---
 
-### Disclaimer
+### ⚠️ Disclaimer
 
-> **EN**: OmniRoute is an on-chain data correlation tool only. It does not make legal or fraud determinations. All cluster/relationship analysis is probabilistic — wallets can be linked for legitimate reasons. Always DYOR.
->
-> **ID**: OmniRoute hanya merupakan alat korelasi data on-chain. Semua analisis klaster bersifat probabilistik. Selalu lakukan riset mandiri (DYOR) sebelum menarik kesimpulan.
+> **EN**: OmniRoute is an on-chain data correlation tool. All relationship and cluster outputs are probabilistic heuristics. Wallets may share transaction histories for legitimate reasons. Always conduct independent research (DYOR).  
+> **ID**: OmniRoute adalah alat korelasi data on-chain. Semua hasil analisis klaster dan relasi bersifat heuristik probabilistik. Selalu lakukan riset mandiri (DYOR) sebelum mengambil keputusan.
 
 ---
 
@@ -291,8 +283,8 @@ Edit `relay_core.py` or set as environment variables:
 
 ## ☕ Support & Donations / Dukung Proyek Ini
 
-> **EN**: If OmniRoute helped your on-chain workflow, any contribution is greatly appreciated!  
-> **ID**: Kalau OmniRoute membantu pekerjaanmu, kontribusi sekecil apapun sangat berarti!
+> **EN**: If OmniRoute streamlined your on-chain research and workflow, contributions are always appreciated!  
+> **ID**: Jika OmniRoute membantu riset on-chain dan alur kerja Anda, dukungan Anda sangat berarti!
 
 | Network | Address |
 |---------|---------|
