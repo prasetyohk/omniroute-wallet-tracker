@@ -1376,15 +1376,15 @@ function renderGenealogyDashboard(data, container) {
                         <i class="fa-solid fa-circle-arrow-down text-lime" style="font-size: 0.75rem;"></i>
                         <span>${item.label || truncateAddress(item.sender, 8)}</span>
                       </div>
-                      <div class="flow-amt-val inflow" style="display: flex; align-items: center; gap: 6px;">
-                        <span>+${item.totalAmount} ${item.tokenSymbol}</span>
-                        <button class="icon-action-btn-mini" onclick="copyToClipboard('${item.sender}', '${dict.top_senders_title || 'Sender'}')" title="Copy sender address" style="font-size: 0.7rem; padding: 2px 5px;">
-                          <i class="fa-regular fa-copy"></i>
-                        </button>
+                      <div class="flow-amt-val inflow">
+                        +${item.totalAmount} ${item.tokenSymbol}
                       </div>
                     </div>
-                    <div class="flow-addr-sub">
-                      ${truncateAddress(item.sender, 10)} &bull; ${item.txCount} txs
+                    <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                      <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.sender, 10)} &bull; ${item.txCount} txs</span>
+                      <button class="icon-action-btn-mini" onclick="copyToClipboard('${item.sender}', 'Sender')" title="Copy full wallet address">
+                        <i class="fa-regular fa-copy"></i> Copy
+                      </button>
                     </div>
                     <div class="progress-bar-wrap">
                       <div class="progress-fill inflow" style="width: ${pct}%;"></div>
@@ -1427,16 +1427,16 @@ function renderGenealogyDashboard(data, container) {
                         <span>${item.label || truncateAddress(item.recipient, 8)}</span>
                         ${item.isContract ? '<span class="contract-chip">Contract</span>' : ''}
                       </div>
-                      <div class="flow-amt-val outflow" style="display: flex; align-items: center; gap: 6px;">
-                        <span>-${item.totalAmount} ${item.tokenSymbol}</span>
-                        <button class="icon-action-btn-mini" onclick="copyToClipboard('${item.recipient}', '${dict.top_exits_title || 'Exit Target'}')" title="Copy exit address" style="font-size: 0.7rem; padding: 2px 5px; border-color: rgba(248,113,113,0.3); color: var(--accent-red);">
-                          <i class="fa-regular fa-copy"></i>
-                        </button>
+                      <div class="flow-amt-val outflow">
+                        -${item.totalAmount} ${item.tokenSymbol}
+                        ${item.percentage ? `<span style="font-size:0.7rem; margin-left:4px; opacity:0.8;">(${item.percentage}%)</span>` : ''}
                       </div>
                     </div>
-                    <div class="flow-addr-sub" style="display: flex; justify-content: space-between;">
-                      <span>${truncateAddress(item.recipient, 10)} &bull; ${item.txCount} txs</span>
-                      ${item.percentage ? `<span style="color: var(--accent-red); font-weight: 700;">${item.percentage}%</span>` : ''}
+                    <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                      <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.recipient, 10)} &bull; ${item.txCount} txs</span>
+                      <button class="icon-action-btn-mini outflow-copy" onclick="copyToClipboard('${item.recipient}', 'Exit Target')" title="Copy full wallet address">
+                        <i class="fa-regular fa-copy"></i> Copy
+                      </button>
                     </div>
                     <div class="progress-bar-wrap">
                       <div class="progress-fill outflow" style="width: ${pct}%;"></div>

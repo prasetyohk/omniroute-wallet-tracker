@@ -1908,3 +1908,41 @@ input[type=range]::-webkit-slider-thumb:hover {
 .filtered-drawer-table tr:hover {
   background: rgba(255, 255, 255, 0.02);
 }
+
+/* ==================== COPY MINI BUTTON (Flow Items) ==================== */
+.icon-action-btn-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 3px 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 5px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.icon-action-btn-mini:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
+  transform: scale(1.05);
+}
+
+.icon-action-btn-mini.outflow-copy {
+  border-color: rgba(248, 113, 113, 0.28);
+  color: var(--accent-red);
+}
+
+.icon-action-btn-mini.outflow-copy:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
