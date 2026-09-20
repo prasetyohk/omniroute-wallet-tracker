@@ -2094,3 +2094,69 @@ function autoTraceDepositSender(senderAddr, chain) {
 document.addEventListener("DOMContentLoaded", () => {
   setLanguage(currentLang);
 });
+
+// Graceful Exit App Handler
+async function quitOmniRouteApp() {
+  const isId = currentLang === 'id';
+  const msg = isId 
+    ? "Tutup aplikasi OmniRoute dan matikan server lokal?" 
+    : "Close OmniRoute app and stop local server?";
+  if (!confirm(msg)) {
+    return;
+  }
+  showToast(isId ? "Menghentikan server..." : "Stopping server...");
+  try {
+    await fetch("/api/shutdown", { method: "POST" });
+  } catch (e) {}
+  setTimeout(() => {
+    window.close();
+  }, 350);
+}
+
+// Check Server Connection & Reload
+async function checkServerAndReload() {
+  const btn = document.getElementById("btnReconnectText");
+  if (btn) btn.textContent = currentLang === "id" ? "Memeriksa..." : "Checking...";
+  try {
+    const res = await fetch("/api/ping", { cache: "no-store" });
+    if (res.ok) {
+      document.getElementById("omnirouteOfflineOverlay").style.display = "none";
+      window.location.reload();
+      return;
+    }
+  } catch (e) {}
+  if (btn) btn.textContent = currentLang === "id" ? "Gagal, coba lagi" : "Retry";
+  showToast(currentLang === "id" ? "Server belum menyala. Buka OmniRoute App lalu klik sambungkan lagi." : "Server not running. Start OmniRoute App and retry.");
+}
+
+// Background Connection Heartbeat
+let failedHeartbeats = 0;
+setInterval(async () => {
+  try {
+    const res = await fetch("/api/ping", { cache: "no-store" });
+    if (res.ok) {
+      failedHeartbeats = 0;
+      const overlay = document.getElementById("omnirouteOfflineOverlay");
+      if (overlay && overlay.style.display === "flex") {
+        overlay.style.display = "none";
+      }
+    } else {
+      failedHeartbeats++;
+    }
+  } catch (err) {
+    failedHeartbeats++;
+    if (failedHeartbeats >= 2) {
+      const overlay = document.getElementById("omnirouteOfflineOverlay");
+      if (overlay && overlay.style.display !== "flex") {
+        const isId = currentLang === "id";
+        document.getElementById("offlineTitle").textContent = isId ? "Server Sedang Offline" : "Server is Offline";
+        document.getElementById("offlineDesc").textContent = isId 
+          ? "Server lokal OmniRoute dihentikan atau belum aktif. Jika Anda sengaja menghentikannya, Anda bisa menutup jendela ini."
+          : "The local OmniRoute server was stopped or is inactive. If you stopped it intentionally, you can close this window.";
+        document.getElementById("btnReconnectText").textContent = isId ? "Sambungkan Kembali" : "Reconnect";
+        document.getElementById("btnCloseAppText").textContent = isId ? "Tutup Jendela" : "Close Window";
+        overlay.style.display = "flex";
+      }
+    }
+  }
+}, 4000);

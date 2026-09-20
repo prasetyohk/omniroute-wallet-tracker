@@ -1,24 +1,29 @@
 @echo off
-title Hentikan OmniRoute Server
+title Hentikan OmniRoute
 color 0A
 
 echo ================================================================
-echo               MENGHENTIKAN SERVER OMNIROUTE
+echo                   MENGHENTIKAN OMNIROUTE
 echo ================================================================
 echo.
 
+:: 1. Tutup jendela aplikasi OmniRoute (Chrome, Edge, Brave) jika masih terbuka
+echo [*] Menutup jendela aplikasi OmniRoute...
+powershell -NoProfile -Command "Get-Process chrome, msedge, brave -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -like '*OmniRoute*' } | ForEach-Object { $_.CloseMainWindow() }" >nul 2>&1
+
+:: 2. Hentikan server backend pada port 5000
 set FOUND=0
 for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr /r ":5000 .*LISTENING"') do (
-    echo [*] Menghentikan proses server PID %%a pada port 5000...
+    echo [*] Menghentikan proses server PID %%a...
     taskkill /F /PID %%a >nul 2>&1
     set FOUND=1
 )
 
+echo.
 if %FOUND%==1 (
-    echo.
-    echo [OK] Server OmniRoute berhasil dihentikan.
+    echo [OK] Aplikasi dan server OmniRoute berhasil ditutup dengan bersih.
 ) else (
-    echo [*] Tidak ada server OmniRoute yang sedang aktif pada port 5000.
+    echo [OK] Server OmniRoute sudah tidak aktif.
 )
 
 echo.

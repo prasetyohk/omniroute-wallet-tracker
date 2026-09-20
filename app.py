@@ -136,6 +136,19 @@ def samples():
         }
     })
 
+@app.route("/api/ping", methods=["GET"])
+def ping():
+    return jsonify({"status": "ok", "app": "OmniRoute"})
+
+@app.route("/api/shutdown", methods=["POST"])
+def shutdown():
+    import threading, time
+    def kill_server():
+        time.sleep(0.4)
+        os._exit(0)
+    threading.Thread(target=kill_server, daemon=True).start()
+    return jsonify({"success": True, "message": "Server shutting down..."})
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"[*] OmniRoute running on http://127.0.0.1:{port}")
