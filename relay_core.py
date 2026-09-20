@@ -1,6 +1,8 @@
 import re
 import time
 import requests
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Any, Optional, List
 from web3 import Web3
 
@@ -1832,73 +1834,178 @@ def fetch_solana_deposit_inflows(deposit_address: str, limit: int = 100) -> List
 
     return inflows
 
+def is_valid_token_tx(ttx: Dict[str, Any]) -> bool:
+    sym = str(ttx.get("tokenSymbol") or ttx.get("symbol") or "").strip()
+    if not sym or len(sym) > 30:
+        return False
+    return True
+
+def parse_token_amount(raw_val: Any, decimals: Any, symbol: str = "") -> float:
+    try:
+        val_int = int(raw_val)
+        dec_int = int(decimals) if decimals is not None else 18
+        if dec_int < 0 or dec_int > 36:
+            dec_int = 18
+        return val_int / (10 ** dec_int)
+    except Exception:
+        return 0.0
+
 def fetch_evm_deposit_inflows(deposit_address: str, chain: str = "base", limit: int = 100) -> List[Dict[str, Any]]:
     """
-    Fetches native and ERC-20 inflows into the EVM deposit address via Blockscout/Etherscan APIs.
+    Fetches native and ERC-20 inflows into the EVM deposit address via Blockscout v2/v1 APIs.
     """
     inflows = []
     cinfo = get_chain_info(chain)
-    blockscout_api = cinfo.get("blockscoutApi") or "https://base.blockscout.com/api"
+    chain_name = cinfo.get("displayName") or cinfo.get("name") or chain
     native_symbol = cinfo.get("nativeCurrency", {}).get("symbol", "ETH")
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     chk_addr = Web3.to_checksum_address(deposit_address) if Web3.is_address(deposit_address) else deposit_address
 
-    # 1. Native transfers (txlist)
-    try:
-        url_native = f"{blockscout_api}?module=account&action=txlist&address={chk_addr}&page=1&offset={limit}&sort=desc"
-        r = requests.get(url_native, headers=headers, timeout=6)
-        if r.status_code == 200:
-            txs = r.json().get("result", [])
-            if isinstance(txs, list):
-                for tx in txs:
-                    if (tx.get("to") or "").lower() == chk_addr.lower():
-                        val = int(tx.get("value", 0))
-                        sender = tx.get("from")
-                        if sender and val > 0:
-                            amt = val / 1e18
-                            if amt > 0.00001:
-                                inflows.append({
-                                    "sender": Web3.to_checksum_address(sender) if Web3.is_address(sender) else sender,
-                                    "amount": amt,
-                                    "token_symbol": native_symbol,
-                                    "mint": "",
-                                    "decimals": 18,
-                                    "timestamp": int(tx.get("timeStamp", time.time())),
-                                    "tx_hash": tx.get("hash", ""),
-                                    "chain": cinfo.get("name", chain)
-                                })
-    except Exception:
-        pass
+    blockscout_hosts = {
+        "ethereum": "eth.blockscout.com",
+        "eth": "eth.blockscout.com",
+        "base": "base.blockscout.com",
+        "arbitrum": "arbitrum.blockscout.com",
+        "optimism": "optimism.blockscout.com",
+        "polygon": "polygon.blockscout.com",
+        "scroll": "scroll.blockscout.com",
+        "zksync": "zksync.blockscout.com"
+    }
+    c_key = str(cinfo.get("name") or chain).lower().strip()
+    host = blockscout_hosts.get(c_key)
+    now_ts = int(time.time())
 
-    # 2. ERC-20 transfers (tokentx)
-    try:
-        url_tok = f"{blockscout_api}?module=account&action=tokentx&address={chk_addr}&page=1&offset={limit}&sort=desc"
-        r_tok = requests.get(url_tok, headers=headers, timeout=6)
-        if r_tok.status_code == 200:
-            ttxs = r_tok.json().get("result", [])
-            if isinstance(ttxs, list):
-                for ttx in ttxs:
-                    if (ttx.get("to") or "").lower() == chk_addr.lower():
-                        if not is_valid_token_tx(ttx):
-                            continue
-                        sender = ttx.get("from")
-                        sym = str(ttx.get("tokenSymbol") or "TOKEN").strip()
-                        raw_val = ttx.get("value", "0")
-                        dec = ttx.get("tokenDecimal", 18)
-                        amt = parse_token_amount(raw_val, dec, sym)
-                        if sender and amt > 0.0001:
-                            inflows.append({
-                                "sender": Web3.to_checksum_address(sender) if Web3.is_address(sender) else sender,
-                                "amount": amt,
-                                "token_symbol": sym,
-                                "mint": ttx.get("contractAddress", ""),
-                                "decimals": dec,
-                                "timestamp": int(ttx.get("timeStamp", time.time())),
-                                "tx_hash": ttx.get("hash", ""),
-                                "chain": cinfo.get("name", chain)
-                            })
-    except Exception:
-        pass
+    v2_success = False
+
+    # Attempt Blockscout v2 API first (faster and avoids rate limits)
+    if host:
+        try:
+            # 1. Native / Coin Transfers via v2
+            v2_tx_url = f"https://{host}/api/v2/addresses/{chk_addr}/transactions"
+            r_tx = requests.get(v2_tx_url, headers=headers, timeout=6)
+            if r_tx.status_code == 200:
+                v2_success = True
+                items = r_tx.json().get("items", [])
+                if isinstance(items, list):
+                    for tx in items:
+                        to_addr = ((tx.get("to") or {}).get("hash") or "").lower()
+                        if to_addr == chk_addr.lower():
+                            from_addr = ((tx.get("from") or {}).get("hash") or "")
+                            if from_addr and from_addr.lower() != chk_addr.lower():
+                                val_str = str(tx.get("value", 0))
+                                val_wei = int(val_str) if val_str.isdigit() else 0
+                                amt = val_wei / 1e18
+                                if amt > 0.00001:
+                                    ts_str = tx.get("timestamp", "")
+                                    try:
+                                        ts = int(datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp()) if ts_str else now_ts
+                                    except Exception:
+                                        ts = now_ts
+                                    inflows.append({
+                                        "sender": Web3.to_checksum_address(from_addr) if Web3.is_address(from_addr) else from_addr,
+                                        "amount": amt,
+                                        "token_symbol": native_symbol,
+                                        "mint": "",
+                                        "decimals": 18,
+                                        "timestamp": ts,
+                                        "tx_hash": tx.get("hash", ""),
+                                        "chain": chain_name
+                                    })
+
+            # 2. Token Transfers via v2
+            v2_tok_url = f"https://{host}/api/v2/addresses/{chk_addr}/token-transfers"
+            r_tok = requests.get(v2_tok_url, headers=headers, timeout=6)
+            if r_tok.status_code == 200:
+                v2_success = True
+                items = r_tok.json().get("items", [])
+                if isinstance(items, list):
+                    for tt in items:
+                        to_addr = ((tt.get("to") or {}).get("hash") or "").lower()
+                        if to_addr == chk_addr.lower():
+                            from_addr = ((tt.get("from") or {}).get("hash") or "")
+                            if from_addr and from_addr.lower() != chk_addr.lower():
+                                token = tt.get("token") or {}
+                                sym = str(token.get("symbol") or "TOKEN").strip()
+                                dec = token.get("decimals") or 18
+                                raw_val = (tt.get("total") or {}).get("value") or "0"
+                                amt = parse_token_amount(raw_val, dec, sym)
+                                if amt > 0.0001:
+                                    ts_str = tt.get("timestamp", "")
+                                    try:
+                                        ts = int(datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp()) if ts_str else now_ts
+                                    except Exception:
+                                        ts = now_ts
+                                    inflows.append({
+                                        "sender": Web3.to_checksum_address(from_addr) if Web3.is_address(from_addr) else from_addr,
+                                        "amount": amt,
+                                        "token_symbol": sym,
+                                        "mint": token.get("address_hash") or token.get("address") or "",
+                                        "decimals": int(dec) if str(dec).isdigit() else 18,
+                                        "timestamp": ts,
+                                        "tx_hash": tt.get("transaction_hash", ""),
+                                        "chain": chain_name
+                                    })
+        except Exception:
+            pass
+
+    # Fallback to v1 if v2 was not available or failed
+    if not v2_success:
+        blockscout_api = cinfo.get("blockscoutApi")
+        if blockscout_api:
+            try:
+                url_native = f"{blockscout_api}?module=account&action=txlist&address={chk_addr}&page=1&offset={limit}&sort=desc"
+                r = requests.get(url_native, headers=headers, timeout=6)
+                if r.status_code == 200:
+                    txs = r.json().get("result", [])
+                    if isinstance(txs, list):
+                        for tx in txs:
+                            if (tx.get("to") or "").lower() == chk_addr.lower():
+                                val = int(tx.get("value", 0))
+                                sender = tx.get("from")
+                                if sender and val > 0:
+                                    amt = val / 1e18
+                                    if amt > 0.00001:
+                                        inflows.append({
+                                            "sender": Web3.to_checksum_address(sender) if Web3.is_address(sender) else sender,
+                                            "amount": amt,
+                                            "token_symbol": native_symbol,
+                                            "mint": "",
+                                            "decimals": 18,
+                                            "timestamp": int(tx.get("timeStamp", now_ts)),
+                                            "tx_hash": tx.get("hash", ""),
+                                            "chain": chain_name
+                                        })
+            except Exception:
+                pass
+
+            try:
+                url_tok = f"{blockscout_api}?module=account&action=tokentx&address={chk_addr}&page=1&offset={limit}&sort=desc"
+                r_tok = requests.get(url_tok, headers=headers, timeout=6)
+                if r_tok.status_code == 200:
+                    ttxs = r_tok.json().get("result", [])
+                    if isinstance(ttxs, list):
+                        for ttx in ttxs:
+                            if (ttx.get("to") or "").lower() == chk_addr.lower():
+                                if not is_valid_token_tx(ttx):
+                                    continue
+                                sender = ttx.get("from")
+                                sym = str(ttx.get("tokenSymbol") or "TOKEN").strip()
+                                raw_val = ttx.get("value", "0")
+                                dec = ttx.get("tokenDecimal", 18)
+                                amt = parse_token_amount(raw_val, dec, sym)
+                                if sender and amt > 0.0001:
+                                    inflows.append({
+                                        "sender": Web3.to_checksum_address(sender) if Web3.is_address(sender) else sender,
+                                        "amount": amt,
+                                        "token_symbol": sym,
+                                        "mint": ttx.get("contractAddress", ""),
+                                        "decimals": int(dec) if str(dec).isdigit() else 18,
+                                        "timestamp": int(ttx.get("timeStamp", now_ts)),
+                                        "tx_hash": ttx.get("hash", ""),
+                                        "chain": chain_name
+                                    })
+            except Exception:
+                pass
 
     return inflows
 
@@ -1912,13 +2019,11 @@ def parse_manual_inflow_csv(csv_text: str) -> List[Dict[str, Any]]:
     now_ts = int(time.time())
 
     for idx, line in enumerate(lines):
-        # Split by comma, tab, or semicolon
         parts = re.split(r'[,;\t]+', line)
         if len(parts) < 3:
             continue
 
         p0_lower = parts[0].strip().lower()
-        # Skip header row if first column is literally a header label
         if idx == 0 and (p0_lower in ["from", "sender", "from_address", "sender_address", "address", "tx_hash"] or (len(parts[0].strip()) < 15 and not parts[0].strip().startswith("0x"))):
             continue
 
@@ -1966,6 +2071,7 @@ def trace_deposit_inflow(
 ) -> Dict[str, Any]:
     """
     Core Aggregator & Multi-Tier Spam Filter for Exchange Deposit Inflows.
+    When chain='auto', simultaneously scans ALL major EVM chains in parallel and merges results.
     Groups transactions by sender, converts to USD via DexScreener/CoinGecko,
     applies cumulative dust & phishing filters, and outputs qualified vs filtered senders.
     """
@@ -1977,29 +2083,46 @@ def trace_deposit_inflow(
         if not target_clean:
             return {"success": False, "error": "Alamat deposit tidak boleh kosong / Deposit address cannot be empty."}
 
-        is_solana = re.match(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$', target_clean) and not target_clean.startswith("0x")
+        is_solana = bool(re.match(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$', target_clean)) and not target_clean.startswith("0x")
+
         if chain == "auto":
             if is_solana:
                 resolved_chain = "solana"
+                raw_inflows = fetch_solana_deposit_inflows(target_clean, limit=100)
             else:
-                # Multi-chain auto-detect: scan all EVM chains, pick the one with most txs
-                evm_chains_to_probe = ["ethereum", "base", "arbitrum", "bsc", "polygon", "optimism"]
-                best_chain = "ethereum"
-                best_count = 0
-                for probe_chain in evm_chains_to_probe:
+                # Multi-chain EVM auto-scan: concurrently fetch from ALL major EVM chains and merge results!
+                evm_chains_to_scan = ["ethereum", "arbitrum", "polygon", "base", "optimism"]
+                all_inflows = []
+                active_chains_found = []
+
+                def _scan_single_chain(c_name):
                     try:
-                        probe_txs = fetch_evm_deposit_inflows(target_clean, chain=probe_chain, limit=20)
-                        count = len(probe_txs) if probe_txs else 0
-                        if count > best_count:
-                            best_count = count
-                            best_chain = probe_chain
+                        return c_name, fetch_evm_deposit_inflows(target_clean, chain=c_name, limit=100)
                     except Exception:
-                        pass
-                resolved_chain = best_chain
+                        return c_name, []
+
+                with ThreadPoolExecutor(max_workers=5) as executor:
+                    futures = [executor.submit(_scan_single_chain, c) for c in evm_chains_to_scan]
+                    for fut in as_completed(futures):
+                        c_name, c_inflows = fut.result()
+                        if c_inflows:
+                            all_inflows.extend(c_inflows)
+                            c_disp = get_chain_info(c_name).get("displayName", c_name.capitalize())
+                            if c_disp not in active_chains_found:
+                                active_chains_found.append(c_disp)
+
+                raw_inflows = all_inflows
+                if active_chains_found:
+                    resolved_chain = f"Multi-Chain EVM ({', '.join(sorted(active_chains_found))})"
+                else:
+                    resolved_chain = "Multi-Chain EVM (Ethereum, Arbitrum, Base, Polygon, Optimism)"
         else:
             resolved_chain = chain.lower().strip()
             if resolved_chain == "solana":
                 is_solana = True
+                raw_inflows = fetch_solana_deposit_inflows(target_clean, limit=100)
+            else:
+                raw_inflows = fetch_evm_deposit_inflows(target_clean, chain=resolved_chain, limit=100)
 
         # Check if target is a known contract / vault / router / hot wallet
         cls_info = classify_entity(target_clean)
@@ -2009,7 +2132,8 @@ def trace_deposit_inflow(
         # Bytecode check for EVM targets
         if not is_solana and not is_contract_or_vault and Web3.is_address(target_clean):
             try:
-                cinfo = get_chain_info(resolved_chain)
+                check_chain = "ethereum" if "Multi-Chain" in resolved_chain else resolved_chain
+                cinfo = get_chain_info(check_chain)
                 w3 = get_web3(cinfo.get("rpc"))
                 if w3 and w3.is_connected():
                     code = w3.eth.get_code(Web3.to_checksum_address(target_clean))
@@ -2018,12 +2142,6 @@ def trace_deposit_inflow(
                         contract_label = "Smart Contract (Bytecode Detected)"
             except Exception:
                 pass
-
-        if is_solana:
-            raw_inflows = fetch_solana_deposit_inflows(target_clean, limit=100)
-        else:
-            raw_inflows = fetch_evm_deposit_inflows(target_clean, chain=resolved_chain, limit=100)
-
 
     else:
         # Mode B: Manual CSV/Text
@@ -2042,6 +2160,7 @@ def trace_deposit_inflow(
         amt = item["amount"]
         ts = item.get("timestamp", now_ts)
         mint = item.get("mint", "")
+        item_chain = item.get("chain", resolved_chain)
 
         # Spam/phishing token check on the transaction
         is_phish = False
@@ -2056,7 +2175,8 @@ def trace_deposit_inflow(
                 "first_deposit_timestamp": ts,
                 "last_deposit_timestamp": ts,
                 "tokens": {},
-                "chain": item.get("chain", resolved_chain),
+                "chains": set(),
+                "chain": item_chain,
                 "has_phishing_token": False
             }
 
@@ -2064,6 +2184,8 @@ def trace_deposit_inflow(
         s_rec["tx_count"] += 1
         s_rec["first_deposit_timestamp"] = min(s_rec["first_deposit_timestamp"], ts)
         s_rec["last_deposit_timestamp"] = max(s_rec["last_deposit_timestamp"], ts)
+        if item_chain:
+            s_rec["chains"].add(item_chain)
 
         if is_phish:
             s_rec["has_phishing_token"] = True
@@ -2081,9 +2203,12 @@ def trace_deposit_inflow(
     for s_addr, data in senders_map.items():
         total_usd = 0.0
         token_breakdowns = []
+        chains_list = sorted(list(data.get("chains") or [data.get("chain")]))
+        sender_chain_display = ", ".join(chains_list) if chains_list else data.get("chain", resolved_chain)
+        primary_chain_lower = (chains_list[0] if chains_list else str(data.get("chain", ""))).lower()
 
         for sym, tinfo in data["tokens"].items():
-            price = get_token_usd_price(sym, tinfo.get("mint"), data["chain"])
+            price = get_token_usd_price(sym, tinfo.get("mint"), primary_chain_lower)
             usd_val = tinfo["amount"] * price
             total_usd += usd_val
             token_breakdowns.append({
@@ -2098,6 +2223,20 @@ def trace_deposit_inflow(
         first_ago = max(0, (now_ts - data["first_deposit_timestamp"]) // 86400)
         last_ago = max(0, (now_ts - data["last_deposit_timestamp"]) // 86400)
 
+        # Map accurate explorer URL based on sender primary chain
+        if "solana" in primary_chain_lower or (len(s_addr) >= 32 and not s_addr.startswith("0x")):
+            exp_url = f"https://solscan.io/account/{s_addr}"
+        elif "arbitrum" in primary_chain_lower:
+            exp_url = f"https://arbiscan.io/address/{s_addr}"
+        elif "polygon" in primary_chain_lower:
+            exp_url = f"https://polygonscan.com/address/{s_addr}"
+        elif "optimism" in primary_chain_lower:
+            exp_url = f"https://optimistic.etherscan.io/address/{s_addr}"
+        elif "base" in primary_chain_lower:
+            exp_url = f"https://basescan.org/address/{s_addr}"
+        else:
+            exp_url = f"https://etherscan.io/address/{s_addr}"
+
         sender_obj = {
             "sender_address": s_addr,
             "total_deposit_usd": round(total_usd, 2),
@@ -2107,8 +2246,8 @@ def trace_deposit_inflow(
             "last_deposit_timestamp": data["last_deposit_timestamp"],
             "last_deposit_days_ago": last_ago,
             "tokens": token_breakdowns,
-            "chain": data["chain"],
-            "explorer_url": f"https://solscan.io/account/{s_addr}" if (len(s_addr) >= 32 and not s_addr.startswith("0x")) else f"https://basescan.org/address/{s_addr}"
+            "chain": sender_chain_display,
+            "explorer_url": exp_url
         }
 
         # Spam Filter Evaluations:
@@ -2132,6 +2271,8 @@ def trace_deposit_inflow(
     qualified_senders.sort(key=lambda x: x["total_deposit_usd"], reverse=True)
     filtered_senders.sort(key=lambda x: x["total_deposit_usd"], reverse=True)
 
+    scope_note = "Multi-Chain EVM scan aggregated across Ethereum, Arbitrum, Base, Polygon, Optimism." if ("Multi-Chain" in resolved_chain) else "Showing up to 100 most recent transactions (Personal Deposit Scope). USD value estimated using current market price."
+
     return {
         "success": True,
         "target_address": target_clean,
@@ -2139,7 +2280,7 @@ def trace_deposit_inflow(
         "chain": resolved_chain,
         "is_contract_or_vault": is_contract_or_vault if mode == "address" else False,
         "contract_label": contract_label if mode == "address" else "",
-        "scan_scope_note": "Showing up to 100 most recent transactions (Personal Deposit Scope). USD value estimated using current market price.",
+        "scan_scope_note": scope_note,
         "summary": {
             "total_senders": len(senders_map),
             "qualified_count": len(qualified_senders),
