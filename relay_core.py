@@ -1979,7 +1979,23 @@ def trace_deposit_inflow(
 
         is_solana = re.match(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$', target_clean) and not target_clean.startswith("0x")
         if chain == "auto":
-            resolved_chain = "solana" if is_solana else "base"
+            if is_solana:
+                resolved_chain = "solana"
+            else:
+                # Multi-chain auto-detect: scan all EVM chains, pick the one with most txs
+                evm_chains_to_probe = ["ethereum", "base", "arbitrum", "bsc", "polygon", "optimism"]
+                best_chain = "ethereum"
+                best_count = 0
+                for probe_chain in evm_chains_to_probe:
+                    try:
+                        probe_txs = fetch_evm_deposit_inflows(target_clean, chain=probe_chain, limit=20)
+                        count = len(probe_txs) if probe_txs else 0
+                        if count > best_count:
+                            best_count = count
+                            best_chain = probe_chain
+                    except Exception:
+                        pass
+                resolved_chain = best_chain
         else:
             resolved_chain = chain.lower().strip()
             if resolved_chain == "solana":
@@ -2007,6 +2023,7 @@ def trace_deposit_inflow(
             raw_inflows = fetch_solana_deposit_inflows(target_clean, limit=100)
         else:
             raw_inflows = fetch_evm_deposit_inflows(target_clean, chain=resolved_chain, limit=100)
+
 
     else:
         # Mode B: Manual CSV/Text
