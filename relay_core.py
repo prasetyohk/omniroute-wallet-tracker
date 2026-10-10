@@ -937,6 +937,34 @@ def set_cached_genealogy(cache_key: str, data: Dict[str, Any]):
         _GENEALOGY_CACHE[cache_key] = {"timestamp": time.time(), "data": data}
 
 
+_BRIDGE_LABEL_HINTS = ("relay", "bridge", "across", "stargate", "li.fi", "layerzero", "solver", "spokepool")
+
+
+def is_bridge_funder(funder: Dict[str, Any]) -> bool:
+    """True when the first funding came from a known cross-chain bridge / solver."""
+    if funder.get("category") == "bridge_router":
+        return True
+    label = str(funder.get("label") or "").lower()
+    return any(h in label for h in _BRIDGE_LABEL_HINTS)
+
+
+def annotate_bridge_funding(funder: Dict[str, Any]) -> None:
+    """Mark the genesis funding as cross-chain and attach its origin when Relay recognises
+    the funding tx as a bridge fill (catches solver wallets that aren't in our label list)."""
+    route = resolve_relay_tx(funder.get("txHash", "")) if funder.get("txHash") else None
+    if route:
+        origin = route.get("origin_chain", {})
+        funder["isBridge"] = True
+        funder["bridgeOrigin"] = {
+            "protocol": route.get("protocol", ""),
+            "chain": origin.get("display_name", ""),
+            "sender": route.get("from_wallet", ""),
+            "txHash": origin.get("tx_hash", ""),
+        }
+    else:
+        funder["isBridge"] = is_bridge_funder(funder)
+
+
 def is_spam_symbol(sym: str) -> bool:
     sym = str(sym or "").strip()
     return bool(SPAM_PATTERNS.search(sym)) or any(c in sym for c in "./\\") or len(sym) > 10
@@ -1118,6 +1146,7 @@ def analyze_wallet_genealogy(target_address: str, chain: str = "base") -> Dict[s
 
     if genesis_funder:
         genesis_funder["txUrl"] = build_explorer_tx_url(cinfo.get("id"), genesis_funder["txHash"])
+        annotate_bridge_funding(genesis_funder)
 
     # Top inflow providers
     sorted_inflows, _ = _aggregate_flows(all_txs, clean_token_txs, addr_lower, "in", native_symbol)
@@ -1406,6 +1435,7 @@ def analyze_solana_genealogy(solana_address: str) -> Dict[str, Any]:
                 "timestamp": ts,
                 "days_ago": days_ago
             }
+            annotate_bridge_funding(genesis_funder)
             if days_ago < 2:
                 risk_flags.append("Fresh Wallet (<48h)")
     if len(sigs) >= 1000:

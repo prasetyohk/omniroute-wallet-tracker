@@ -218,7 +218,15 @@ const translations = {
     guide_dep_2: "Pengirim dikelompokkan & dinilai dalam USD",
     guide_dep_3: "Spam/dust disaring — ekspor sisanya",
     guide_dep_tip: "Deteksi Otomatis memindai 5 chain EVM sekaligus. Ctrl+Enter mengirim isian CSV.",
-    shortcuts_hint: "Pintasan: Alt+1…4 pindah tab"
+    shortcuts_hint: "Pintasan: Alt+1…4 pindah tab",
+    first_funding_tx: "Tx Pendanaan Pertama",
+    bridge_funding_tx: "Didanai via Bridge Cross-Chain",
+    cross_chain_badge: "CROSS-CHAIN",
+    track_source_btn: "Lacak Sumber Dana (Tab 1)",
+    track_source_hint: "Buka di Tab 1 untuk melihat chain asal & dompet pengirim sebenarnya",
+    bridge_funding_note: "Dana pertama datang dari bridge/solver, bukan dari pengirim asli. Klik untuk melacak chain asal dan dompet pengirim sebenarnya.",
+    origin_chain_label: "Chain asal",
+    real_sender_label: "Pengirim asli"
   },
   en: {
     tagline: "Cross-Chain Swap & Bridge Destination Wallet Resolver",
@@ -438,7 +446,15 @@ const translations = {
     guide_dep_2: "Senders are grouped & valued in USD",
     guide_dep_3: "Spam/dust filtered out — export the rest",
     guide_dep_tip: "Auto-Detect scans 5 EVM chains at once. Ctrl+Enter submits the CSV box.",
-    shortcuts_hint: "Shortcuts: Alt+1…4 switch tabs"
+    shortcuts_hint: "Shortcuts: Alt+1…4 switch tabs",
+    first_funding_tx: "First Funding Tx",
+    bridge_funding_tx: "Funded via Cross-Chain Bridge",
+    cross_chain_badge: "CROSS-CHAIN",
+    track_source_btn: "Trace Fund Source (Tab 1)",
+    track_source_hint: "Open in Tab 1 to see the origin chain & the real sender wallet",
+    bridge_funding_note: "The first funds came from a bridge/solver, not the original sender. Click to trace the origin chain and the real sender wallet.",
+    origin_chain_label: "Origin chain",
+    real_sender_label: "Real sender"
   }
 };
 
@@ -1282,6 +1298,16 @@ function openInGenealogy(address, chain) {
 }
 
 const autoAnalyzeDestination = openInGenealogy;
+
+// Tab 3 → Tab 1 hand-off: trace where a funding tx (e.g. a bridge fill) originally came from.
+function trackTxInTab1(txHash) {
+  txHash = unesc(txHash || "");
+  if (!txHash) return;
+  document.getElementById("txInput").value = txHash;
+  switchTab("tx");
+  submitForm("txTrackForm");
+  document.getElementById("tabContentTx")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 const autoTraceDepositSender = openInGenealogy;
 
 // Quick Sample for Tab 3
@@ -1428,13 +1454,42 @@ function renderGenealogyDashboard(data, container) {
                 </div>
                 <div class="funder-time">
                   ${genesis.days_ago !== undefined ? `<i class="fa-regular fa-clock"></i> ${genesis.days_ago} ${dict.days_ago_suffix || 'hari lalu'}` : ''}
-                  ${genesis.txHash ? `
-                    <a href="${genesis.txUrl || '#'}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-lime); margin-left: 8px; text-decoration: none;" title="Lihat Tx Gas Pertama">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i> Tx
-                    </a>
-                  ` : ''}
                 </div>
               </div>
+              ${genesis.txHash ? `
+                <div class="funding-tx-box ${genesis.isBridge ? 'is-bridge' : ''}">
+                  <div class="funding-tx-head">
+                    <span class="funding-tx-label">
+                      <i class="fa-solid ${genesis.isBridge ? 'fa-bridge-water' : 'fa-receipt'}"></i>
+                      ${genesis.isBridge ? t("bridge_funding_tx") : t("first_funding_tx")}
+                    </span>
+                    ${genesis.isBridge ? `<span class="funding-bridge-chip">${t("cross_chain_badge")}</span>` : ''}
+                  </div>
+                  <button type="button" class="funding-tx-hash" data-action="track-tx" data-tx="${genesis.txHash}" title="${t("track_source_hint")}">
+                    ${truncateAddress(genesis.txHash, 12)}
+                  </button>
+                  <div class="funding-tx-actions">
+                    <button type="button" class="icon-action-btn primary" data-action="track-tx" data-tx="${genesis.txHash}" title="${t("track_source_hint")}">
+                      <i class="fa-solid fa-route"></i> ${t("track_source_btn")}
+                    </button>
+                    ${genesis.txUrl ? `
+                      <a href="${genesis.txUrl}" target="_blank" rel="noopener noreferrer" class="icon-action-btn">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Explorer
+                      </a>
+                    ` : ''}
+                    <button type="button" class="icon-action-btn" data-copy="${genesis.txHash}" data-copy-label="Tx Hash">
+                      <i class="fa-regular fa-copy"></i>
+                    </button>
+                  </div>
+                  ${genesis.bridgeOrigin ? `
+                    <div class="funding-origin">
+                      <span><i class="fa-solid fa-location-dot"></i> ${t("origin_chain_label")}: <strong>${genesis.bridgeOrigin.chain || '-'}</strong> &bull; ${genesis.bridgeOrigin.protocol}</span>
+                      ${genesis.bridgeOrigin.sender ? `<span>${t("real_sender_label")}: <code title="${genesis.bridgeOrigin.sender}">${truncateAddress(genesis.bridgeOrigin.sender, 8)}</code></span>` : ''}
+                    </div>
+                  ` : ''}
+                  ${genesis.isBridge ? `<p class="funding-tx-note">${t("bridge_funding_note")}</p>` : ''}
+                </div>
+              ` : ''}
             </div>
           ` : `
             <div class="funder-box" style="border-color: rgba(255,255,255,0.08); color: var(--text-dim); font-size: 0.84rem;">
@@ -2137,6 +2192,7 @@ document.addEventListener("click", e => {
   if (!el) return;
   const { action, addr, chain, id } = el.dataset;
   if (action === "analyze-dest" || action === "trace-sender") openInGenealogy(addr, chain);
+  else if (action === "track-tx") trackTxInTab1(el.dataset.tx);
   else if (action === "gmgn-csv") downloadGmgnCsv(id, chain);
 });
 

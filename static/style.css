@@ -2165,3 +2165,83 @@ input[type=range]::-webkit-slider-thumb:hover {
     overflow-wrap: anywhere;
   }
 }
+
+/* ==================== FUNDING TX (Tab 3 → Tab 1 hand-off) ==================== */
+.funding-tx-box {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.35);
+}
+.funding-tx-box.is-bridge {
+  border-color: rgba(0, 240, 255, 0.35);
+  background: rgba(0, 240, 255, 0.05);
+}
+.funding-tx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.funding-tx-label {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.is-bridge .funding-tx-label {
+  color: var(--accent-cyan);
+}
+.funding-bridge-chip {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--accent-cyan);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+.funding-tx-hash {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-pure);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-align: left;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.funding-tx-hash:hover {
+  color: var(--accent-lime);
+}
+.funding-tx-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.funding-tx-note {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.funding-origin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 10px;
+  color: var(--text-main);
+  font-size: 0.8rem;
+}
+.funding-origin code {
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+}
