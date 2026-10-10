@@ -2055,7 +2055,7 @@ function renderDepositResults(data, container) {
               <tr class="hover-row" style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s ease;">
                 <td style="padding: 12px 8px; color: var(--text-dim); font-weight: 700;">${idx + 1}</td>
                 <td style="padding: 12px 8px; font-family: var(--font-mono); color: var(--text-pure); font-weight: 600;">
-                  ${truncateAddress(s.sender_address, 10)}
+                  <button type="button" class="addr-copy-btn" data-copy="${s.sender_address}" data-copy-label="${dict.col_sender_address}" title="${s.sender_address}"><span>${truncateAddress(s.sender_address, 10)}</span><i class="fa-regular fa-copy"></i></button>
                   <span class="chain-badge" style="font-size: 0.68rem; margin-left: 6px; padding: 2px 6px;">${s.chain}</span>
                 </td>
                 <td style="padding: 12px 8px;">
@@ -2122,7 +2122,7 @@ function renderDepositResults(data, container) {
             ${filtered.map(f => `
               <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
                 <td style="padding: 8px; font-family: var(--font-mono); color: var(--text-dim);">
-                  ${truncateAddress(f.sender_address, 10)}
+                  <button type="button" class="addr-copy-btn muted" data-copy="${f.sender_address}" data-copy-label="${dict.col_sender_address}" title="${f.sender_address}"><span>${truncateAddress(f.sender_address, 10)}</span><i class="fa-regular fa-copy"></i></button>
                 </td>
                 <td style="padding: 8px;">
                   <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; ${

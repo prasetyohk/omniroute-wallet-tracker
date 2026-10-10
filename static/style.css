@@ -2245,3 +2245,34 @@ input[type=range]::-webkit-slider-thumb:hover {
   color: var(--accent-cyan);
   font-family: var(--font-mono);
 }
+
+/* Click-to-copy address (copies the full address, not the truncated text) */
+.addr-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-pure);
+  font-family: var(--font-mono);
+  font-size: inherit;
+  font-weight: 600;
+  cursor: copy;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.addr-copy-btn.muted {
+  color: var(--text-dim);
+}
+.addr-copy-btn i {
+  opacity: 0.45;
+  font-size: 0.78em;
+}
+.addr-copy-btn:hover {
+  border-color: var(--border-lime);
+  color: var(--accent-lime);
+}
+.addr-copy-btn:hover i {
+  opacity: 1;
+}
