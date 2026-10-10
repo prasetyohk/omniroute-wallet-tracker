@@ -122,6 +122,16 @@ Berikan satu alamat deposit bursa (misal deposit Binance, Bybit, OKX, atau perso
 * **Pintasan** — `Alt+1…4` pindah tab, `Ctrl+Enter` mengirim isian batch / CSV. Tab & bahasa terakhir diingat.
 * **Batas sumber data publik** — RPC Solana publik hanya mengizinkan ±10 transaksi / 10 detik, jadi pemindaian deposit Solana (25 tx) butuh ±30–40 detik. Bila Blockscout membatasi permintaan, aplikasi menampilkan pesan jelas (bukan hasil kosong).
 
+### 🔑 Relay API Key (wajib mulai 24 November 2026)
+
+Relay menghentikan endpoint `/requests/v2` pada **24 November 2026** (batasnya juga diperketat bertahap sebelum itu). OmniRoute sudah mendukung `/requests/v3`, yang membutuhkan API key:
+
+1. Buat key di https://dashboard.relay.link → tab **API keys** → **Create key**.
+2. Salin `.env.example` menjadi `.env`, lalu isi `RELAY_API_KEY=key_anda`.
+3. Restart OmniRoute.
+
+Tanpa key, aplikasi tetap memakai v2 selama masih tersedia. File `.env` tidak ikut ter-upload ke GitHub.
+
 ### Cara Menjalankan
 
 #### Cara 1: Double-Click Launcher (Windows)
@@ -251,6 +261,16 @@ Given an exchange deposit address, OmniRoute scans and aggregates all incoming f
 * **Paste = track** — pasting an explorer link / TX hash into Tab 1 starts tracking immediately.
 * **Shortcuts** — `Alt+1…4` switch tabs, `Ctrl+Enter` submits the batch / CSV box. Last tab and language are remembered.
 * **Public data-source limits** — the public Solana RPC allows ~10 transactions per 10s, so a Solana deposit scan (25 txs) takes ~30–40s. When Blockscout rate-limits requests, the app shows a clear message instead of an empty result.
+
+### 🔑 Relay API Key (required from November 24, 2026)
+
+Relay retires `/requests/v2` on **November 24, 2026** (with tightening rate limits before then). OmniRoute already supports `/requests/v3`, which needs an API key:
+
+1. Create a key at https://dashboard.relay.link → **API keys** → **Create key**.
+2. Copy `.env.example` to `.env` and set `RELAY_API_KEY=your_key`.
+3. Restart OmniRoute.
+
+Without a key the app keeps using v2 while it is still available. The `.env` file is never uploaded to GitHub.
 
 ### How to Run
 

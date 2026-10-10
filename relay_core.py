@@ -1,3 +1,4 @@
+import os
 import re
 import time
 import threading
@@ -422,25 +423,39 @@ def _asset(symbol: str, name: str, amount: str, usd: Any = None, raw: Any = "") 
 
 
 def _parse_relay_request(req: Dict[str, Any], tx_hash: str = "") -> Dict[str, Any]:
-    """Convert one Relay `requests/v2` item into the unified route schema (no network)."""
+    """Convert one Relay `requests/v2` or `/v3` item into the unified route schema (no network).
+    v3 moves sender to the root, renames in/outTxs[].hash -> txHash and puts currencies under
+    data.route.{actual|quoted}; every v3 location falls back to the v2 one."""
     protocol = req.get("protocol", {})
     deposit = protocol.get("deposit", {})
     origin = deposit.get("origin", {})
     relay_deposit = deposit.get("relay", {})
     destination = protocol.get("settlement", {}).get("destination", {})
 
-    from_wallet = req.get("user") or origin.get("depositor") or ""
+    req_data = req.get("data", {})
+    in_txs = req_data.get("inTxs") or []
+    first_in = in_txs[0] if in_txs else {}
+    from_wallet = req.get("user") or req.get("sender") or origin.get("depositor") or ""
     to_wallet = req.get("recipient") or ""
     depository = origin.get("depository") or ""
 
-    origin_chain_id = origin.get("chainId")
-    origin_tx = origin.get("transactionId") or tx_hash
-    origin_info = get_chain_info(origin_chain_id)
+    origin_chain_id = origin.get("chainId") or first_in.get("chainId")
+    origin_tx = origin.get("transactionId") or first_in.get("txHash") or first_in.get("hash") or tx_hash
 
-    req_data = req.get("data", {})
     metadata = req_data.get("metadata", {})
-    curr_in = metadata.get("currencyIn", {})
-    curr_out = metadata.get("currencyOut", {})
+    route = req_data.get("route") or {}
+    actual, quoted = route.get("actual") or {}, route.get("quoted") or {}
+    curr_in = _first_currency(
+        metadata.get("currencyIn"),
+        (actual.get("origin") or {}).get("inputCurrency"),
+        (quoted.get("origin") or {}).get("inputCurrency"))
+    curr_out = _first_currency(
+        metadata.get("currencyOut"),
+        (actual.get("destination") or {}).get("outputCurrency"),
+        (quoted.get("destination") or {}).get("outputCurrency"),
+        (actual.get("origin") or {}).get("outputCurrency"))
+    if not origin_chain_id:
+        origin_chain_id = (curr_in.get("currency") or {}).get("chainId")
 
     dest_chain_id, dest_tx = None, ""
     fills = destination.get("fills", [])
@@ -448,10 +463,11 @@ def _parse_relay_request(req: Dict[str, Any], tx_hash: str = "") -> Dict[str, An
     if fills:
         dest_chain_id, dest_tx = fills[0].get("chainId"), fills[0].get("transactionId") or ""
     elif out_txs:
-        dest_chain_id, dest_tx = out_txs[0].get("chainId"), out_txs[0].get("hash") or ""
+        dest_chain_id, dest_tx = out_txs[0].get("chainId"), out_txs[0].get("txHash") or out_txs[0].get("hash") or ""
     if not dest_chain_id and curr_out:
         dest_chain_id = curr_out.get("currency", {}).get("chainId")
     dest_info = get_chain_info(dest_chain_id) if dest_chain_id else {}
+    origin_info = get_chain_info(origin_chain_id)
 
     # Sent asset
     in_tok = curr_in.get("currency", {})
@@ -508,10 +524,64 @@ def _parse_relay_request(req: Dict[str, Any], tx_hash: str = "") -> Dict[str, An
     }
 
 
+def _load_relay_api_key() -> str:
+    """RELAY_API_KEY from the environment, else from the project's .env file (gitignored)."""
+    key = os.environ.get("RELAY_API_KEY", "").strip()
+    if key:
+        return key
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    try:
+        with open(env_path, encoding="utf-8") as fh:
+            for line in fh:
+                name, _, value = line.strip().partition("=")
+                if name.strip() == "RELAY_API_KEY":
+                    return value.strip().strip('"').strip("'")
+    except OSError:
+        pass
+    return ""
+
+
+RELAY_API_KEY = _load_relay_api_key()
+RELAY_V2_RETIREMENT = "2026-11-24"
+_relay_state = {"last_ok": True}
+
+
+def relay_requests(term: str = "", user: str = "", limit: int = 10) -> List[Dict[str, Any]]:
+    """Query Relay's request index. Uses /requests/v3 (needs an API key) when RELAY_API_KEY
+    is configured, otherwise the legacy /requests/v2 (retired on RELAY_V2_RETIREMENT)."""
+    if RELAY_API_KEY:
+        params = f"term={term}" if term else f"user={user}"
+        data = _get_json(f"https://api.relay.link/requests/v3?{params}&limit={min(limit, 50)}",
+                         headers={"x-api-key": RELAY_API_KEY})
+        if isinstance(data, dict) and "requests" in data:
+            _relay_state["last_ok"] = True
+            return data.get("requests") or []
+    params = f"hash={term}" if term else f"user={user}"
+    data = _get_json(f"https://api.relay.link/requests/v2?{params}&limit={limit}")
+    _relay_state["last_ok"] = isinstance(data, dict) and "requests" in data
+    return (data or {}).get("requests") or [] if _relay_state["last_ok"] else []
+
+
+def relay_unavailable_hint() -> str:
+    """Explains why Relay lookups may silently fail (v2 throttled/retired, no v3 key)."""
+    if _relay_state["last_ok"]:
+        return ""
+    if RELAY_API_KEY:
+        return " Relay API tidak merespons / Relay API did not respond."
+    return (f" Relay API v2 dibatasi/dihentikan ({RELAY_V2_RETIREMENT}) — isi RELAY_API_KEY di file .env "
+            "(buat gratis di dashboard.relay.link). / Relay v2 is throttled/retired — set RELAY_API_KEY in .env.")
+
+
+def _first_currency(*candidates: Any) -> Dict[str, Any]:
+    for c in candidates:
+        if isinstance(c, dict) and c:
+            return c
+    return {}
+
+
 def resolve_relay_tx(tx_hash: str) -> Optional[Dict[str, Any]]:
-    """Resolve transaction using Relay.link API."""
-    data = _get_json(f"https://api.relay.link/requests/v2?hash={tx_hash}") or {}
-    reqs = data.get("requests") or []
+    """Resolve transaction using Relay.link API (matches deposit, fill or refund tx hashes)."""
+    reqs = relay_requests(term=tx_hash, limit=1)
     if not reqs:
         return None
     try:
@@ -801,13 +871,12 @@ def track_cross_chain(query: str) -> Dict[str, Any]:
             return {"success": True, "query_type": "transaction", "elapsed_ms": int((time.time() - started) * 1000), "data": res}
         return {
             "success": False,
-            "error": f"Transaksi {val[:12]}... belum terindeks di Relay, Li.Fi/Jumper, Across, LayerZero, maupun RPC publik. / Not found on any supported protocol or public RPC."
+            "error": f"Transaksi {val[:12]}... belum terindeks di Relay, Li.Fi/Jumper, Across, LayerZero, maupun RPC publik. / Not found on any supported protocol or public RPC." + relay_unavailable_hint()
         }
 
     if q_type == "address":
-        data = _get_json(f"https://api.relay.link/requests/v2?user={val}&limit=10") or {}
         items = []
-        for req in data.get("requests") or []:
+        for req in relay_requests(user=val, limit=10):
             try:
                 items.append(_parse_relay_request(req))
             except Exception:
