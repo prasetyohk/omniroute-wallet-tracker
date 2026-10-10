@@ -114,6 +114,14 @@ Berikan satu alamat deposit bursa (misal deposit Binance, Bybit, OKX, atau perso
 
 ---
 
+### ⚡ Performa & Tips Penggunaan
+
+* **Pemindaian paralel** — Tab 1 mengecek Relay, Li.Fi, Across, LayerZero dan RPC 7 chain secara bersamaan (bukan satu per satu). Transaksi Relay/Li.Fi biasanya selesai < 1 detik.
+* **Cache pintar** — hasil yang sama dalam 60 detik (ganti bahasa, klik ulang) tampil instan tanpa memanggil API lagi; harga token & data chain di-cache otomatis.
+* **Tempel = lacak** — menempel link explorer / TX hash di Tab 1 langsung memulai pelacakan.
+* **Pintasan** — `Alt+1…4` pindah tab, `Ctrl+Enter` mengirim isian batch / CSV. Tab & bahasa terakhir diingat.
+* **Batas sumber data publik** — RPC Solana publik hanya mengizinkan ±10 transaksi / 10 detik, jadi pemindaian deposit Solana (25 tx) butuh ±30–40 detik. Bila Blockscout membatasi permintaan, aplikasi menampilkan pesan jelas (bukan hasil kosong).
+
 ### Cara Menjalankan
 
 #### Cara 1: Double-Click Launcher (Windows)
@@ -235,6 +243,14 @@ Given an exchange deposit address, OmniRoute scans and aggregates all incoming f
    * Displays qualified senders sorted by deposit volume with chain badges, explorer links, and direct *"Trace in Tab 3"* shortcuts.
 
 ---
+
+### ⚡ Performance & Usage Tips
+
+* **Parallel scanning** — Tab 1 queries Relay, Li.Fi, Across, LayerZero and 7 chain RPCs at the same time instead of one by one. Relay/Li.Fi transactions usually resolve in under 1 second.
+* **Smart caching** — repeating a lookup within 60s (language switch, re-click) is instant; token prices and chain data are cached automatically.
+* **Paste = track** — pasting an explorer link / TX hash into Tab 1 starts tracking immediately.
+* **Shortcuts** — `Alt+1…4` switch tabs, `Ctrl+Enter` submits the batch / CSV box. Last tab and language are remembered.
+* **Public data-source limits** — the public Solana RPC allows ~10 transactions per 10s, so a Solana deposit scan (25 txs) takes ~30–40s. When Blockscout rate-limits requests, the app shows a clear message instead of an empty result.
 
 ### How to Run
 

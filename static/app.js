@@ -3,16 +3,16 @@ const translations = {
   id: {
     tagline: "Pelacak Wallet Tujuan Cross-Chain Swap & Bridge",
     built_by: "Dibuat oleh",
-    hero_badge: "Pelacak Multi-Protokol Lintas Rantai",
+    hero_badge: "4 Alat Investigasi On-Chain dalam 1 Aplikasi",
     hero_title_1: "Lacak Alamat",
     hero_title_lime: "Wallet Tujuan",
-    hero_title_2: "Swap & Bridge",
-    hero_desc: "Cukup masukkan link blockchain explorer atau TX hash. OmniRoute otomatis membongkar alur transaksi dari wallet pengirim, router protokol, hingga dompet penerima tujuan.",
+    hero_title_2: "dalam Hitungan Detik",
+    hero_desc: "Tempel link explorer atau TX hash — OmniRoute mengecek Relay, Li.Fi, Across, LayerZero & RPC publik sekaligus, lalu menunjukkan siapa pengirimnya, lewat router apa, dan ke dompet mana dana mendarat.",
     supported_protocols: "Protokol Didukung:",
-    tab_tx_title: "Breakdown TX Multi-Protokol",
-    tab_tx_desc: "From Wallet ➔ Router ➔ Wallet Tujuan (*Recipient)",
-    tab_addr_title: "Verifikasi Alamat & Target",
-    tab_addr_desc: "EIP-55 Checksum, Router Guard & Saldo RPC",
+    tab_tx_title: "1 · Lacak Transaksi",
+    tab_tx_desc: "Ke mana dana swap/bridge mendarat?",
+    tab_addr_title: "2 · Cek Alamat",
+    tab_addr_desc: "Dompet biasa atau kontrak? Aman dikirimi?",
     search_title: "Lacak Transaksi & Wallet Penerima",
     search_desc: "Paste link explorer (RobinScan, Etherscan, Arbiscan, BaseScan, BscScan, Polygonscan, Solscan) atau raw TX Hash.",
     quick_examples: "Contoh Cepat:",
@@ -52,8 +52,8 @@ const translations = {
     addr_type: "Tipe Alamat",
     native_balance: "Saldo Native",
     balance_sub: "Saldo di chain yang dipilih",
-    tab_genealogy_title: "Klaster & Penelusuran Relasi Dompet",
-    tab_genealogy_desc: "Pemecah Relasi Antar-Dompet Tunggal & Massal",
+    tab_genealogy_title: "3 · Relasi Dompet",
+    tab_genealogy_desc: "Siapa yang mendanai & ke mana dana keluar?",
     sybil_title: "Klaster & Penelusuran Relasi Dompet",
     sybil_desc: "Pemecah Relasi Antar-Dompet Tunggal & Massal. Lacak silsilah modal (Genesis Funder), rotasi dompet, hub konsolidasi, dan ekspor instan ke GMGN Watchlist untuk copy-trading.",
     btn_analyze_sybil: "Lacak Silsilah & Relasi Dompet",
@@ -119,8 +119,8 @@ const translations = {
     individual_wallet: "Alamat dompet perseorangan",
 
     // Tab 4: Exchange Deposit Inflow Tracer (ID)
-    tab_deposit_title: "Pelacak Aliran Masuk Deposit Exchange",
-    tab_deposit_desc: "Agregator Pengirim Kumulatif & Filter Spam",
+    tab_deposit_title: "4 · Sumber Deposit",
+    tab_deposit_desc: "Siapa saja yang mengirim ke alamat ini?",
     deposit_section_title: "Exchange Deposit Inflow Tracer",
     deposit_section_desc: "Lacak semua dompet pengirim ke alamat deposit exchange (Solana & EVM), agregasi volume kumulatif all-time, dan filter dust attack / token spam airdrop.",
     deposit_mode_a: "Mode A: Pemindai Langsung Alamat (Solana & EVM)",
@@ -157,21 +157,82 @@ const translations = {
     reason_phishing: "Token phishing / airdrop spam",
     vault_warning: "⚠️ Terdeteksi Smart Contract / Vault Bersama (Bukan Alamat Deposit Personal)",
     qualified_senders_title: "Daftar Pengirim Terkualifikasi (Deposit Inflow)",
-    filtered_senders_title: "Pengirim yang Tersaring oleh Filter Spam & Ambang Batas"
+    filtered_senders_title: "Pengirim yang Tersaring oleh Filter Spam & Ambang Batas",
+    // UI states, errors & helpers
+    timeout_error: "Permintaan melebihi batas waktu. Coba lagi sebentar lagi.",
+    generic_error: "Terjadi kesalahan saat memproses permintaan.",
+    elapsed_hint: "Waktu proses di server",
+    scanning_protocols: "Memindai semua protokol secara paralel...",
+    track_failed: "Transaksi Tidak Ditemukan",
+    network_error: "Kesalahan Jaringan",
+    checking_bytecode_on: "Memeriksa bytecode & saldo di",
+    checking_bytecode_sub: "Checksum EIP-55 • deteksi kontrak • saldo native",
+    invalid_addr_title: "Alamat Tidak Valid",
+    address_word: "Alamat",
+    addresses_word: "alamat",
+    batch_title_short: "Analisis Batch",
+    batch_trimmed: "Maksimal 20 alamat — sisanya diabaikan.",
+    wallet_analysis_failed: "Gagal Menganalisis Wallet",
+    no_wallets_to_copy: "Belum ada daftar wallet untuk disalin.",
+    no_wallets_to_export: "Belum ada daftar wallet untuk diekspor.",
+    gmgn_wallet_list: "Daftar Wallet GMGN",
+    gmgn_csv_downloaded: "File CSV GMGN berhasil diunduh!",
+    enter_deposit_address: "Masukkan alamat deposit yang valid!",
+    paste_csv_data: "Tempel data CSV transaksi terlebih dulu!",
+    deposit_scan_sub_solana: "Solana: memindai 25 transaksi terbaru (RPC publik dibatasi ~10 tx/10 detik, bisa 30–40 detik)",
+    deposit_scan_sub_multi: "Ethereum • Arbitrum • Base • Polygon • Optimism (paralel)",
+    deposit_failed: "Gagal Memindai Deposit",
+    no_qualified_export: "Tidak ada alamat terkualifikasi untuk diekspor.",
+    no_qualified: "Tidak ada alamat terkualifikasi.",
+    confirm_quit: "Tutup aplikasi OmniRoute dan matikan server lokal?",
+    stopping_server: "Menghentikan server...",
+    offline_title: "Server Sedang Offline",
+    offline_desc: "Server lokal OmniRoute dihentikan atau belum aktif. Jika Anda sengaja menghentikannya, Anda bisa menutup jendela ini.",
+    reconnect: "Sambungkan Kembali",
+    close_window: "Tutup Jendela",
+    checking: "Memeriksa...",
+    retry: "Gagal, coba lagi",
+    server_not_running: "Server belum menyala. Buka OmniRoute App lalu klik sambungkan lagi.",
+
+    // Placeholders
+    ph_tx: "Tempel link explorer (…/tx/0x…) atau TX hash / Solana signature",
+    ph_address: "0x… atau alamat Solana",
+    ph_genealogy: "Tempel alamat wallet (0x… atau Solana) untuk melacak funder & exit",
+    ph_deposit: "Tempel alamat deposit exchange (0x… atau Solana)",
+
+    // How-it-works guides
+    guide_label: "Cara pakai",
+    guide_tx_1: "Tempel link explorer / TX hash",
+    guide_tx_2: "OmniRoute cek 5 sumber sekaligus",
+    guide_tx_3: "Salin dompet tujuan / lanjut ke Tab 3",
+    guide_tx_tip: "Tip: tempel link → pelacakan otomatis jalan. Bisa juga tempel alamat dompet untuk melihat riwayat bridge-nya.",
+    guide_addr_1: "Tempel alamat & pilih jaringan",
+    guide_addr_2: "Cek checksum, tipe & saldo",
+    guide_addr_3: "Pastikan bukan kontrak sebelum kirim",
+    guide_addr_tip: "Mengirim aset ke alamat kontrak (router/pool) yang salah biasanya tidak bisa dikembalikan.",
+    guide_gen_1: "Tempel 1 alamat, atau 2–20 alamat (Mode B)",
+    guide_gen_2: "Lihat funder pertama, pengirim & tujuan exit",
+    guide_gen_3: "Ekspor dompet terhubung ke GMGN",
+    guide_gen_tip: "Hot wallet CEX (Binance, OKX, dll.) otomatis dikecualikan agar tidak muncul klaster palsu.",
+    guide_dep_1: "Tempel alamat deposit, atau CSV (Mode B)",
+    guide_dep_2: "Pengirim dikelompokkan & dinilai dalam USD",
+    guide_dep_3: "Spam/dust disaring — ekspor sisanya",
+    guide_dep_tip: "Deteksi Otomatis memindai 5 chain EVM sekaligus. Ctrl+Enter mengirim isian CSV.",
+    shortcuts_hint: "Pintasan: Alt+1…4 pindah tab"
   },
   en: {
     tagline: "Cross-Chain Swap & Bridge Destination Wallet Resolver",
     built_by: "Built by",
-    hero_badge: "Multi-Protocol Cross-Chain Tracker",
+    hero_badge: "4 On-Chain Investigation Tools in 1 App",
     hero_title_1: "Track Destination",
     hero_title_lime: "Target Wallet",
-    hero_title_2: "Across Any Bridge",
-    hero_desc: "Simply paste a blockchain explorer link or TX hash. OmniRoute instantly decodes the route from sender wallet, bridge router/solver, directly to the final recipient wallet.",
+    hero_title_2: "in Seconds",
+    hero_desc: "Paste an explorer link or TX hash — OmniRoute checks Relay, Li.Fi, Across, LayerZero & public RPCs at once, then shows who sent it, which router it went through, and which wallet received the funds.",
     supported_protocols: "Supported Protocols:",
-    tab_tx_title: "Multi-Protocol TX Breakdown",
-    tab_tx_desc: "From Wallet ➔ Router ➔ Destination Wallet (*Recipient)",
-    tab_addr_title: "Target & Address Verifier",
-    tab_addr_desc: "EIP-55 Checksum, Router Guard & RPC Balance",
+    tab_tx_title: "1 · Track a Transaction",
+    tab_tx_desc: "Where did the swap/bridge funds land?",
+    tab_addr_title: "2 · Check an Address",
+    tab_addr_desc: "Wallet or contract? Safe to send to?",
     search_title: "Track Transaction & Recipient Wallet",
     search_desc: "Paste explorer URL (RobinScan, Etherscan, Arbiscan, BaseScan, BscScan, Polygonscan, Solscan) or raw TX Hash.",
     quick_examples: "Quick Samples:",
@@ -211,8 +272,8 @@ const translations = {
     addr_type: "Address Type",
     native_balance: "Native Balance",
     balance_sub: "Balance on selected chain",
-    tab_genealogy_title: "Wallet Cluster & Relationship Tracer",
-    tab_genealogy_desc: "Single & Batch Cross-Wallet Relationship Resolver",
+    tab_genealogy_title: "3 · Wallet Relationships",
+    tab_genealogy_desc: "Who funded it & where did funds go?",
     sybil_title: "Wallet Cluster & Relationship Tracer",
     sybil_desc: "Single & Batch Cross-Wallet Relationship Resolver. Trace funding genealogy (Genesis Funder), rotated wallets, consolidation hubs, and export directly to GMGN Watchlist.",
     btn_analyze_sybil: "Trace Wallet Relationships & Exit",
@@ -278,8 +339,8 @@ const translations = {
     individual_wallet: "Individual user wallet",
 
     // Tab 4: Exchange Deposit Inflow Tracer (EN)
-    tab_deposit_title: "Exchange Deposit Inflow Tracer",
-    tab_deposit_desc: "Cumulative Sender Aggregator & Spam Filter",
+    tab_deposit_title: "4 · Deposit Sources",
+    tab_deposit_desc: "Who has been sending to this address?",
     deposit_section_title: "Exchange Deposit Inflow Tracer",
     deposit_section_desc: "Track all sender wallets funding an exchange deposit address (Solana & EVM), aggregate cumulative volume, and filter dust attacks & spam airdrops.",
     deposit_mode_a: "Mode A: Live Address Scanner (Solana & EVM)",
@@ -316,174 +377,339 @@ const translations = {
     reason_phishing: "Phishing / spam airdrop token",
     vault_warning: "⚠️ Smart Contract / Shared Vault Detected (Not Personal Deposit)",
     qualified_senders_title: "Qualified Senders Registry (Deposit Inflows)",
-    filtered_senders_title: "Senders Excluded by Spam & Threshold Filters"
+    filtered_senders_title: "Senders Excluded by Spam & Threshold Filters",
+    // UI states, errors & helpers
+    timeout_error: "The request timed out. Please try again in a moment.",
+    generic_error: "Something went wrong while processing the request.",
+    elapsed_hint: "Server processing time",
+    scanning_protocols: "Scanning all protocols in parallel...",
+    track_failed: "Transaction Not Found",
+    network_error: "Network Error",
+    checking_bytecode_on: "Checking bytecode & balance on",
+    checking_bytecode_sub: "EIP-55 checksum • contract detection • native balance",
+    invalid_addr_title: "Invalid Address",
+    address_word: "Address",
+    addresses_word: "addresses",
+    batch_title_short: "Batch Analysis",
+    batch_trimmed: "Maximum 20 addresses — the rest were ignored.",
+    wallet_analysis_failed: "Wallet Analysis Failed",
+    no_wallets_to_copy: "No wallets to copy yet.",
+    no_wallets_to_export: "No wallets to export yet.",
+    gmgn_wallet_list: "GMGN Wallet List",
+    gmgn_csv_downloaded: "GMGN CSV downloaded!",
+    enter_deposit_address: "Enter a valid deposit address!",
+    paste_csv_data: "Paste CSV transaction data first!",
+    deposit_scan_sub_solana: "Solana: scanning the 25 latest transactions (public RPC allows ~10 tx/10s, may take 30–40s)",
+    deposit_scan_sub_multi: "Ethereum • Arbitrum • Base • Polygon • Optimism (in parallel)",
+    deposit_failed: "Deposit Scan Failed",
+    no_qualified_export: "No qualified addresses to export.",
+    no_qualified: "No qualified addresses.",
+    confirm_quit: "Close OmniRoute and stop the local server?",
+    stopping_server: "Stopping server...",
+    offline_title: "Server is Offline",
+    offline_desc: "The local OmniRoute server was stopped or is inactive. If you stopped it intentionally, you can close this window.",
+    reconnect: "Reconnect",
+    close_window: "Close Window",
+    checking: "Checking...",
+    retry: "Retry",
+    server_not_running: "Server not running. Start OmniRoute App and retry.",
+
+    // Placeholders
+    ph_tx: "Paste an explorer link (…/tx/0x…) or TX hash / Solana signature",
+    ph_address: "0x… or Solana address",
+    ph_genealogy: "Paste a wallet address (0x… or Solana) to trace funder & exits",
+    ph_deposit: "Paste an exchange deposit address (0x… or Solana)",
+
+    // How-it-works guides
+    guide_label: "How it works",
+    guide_tx_1: "Paste an explorer link / TX hash",
+    guide_tx_2: "OmniRoute checks 5 sources at once",
+    guide_tx_3: "Copy the destination / continue in Tab 3",
+    guide_tx_tip: "Tip: pasting a link starts tracking automatically. You can also paste a wallet address to see its bridge history.",
+    guide_addr_1: "Paste an address & pick a network",
+    guide_addr_2: "Checks checksum, type & balance",
+    guide_addr_3: "Make sure it isn't a contract before sending",
+    guide_addr_tip: "Assets sent to the wrong contract address (router/pool) usually cannot be recovered.",
+    guide_gen_1: "Paste 1 address, or 2–20 addresses (Mode B)",
+    guide_gen_2: "See first funder, top senders & exit targets",
+    guide_gen_3: "Export linked wallets to GMGN",
+    guide_gen_tip: "CEX hot wallets (Binance, OKX, etc.) are excluded automatically so they never create fake clusters.",
+    guide_dep_1: "Paste a deposit address, or a CSV (Mode B)",
+    guide_dep_2: "Senders are grouped & valued in USD",
+    guide_dep_3: "Spam/dust filtered out — export the rest",
+    guide_dep_tip: "Auto-Detect scans 5 EVM chains at once. Ctrl+Enter submits the CSV box.",
+    shortcuts_hint: "Shortcuts: Alt+1…4 switch tabs"
   }
 };
 
-let currentLang = localStorage.getItem("omniroute_lang") || "id";
+// ==================== CORE UTILITIES ====================
+
+// localStorage can throw (private mode / blocked storage) — never let that break the app.
+const store = {
+  get(key, fallback = null) {
+    try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, value); } catch { /* ignore */ }
+  }
+};
+
+const ESC_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ESC_MAP[ch]);
+}
+
+// Every string coming from the API is HTML-escaped once, here, so templates can interpolate
+// API data safely into both text and attributes (token names / labels come from on-chain data).
+function deepEscape(value) {
+  if (typeof value === "string") return esc(value);
+  if (Array.isArray(value)) return value.map(deepEscape);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const k in value) out[k] = deepEscape(value[k]);
+    return out;
+  }
+  return value;
+}
+
+// Reverse of esc() for values leaving the DOM (clipboard text, CSV files).
+function unesc(value) {
+  const ta = document.createElement("textarea");
+  ta.innerHTML = String(value ?? "");
+  return ta.value;
+}
+
+function t(key, fallback = "") {
+  const dict = translations[currentLang] || translations.id;
+  return dict[key] || translations.en[key] || fallback;
+}
+
+const REQUEST_TIMEOUT_MS = 90000;
+const inflight = {};
+
+// One in-flight request per key: a new lookup supersedes (aborts) the previous one,
+// so rapid clicks / sample buttons never race each other.
+async function apiFetch(key, url, opts = {}) {
+  if (inflight[key]) inflight[key].abort();
+  const ctrl = new AbortController();
+  inflight[key] = ctrl;
+  const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      ...opts,
+      signal: ctrl.signal,
+      headers: { "Content-Type": "application/json", ...(opts.headers || {}) }
+    });
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      data = { success: false, error: `HTTP ${res.status}` };
+    }
+    return deepEscape(data);
+  } catch (err) {
+    if (inflight[key] !== ctrl) return null; // superseded by a newer request
+    if (ctrl.signal.aborted) throw new Error(t("timeout_error"));
+    throw err;
+  } finally {
+    clearTimeout(timer);
+    if (inflight[key] === ctrl) delete inflight[key];
+  }
+}
+
+const isBusy = key => Boolean(inflight[key]);
+const postJSON = body => ({ method: "POST", body: JSON.stringify(body) });
+
+function setLoading(btn, loading) {
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.classList.toggle("is-loading", loading);
+  const text = btn.querySelector(".btn-text");
+  const loader = btn.querySelector(".btn-loader");
+  if (text) text.style.display = loading ? "none" : "inline-flex";
+  if (loader) loader.style.display = loading ? "inline-flex" : "none";
+}
+
+function renderLoading(container, title, sub = "") {
+  container.style.display = "block";
+  container.innerHTML = `
+    <div class="card state-card">
+      <i class="fa-solid fa-circle-notch fa-spin text-lime state-icon"></i>
+      <p class="state-title">${title}</p>
+      ${sub ? `<p class="state-sub">${sub}</p>` : ""}
+      <p class="state-timer" data-started="${Date.now()}">0.0s</p>
+    </div>
+  `;
+  startLoadingTimer(container);
+}
+
+// Live elapsed counter in the loading card so long scans never look frozen.
+function startLoadingTimer(container) {
+  const el = container.querySelector(".state-timer");
+  if (!el) return;
+  const started = Number(el.dataset.started);
+  const tick = () => {
+    if (!el.isConnected) return;
+    el.textContent = `${((Date.now() - started) / 1000).toFixed(1)}s`;
+    requestAnimationFrame(() => setTimeout(tick, 100));
+  };
+  tick();
+}
+
+// `msg` must already be safe HTML (API errors are escaped by apiFetch).
+function renderError(container, title, msg) {
+  container.style.display = "block";
+  container.innerHTML = `
+    <div class="card error-card">
+      <h3><i class="fa-solid fa-triangle-exclamation"></i> ${title}</h3>
+      <p>${msg || t("generic_error")}</p>
+    </div>
+  `;
+}
+
+function elapsedBadge(ms) {
+  if (!ms && ms !== 0) return "";
+  return `<span class="elapsed-badge" title="${t("elapsed_hint")}"><i class="fa-solid fa-stopwatch"></i> ${(ms / 1000).toFixed(2)}s</span>`;
+}
+
+const SOLANA_ADDR_RE = /^(?!0x)[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+// Map any chain string ("Base", "base, ethereum", 8453-name…) to a <select> option value.
+function pickChainOption(select, chain, address = "", fallback = "base") {
+  if (!select) return;
+  if (SOLANA_ADDR_RE.test(address) && [...select.options].some(o => o.value === "solana")) {
+    select.value = "solana";
+    return;
+  }
+  const lower = String(chain || "").toLowerCase();
+  const values = [...select.options].map(o => o.value);
+  select.value = values.find(v => lower.includes(v)) || (values.includes(fallback) ? fallback : values[0]);
+}
+
+let currentLang = store.get("omniroute_lang", "id");
 let lastGenealogyData = null;
 let lastBatchData = null;
 let lastInspectData = null;
 
 // Set Language & Translate UI
 function setLanguage(lang) {
-  currentLang = lang;
-  localStorage.setItem("omniroute_lang", lang);
-  document.body.setAttribute("data-lang", lang);
+  currentLang = translations[lang] ? lang : "id";
+  store.set("omniroute_lang", currentLang);
+  document.body.setAttribute("data-lang", currentLang);
+  document.documentElement.lang = currentLang;
 
-  const langIdBtn = document.getElementById("langIdBtn");
-  const langEnBtn = document.getElementById("langEnBtn");
-  if (lang === "id") {
-    langIdBtn.classList.add("active");
-    langEnBtn.classList.remove("active");
-  } else {
-    langEnBtn.classList.add("active");
-    langIdBtn.classList.remove("active");
-  }
+  document.getElementById("langIdBtn")?.classList.toggle("active", currentLang === "id");
+  document.getElementById("langEnBtn")?.classList.toggle("active", currentLang === "en");
 
-  const dict = translations[lang] || translations.id;
+  const dict = translations[currentLang];
   document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    if (dict[key]) {
-      el.textContent = dict[key];
-    }
+    const val = dict[el.dataset.i18n];
+    if (val) el.textContent = val;
   });
-
-  const txInput = document.getElementById("txInput");
-  if (txInput) {
-    txInput.placeholder = lang === "id" 
-      ? "https://robin.etherscan.io/tx/0x2a17... atau 0x... / Solana signature"
-      : "https://robin.etherscan.io/tx/0x2a17... or 0x... / Solana signature";
-  }
-
-  const genealogyInput = document.getElementById("genealogyInput");
-  if (genealogyInput) {
-    genealogyInput.placeholder = lang === "id"
-      ? "Paste alamat wallet (0x... atau Solana public key) untuk melacak funder & exit..."
-      : "Paste wallet address (0x... or Solana public key) to track funder & exit destinations...";
-  }
-
-  const batchInput = document.getElementById("genealogyBatchInput");
-  if (batchInput) {
-    batchInput.placeholder = lang === "id"
-      ? "0x91ac...c4b2\n0x82f9...91d0\n0x3fC7...7FAD"
-      : "0x91ac...c4b2\n0x82f9...91d0\n0x3fC7...7FAD";
-  }
-
-  const depositAddrInput = document.getElementById("depositAddressInput");
-  if (depositAddrInput) {
-    depositAddrInput.placeholder = lang === "id"
-      ? "Tempel alamat deposit exchange (0x... atau Solana Base58 public key)..."
-      : "Paste exchange deposit address (0x... or Solana Base58 public key)...";
-  }
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const val = dict[el.dataset.i18nPlaceholder];
+    if (val) el.placeholder = val;
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach(el => {
+    const val = dict[el.dataset.i18nTitle];
+    if (val) el.title = val;
+  });
 
   const submitLabel = document.getElementById("submitGenealogyLabel");
   if (submitLabel) {
-    if (currentDiscoveryMode === "batch") {
-      submitLabel.textContent = dict.batch_btn_label || (lang === 'id' ? "Analisis Relasi Antar-Dompet (Batch)" : "Analyze Cross-Wallet Relationships");
-    } else {
-      submitLabel.textContent = dict.btn_analyze_single || (lang === 'id' ? "Lacak Silsilah & Relasi Dompet" : "Trace Wallet Relationships & Exit");
-    }
+    submitLabel.textContent = currentDiscoveryMode === "batch" ? t("batch_btn_label") : t("btn_analyze_single");
   }
 
-  const submitDepositLabel = document.getElementById("submitDepositLabel");
-  if (submitDepositLabel) {
-    submitDepositLabel.textContent = dict.btn_trace_deposit || (lang === 'id' ? "Lacak Aliran Masuk & Agregasi Pengirim" : "Trace Deposit Inflows & Aggregate Senders");
-  }
-
-  // Reactive view re-rendering for active tabs without re-querying
-  if (lastGenealogyData && document.getElementById("genealogyResultContainer")?.style.display !== "none" && currentDiscoveryMode === "single") {
-    renderGenealogyDashboard(lastGenealogyData, document.getElementById("genealogyResultContainer"));
-  } else if (lastBatchData && document.getElementById("genealogyResultContainer")?.style.display !== "none" && currentDiscoveryMode === "batch") {
-    renderBatchSybilDashboard(lastBatchData, document.getElementById("genealogyResultContainer"));
-  }
-
-  if (lastInspectData && document.getElementById("addressResultContainer")?.style.display !== "none") {
-    renderAddressInspection(lastInspectData, document.getElementById("addressResultContainer"));
-  }
-
-  if (lastDepositData && document.getElementById("depositResultContainer")?.style.display !== "none") {
-    renderDepositResults(lastDepositData, document.getElementById("depositResultContainer"));
-  }
+  // Re-render visible results in the new language without re-querying the server
+  const visible = id => {
+    const el = document.getElementById(id);
+    return el && el.style.display !== "none" ? el : null;
+  };
+  const genealogyBox = visible("genealogyResultContainer");
+  if (genealogyBox && currentDiscoveryMode === "single" && lastGenealogyData) renderGenealogyDashboard(lastGenealogyData, genealogyBox);
+  if (genealogyBox && currentDiscoveryMode === "batch" && lastBatchData) renderBatchSybilDashboard(lastBatchData, genealogyBox);
+  const addressBox = visible("addressResultContainer");
+  if (addressBox && lastInspectData) renderAddressInspection(lastInspectData, addressBox);
+  const depositBox = visible("depositResultContainer");
+  if (depositBox && lastDepositData) renderDepositResults(lastDepositData, depositBox);
+  const txBox = visible("txResultContainer");
+  if (txBox && lastTxResult) renderTxResult(lastTxResult, txBox);
 }
 
 // Global Tab 4 state
 let lastDepositData = null;
 let currentDepositMode = "address";
+let lastTxResult = null;
+
+const TABS = {
+  tx: ["tabBtnTx", "tabContentTx"],
+  address: ["tabBtnAddress", "tabContentAddress"],
+  genealogy: ["tabBtnGenealogy", "tabContentGenealogy"],
+  deposit: ["tabBtnDeposit", "tabContentDeposit"]
+};
 
 // Tab Switching
 function switchTab(tabId) {
-  const tabBtnTx = document.getElementById("tabBtnTx");
-  const tabBtnAddress = document.getElementById("tabBtnAddress");
-  const tabBtnGenealogy = document.getElementById("tabBtnGenealogy");
-  const tabBtnDeposit = document.getElementById("tabBtnDeposit");
-  const tabContentTx = document.getElementById("tabContentTx");
-  const tabContentAddress = document.getElementById("tabContentAddress");
-  const tabContentGenealogy = document.getElementById("tabContentGenealogy");
-  const tabContentDeposit = document.getElementById("tabContentDeposit");
-
-  // Reset all
-  [tabBtnTx, tabBtnAddress, tabBtnGenealogy, tabBtnDeposit].forEach(btn => btn && btn.classList.remove("active"));
-  [tabContentTx, tabContentAddress, tabContentGenealogy, tabContentDeposit].forEach(sec => sec && sec.classList.remove("active"));
-
-  if (tabId === "tx") {
-    if (tabBtnTx) tabBtnTx.classList.add("active");
-    if (tabContentTx) tabContentTx.classList.add("active");
-  } else if (tabId === "address") {
-    if (tabBtnAddress) tabBtnAddress.classList.add("active");
-    if (tabContentAddress) tabContentAddress.classList.add("active");
-  } else if (tabId === "genealogy") {
-    if (tabBtnGenealogy) tabBtnGenealogy.classList.add("active");
-    if (tabContentGenealogy) tabContentGenealogy.classList.add("active");
-  } else if (tabId === "deposit") {
-    if (tabBtnDeposit) tabBtnDeposit.classList.add("active");
-    if (tabContentDeposit) tabContentDeposit.classList.add("active");
+  if (!TABS[tabId]) tabId = "tx";
+  for (const [id, [btnId, sectionId]] of Object.entries(TABS)) {
+    const active = id === tabId;
+    const btn = document.getElementById(btnId);
+    btn?.classList.toggle("active", active);
+    btn?.setAttribute("aria-selected", String(active));
+    document.getElementById(sectionId)?.classList.toggle("active", active);
   }
+  store.set("omniroute_tab", tabId);
 }
 
 // Toast Notification
+let toastTimer = null;
 function showToast(message) {
   const toast = document.getElementById("toast");
-  const toastMsg = document.getElementById("toastMsg");
-  toastMsg.textContent = message;
+  document.getElementById("toastMsg").textContent = message;
   toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2800);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
 }
 
-// Clipboard Copy
-function copyToClipboard(text, label = "Alamat") {
+// Clipboard Copy (values may arrive HTML-escaped from templates)
+function copyToClipboard(text, label = "") {
   if (!text) return;
-  const dict = translations[currentLang] || translations.id;
-  const msg = `${label} ${dict.copied_toast}`;
-
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(msg);
-  }).catch(() => {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
+  const plain = unesc(text);
+  const msg = `${unesc(label) || t("address_word", "Address")} ${t("copied_toast")}`;
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = plain;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
     document.execCommand("copy");
-    document.body.removeChild(textArea);
+    ta.remove();
     showToast(msg);
-  });
+  };
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(plain).then(() => showToast(msg), fallback);
+  } else {
+    fallback();
+  }
+}
+
+function submitForm(formId) {
+  document.getElementById(formId)?.requestSubmit();
 }
 
 // Clear input
 function clearTxInput() {
-  document.getElementById("txInput").value = "";
-  document.getElementById("txInput").focus();
+  const input = document.getElementById("txInput");
+  input.value = "";
+  input.focus();
 }
 
 // Fill Address Input for quick testing
 function fillAddress(addr, chain) {
   document.getElementById("addressInput").value = addr;
-  if (chain) {
-    document.getElementById("chainSelect").value = chain;
-  }
-  document.getElementById("addressVerifyForm").dispatchEvent(new Event("submit"));
+  if (chain) document.getElementById("chainSelect").value = chain;
+  submitForm("addressVerifyForm");
 }
 
 // Load Samples
@@ -493,17 +719,20 @@ const sampleTxs = {
 };
 
 function loadSample(type) {
-  const sampleUrl = sampleTxs[type] || sampleTxs.relay;
-  const input = document.getElementById("txInput");
-  input.value = sampleUrl;
+  document.getElementById("txInput").value = sampleTxs[type] || sampleTxs.relay;
   switchTab("tx");
-  document.getElementById("txTrackForm").dispatchEvent(new Event("submit"));
+  submitForm("txTrackForm");
 }
 
 function truncateAddress(addr, len = 6) {
-  if (!addr || addr.length <= len * 2) return addr;
+  if (!addr || addr.length <= len * 2 + 3) return addr || "";
   return `${addr.slice(0, len + 2)}...${addr.slice(-len)}`;
 }
+
+function fmtUsd(n) {
+  return Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 
 // ==================== TX TRACKER HANDLER ====================
 async function handleTxSubmit(e) {
@@ -512,66 +741,41 @@ async function handleTxSubmit(e) {
   if (!query) return;
 
   const btn = document.getElementById("btnSubmitTx");
-  const btnText = btn.querySelector(".btn-text");
-  const btnLoader = btn.querySelector(".btn-loader");
   const container = document.getElementById("txResultContainer");
-  const dict = translations[currentLang] || translations.id;
+  store.set("omniroute_last_tx", query);
 
-  btn.disabled = true;
-  btnText.style.display = "none";
-  btnLoader.style.display = "inline-flex";
-  container.style.display = "block";
-  container.innerHTML = `
-    <div class="card" style="text-align: center; padding: 48px 24px;">
-      <i class="fa-solid fa-circle-notch fa-spin text-lime" style="font-size: 2.2rem; margin-bottom: 16px;"></i>
-      <p style="color: var(--text-pure); font-size: 1.1rem; font-weight: 700;">${currentLang === 'id' ? 'Memindai Protokol Cross-Chain...' : 'Scanning Cross-Chain Protocols...'}</p>
-      <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 4px;">Relay.link &bull; Li.Fi &bull; Jumper &bull; Across &bull; LayerZero &bull; EVM</p>
-    </div>
-  `;
+  setLoading(btn, true);
+  renderLoading(container, t("scanning_protocols"), "Relay.link &bull; Li.Fi &bull; Jumper &bull; Across &bull; LayerZero &bull; EVM RPC");
 
   try {
-    const res = await fetch("/api/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
-    });
-    const result = await res.json();
-
+    const result = await apiFetch("tx", "/api/track", postJSON({ query }));
+    if (!result) return; // superseded
     if (!result.success) {
-      container.innerHTML = `
-        <div class="card" style="border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.05);">
-          <h3 style="color: var(--accent-red); display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'id' ? 'Gagal Melacak Transaksi' : 'Tracking Failed'}
-          </h3>
-          <p style="color: var(--text-muted); font-size: 0.92rem;">${result.error || (currentLang === 'id' ? 'Terjadi kesalahan saat melacak.' : 'Error occurred while tracking.')}</p>
-        </div>
-      `;
+      renderError(container, t("track_failed"), result.error);
       return;
     }
-
-    if (result.query_type === "transaction") {
-      renderTxBreakdown(result.data, container);
-    } else if (result.query_type === "wallet_history") {
-      renderWalletHistory(result, container);
-    } else if (result.query_type === "address_inspection") {
-      renderAddressInspection(result.data, container, result.message);
-    }
+    lastTxResult = result;
+    renderTxResult(result, container);
   } catch (err) {
-    container.innerHTML = `
-      <div class="card" style="border-color: rgba(248, 113, 113, 0.4);">
-        <h3 style="color: var(--accent-red);">${currentLang === 'id' ? 'Kesalahan Jaringan' : 'Network Error'}</h3>
-        <p style="color: var(--text-muted);">${err.message}</p>
-      </div>
-    `;
+    renderError(container, t("network_error"), esc(err.message));
   } finally {
-    btn.disabled = false;
-    btnText.style.display = "inline-flex";
-    btnLoader.style.display = "none";
+    if (!isBusy("tx")) setLoading(btn, false);
   }
 }
 
+function renderTxResult(result, container) {
+  if (result.query_type === "transaction") {
+    renderTxBreakdown(result.data, container, result.elapsed_ms);
+  } else if (result.query_type === "wallet_history") {
+    renderWalletHistory(result, container);
+  } else if (result.query_type === "address_inspection") {
+    renderAddressInspection(result.data, container, result.message);
+  }
+}
+
+
 // Render Transaction Breakdown
-function renderTxBreakdown(tx, container) {
+function renderTxBreakdown(tx, container, elapsedMs) {
   const dict = translations[currentLang] || translations.id;
   const isSuccess = (tx.status || "").toLowerCase() === "success" || (tx.status || "").toLowerCase() === "done" || (tx.status || "").toLowerCase() === "completed";
   const originChain = tx.origin_chain || {};
@@ -592,7 +796,8 @@ function renderTxBreakdown(tx, container) {
         </span>
       </div>
       <div class="status-meta" style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
-        ${tx.created_at ? `<i class="fa-regular fa-clock"></i> ${new Date(tx.created_at).toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US', { timeZoneName: 'short' })}` : ''}
+        ${tx.created_at ? `<i class="fa-regular fa-clock"></i> ${new Date(unesc(tx.created_at)).toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US', { timeZoneName: 'short' })}` : ''}
+        ${elapsedBadge(elapsedMs)}
       </div>
     </div>
 
@@ -632,7 +837,7 @@ function renderTxBreakdown(tx, container) {
             </div>
           </div>
           <div class="address-actions">
-            <button class="icon-action-btn" onclick="copyToClipboard('${tx.from_wallet}', '${dict.step1_title}')">
+            <button class="icon-action-btn" data-copy="${tx.from_wallet}" data-copy-label="${dict.step1_title}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
             ${originChain.sender_explorer_url ? `
@@ -668,7 +873,7 @@ function renderTxBreakdown(tx, container) {
             <strong style="color: var(--accent-purple);">${tx.protocol || 'Bridge / Aggregator'}</strong>
           </div>
           <div class="address-actions">
-            <button class="icon-action-btn" onclick="copyToClipboard('${tx.depository_contract}', 'Router / Solver')">
+            <button class="icon-action-btn" data-copy="${tx.depository_contract}" data-copy-label="Router / Solver">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
             ${originChain.depository_explorer_url ? `
@@ -735,7 +940,7 @@ function renderTxBreakdown(tx, container) {
                 <span style="font-family: var(--font-mono); font-size: 0.8rem; color: #fff; word-break: break-all;" title="${destChain.tx_hash}">
                   ${truncateAddress(destChain.tx_hash, 10)}
                 </span>
-                <button class="icon-action-btn-mini" onclick="copyToClipboard('${destChain.tx_hash}', '${dict.received_tx_label || 'Tx Hash'}')" title="${dict.copy_fill_tx || 'Salin Tx Hash'}">
+                <button class="icon-action-btn-mini" data-copy="${destChain.tx_hash}" data-copy-label="${dict.received_tx_label || 'Tx Hash'}" title="${dict.copy_fill_tx || 'Salin Tx Hash'}">
                   <i class="fa-regular fa-copy"></i>
                 </button>
               </div>
@@ -743,7 +948,7 @@ function renderTxBreakdown(tx, container) {
           ` : ''}
 
           <div class="address-actions" style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
-            <button class="icon-action-btn primary" onclick="copyToClipboard('${tx.to_wallet_tujuan}', '${dict.step3_title}')">
+            <button class="icon-action-btn primary" data-copy="${tx.to_wallet_tujuan}" data-copy-label="${dict.step3_title}">
               <i class="fa-solid fa-copy"></i> ${dict.copy_target_btn}
             </button>
             ${destChain.recipient_explorer_url ? `
@@ -756,7 +961,7 @@ function renderTxBreakdown(tx, container) {
                 <i class="fa-solid fa-receipt"></i> ${dict.fill_tx_btn || (currentLang === 'id' ? 'Tx Penerimaan ↗' : 'Received Tx ↗')}
               </a>
             ` : ''}
-            <button class="icon-action-btn auto-analyze-btn" onclick="autoAnalyzeDestination('${tx.to_wallet_tujuan}', '${destChain.name || destChain.id || 'base'}')" title="Lacak riwayat alur kas keluar dompet tujuan ini">
+            <button class="icon-action-btn auto-analyze-btn" data-action="analyze-dest" data-addr="${tx.to_wallet_tujuan}" data-chain="${destChain.name || destChain.id || 'base'}" title="Lacak riwayat alur kas keluar dompet tujuan ini">
               <i class="fa-solid fa-bolt text-lime"></i> <span>${dict.analyze_flow_btn || '👉 Analyze Wallet Flow &rarr;'}</span>
             </button>
           </div>
@@ -837,7 +1042,7 @@ function renderWalletHistory(res, container) {
                 ${item.to_wallet_tujuan}
               </div>
             </div>
-            <button class="icon-action-btn" onclick="copyToClipboard('${item.to_wallet_tujuan}', '${dict.step3_title}')">
+            <button class="icon-action-btn" data-copy="${item.to_wallet_tujuan}" data-copy-label="${dict.step3_title}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
           </div>
@@ -881,7 +1086,7 @@ function renderAddressInspection(data, container, customMsg = "") {
             ${data.checksum_address || data.address}
           </div>
           <div class="address-actions" style="margin-top: 12px;">
-            <button class="icon-action-btn" onclick="copyToClipboard('${data.checksum_address || data.address}', '${dict.checksum_official}')">
+            <button class="icon-action-btn" data-copy="${data.checksum_address || data.address}" data-copy-label="${dict.checksum_official}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
             ${data.explorer_url ? `<a href="${data.explorer_url}" target="_blank" class="icon-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${dict.open_in_explorer}</a>` : ''}
@@ -916,54 +1121,27 @@ async function handleAddressSubmit(e) {
   if (!address) return;
 
   const btn = document.getElementById("btnSubmitAddress");
-  const btnText = btn.querySelector(".btn-text");
-  const btnLoader = btn.querySelector(".btn-loader");
   const container = document.getElementById("addressResultContainer");
-  const dict = translations[currentLang] || translations.id;
+  const chainName = document.getElementById("chainSelect").selectedOptions[0]?.textContent || chain;
 
-  btn.disabled = true;
-  btnText.style.display = "none";
-  btnLoader.style.display = "inline-flex";
-  container.style.display = "block";
-  container.innerHTML = `
-    <div class="card" style="text-align: center; padding: 48px 24px;">
-      <i class="fa-solid fa-circle-notch fa-spin text-lime" style="font-size: 2.2rem; margin-bottom: 16px;"></i>
-      <p style="color: var(--text-pure); font-weight: 700;">${currentLang === 'id' ? `Memeriksa bytecode di ${chain.toUpperCase()} RPC...` : `Checking bytecode on ${chain.toUpperCase()} RPC...`}</p>
-    </div>
-  `;
+  setLoading(btn, true);
+  renderLoading(container, `${t("checking_bytecode_on")} ${esc(chainName)}...`, t("checking_bytecode_sub"));
 
   try {
-    const res = await fetch("/api/inspect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ address, chain })
-    });
-    const result = await res.json();
-
+    const result = await apiFetch("address", "/api/inspect", postJSON({ address, chain }));
+    if (!result) return;
     if (!result.success || !result.data.is_valid) {
-      container.innerHTML = `
-        <div class="card" style="border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.05);">
-          <h3 style="color: var(--accent-red);"><i class="fa-solid fa-triangle-exclamation"></i> ${dict.invalid_addr_title || 'Alamat Tidak Valid'}</h3>
-          <p style="color: var(--text-muted);">${result.data ? result.data.error : result.error}</p>
-        </div>
-      `;
+      renderError(container, t("invalid_addr_title"), result.data ? result.data.error : result.error);
       return;
     }
-
     renderAddressInspection(result.data, container);
   } catch (err) {
-    container.innerHTML = `
-      <div class="card" style="border-color: rgba(248, 113, 113, 0.4);">
-        <h3 style="color: var(--accent-red);">${dict.error_occurred || 'Terjadi Kesalahan'}</h3>
-        <p style="color: var(--text-muted);">${err.message}</p>
-      </div>
-    `;
+    renderError(container, t("network_error"), esc(err.message));
   } finally {
-    btn.disabled = false;
-    btnText.style.display = "inline-flex";
-    btnLoader.style.display = "none";
+    if (!isBusy("address")) setLoading(btn, false);
   }
 }
+
 
 // ==================== WALLET GENEALOGY & SYBIL CLUSTER HANDLERS ====================
 
@@ -973,81 +1151,65 @@ let currentTargetAddress = "";
 let currentSelectedChain = "base";
 
 function setDiscoveryMode(mode) {
-  currentDiscoveryMode = mode;
-  const btnSingle = document.getElementById("btnModeSingle");
-  const btnBatch = document.getElementById("btnModeBatch");
-  const singleGroup = document.getElementById("singleInputGroup");
-  const batchGroup = document.getElementById("batchInputGroup");
+  currentDiscoveryMode = mode === "batch" ? "batch" : "single";
+  const isBatch = currentDiscoveryMode === "batch";
+  document.getElementById("btnModeSingle")?.classList.toggle("active", !isBatch);
+  document.getElementById("btnModeBatch")?.classList.toggle("active", isBatch);
+  document.getElementById("singleInputGroup").style.display = isBatch ? "none" : "flex";
+  document.getElementById("batchInputGroup").style.display = isBatch ? "block" : "none";
   const submitLabel = document.getElementById("submitGenealogyLabel");
-  const dict = translations[currentLang] || translations.id;
-
-  if (mode === "single") {
-    if (btnSingle) btnSingle.classList.add("active");
-    if (btnBatch) btnBatch.classList.remove("active");
-    if (singleGroup) singleGroup.style.display = "flex";
-    if (batchGroup) batchGroup.style.display = "none";
-    if (submitLabel) submitLabel.textContent = dict.btn_analyze_single || (currentLang === 'id' ? "Lacak Silsilah & Relasi Dompet" : "Trace Wallet Relationships & Exit");
-  } else {
-    if (btnBatch) btnBatch.classList.add("active");
-    if (btnSingle) btnSingle.classList.remove("active");
-    if (singleGroup) singleGroup.style.display = "none";
-    if (batchGroup) batchGroup.style.display = "block";
-    if (submitLabel) submitLabel.textContent = dict.batch_btn_label || (currentLang === 'id' ? "Analisis Relasi Antar-Dompet (Batch)" : "Analyze Cross-Wallet Relationships");
-  }
+  if (submitLabel) submitLabel.textContent = isBatch ? t("batch_btn_label") : t("btn_analyze_single");
 }
 
 function fillBatchSample() {
   setDiscoveryMode("batch");
-  const batchInput = document.getElementById("genealogyBatchInput");
-  if (batchInput) {
-    batchInput.value = [
-      "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a",
-      "0x826600c3b88b0a9443260c6d7d427d142194553b",
-      "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD"
-    ].join("\n");
-  }
+  document.getElementById("genealogyBatchInput").value = [
+    "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a",
+    "0x826600c3b88b0a9443260c6d7d427d142194553b",
+    "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD"
+  ].join("\n");
   switchTab("genealogy");
-  const form = document.getElementById("genealogyForm");
-  if (form) {
-    form.dispatchEvent(new Event("submit"));
-  }
+  submitForm("genealogyForm");
+}
+
+function downloadCsv(filename, rows) {
+  const csv = rows.map(r => r.map(cell => {
+    const v = unesc(cell);
+    return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  }).join(",")).join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // GMGN Export Actions
 function copyWalletsForGmgn() {
-  if (!currentLinkedWallets || currentLinkedWallets.length === 0) {
-    showToast(currentLang === 'id' ? "Belum ada daftar wallet untuk disalin." : "No wallets to copy.");
+  if (!currentLinkedWallets.length) {
+    showToast(t("no_wallets_to_copy"));
     return;
   }
-  const rawList = currentLinkedWallets.map(w => w.address).join("\n");
-  copyToClipboard(rawList, currentLang === 'id' ? "Daftar Wallet GMGN" : "GMGN Wallet List");
+  copyToClipboard(currentLinkedWallets.map(w => w.address).join("\n"), t("gmgn_wallet_list"));
 }
 
 function downloadGmgnCsv(identityName = "OmniRoute", chainName = "") {
-  if (!currentLinkedWallets || currentLinkedWallets.length === 0) {
-    showToast(currentLang === 'id' ? "Belum ada daftar wallet untuk diekspor." : "No wallets to export.");
+  if (!currentLinkedWallets.length) {
+    showToast(t("no_wallets_to_export"));
     return;
   }
-  const cleanId = (identityName || "Cluster").slice(0, 10).replace(/[^a-zA-Z0-9_]/g, "");
-  const defaultChain = chainName || currentSelectedChain || document.getElementById("genealogyChainSelect")?.value || "base";
-  
-  // Format Address,Tag,Chain for seamless cross-chain import
-  let csvContent = "data:text/csv;charset=utf-8,Address,Tag,Chain\n";
-  currentLinkedWallets.forEach(w => {
-    const rowChain = w.chain || defaultChain;
-    const cleanRole = (w.role || 'Linked').replace(/,/g, '_');
-    csvContent += `${w.address},${cleanId}_${cleanRole},${rowChain}\n`;
-  });
-
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `${cleanId}_${defaultChain}_gmgn_watchlist.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  showToast(currentLang === 'id' ? `File CSV GMGN (${defaultChain.toUpperCase()}) berhasil diunduh!` : `GMGN CSV Watchlist (${defaultChain.toUpperCase()}) exported!`);
+  const cleanId = unesc(identityName || "Cluster").slice(0, 10).replace(/[^a-zA-Z0-9_]/g, "") || "Cluster";
+  const defaultChain = unesc(chainName || currentSelectedChain || "base");
+  const rows = [["Address", "Tag", "Chain"]].concat(currentLinkedWallets.map(w => [
+    w.address, `${cleanId}_${(w.role || "Linked").replace(/,/g, "_")}`, w.chain || defaultChain
+  ]));
+  downloadCsv(`${cleanId}_${defaultChain}_gmgn_watchlist.csv`, rows);
+  showToast(`${t("gmgn_csv_downloaded")} (${defaultChain.toUpperCase()})`);
 }
+
 
 function renderGmgnToolbar(wallets, identityName, chain = "base", confidenceScore = null, riskLevel = "") {
   currentLinkedWallets = wallets || [];
@@ -1098,7 +1260,7 @@ function renderGmgnToolbar(wallets, identityName, chain = "base", confidenceScor
           <button type="button" class="btn-gmgn-copy" onclick="copyWalletsForGmgn()" title="Format baris baru tanpa kutip, siap paste langsung ke GMGN Watchlist">
             <i class="fa-regular fa-clipboard"></i> <span>${dict.copy_for_gmgn || '📋 Copy for GMGN'}</span>
           </button>
-          <button type="button" class="btn-gmgn-csv" onclick="downloadGmgnCsv('${identityName}', '${chain}')" title="Unduh file CSV Address,Tag,Chain untuk import massal GMGN">
+          <button type="button" class="btn-gmgn-csv" data-action="gmgn-csv" data-id="${identityName}" data-chain="${chain}" title="Unduh file CSV Address,Tag,Chain untuk import massal GMGN">
             <i class="fa-solid fa-file-arrow-down"></i> <span>${dict.export_gmgn_csv || '📥 Export GMGN CSV'}</span>
           </button>
         </div>
@@ -1107,158 +1269,77 @@ function renderGmgnToolbar(wallets, identityName, chain = "base", confidenceScor
   `;
 }
 
-// Auto-redirect from Tab 1 to Tab 3 (Sinergi Antar Tab)
-function autoAnalyzeDestination(address, chain) {
-  if (!address || address === 'Pending / In-Transit') return;
+// Tab 1 / Tab 4 → Tab 3 hand-off: open the wallet in the relationship tracer and run it.
+function openInGenealogy(address, chain) {
+  address = unesc(address || "");
+  if (!address || address === "Pending / In-Transit") return;
   setDiscoveryMode("single");
-  const input = document.getElementById("genealogyInput");
-  const select = document.getElementById("genealogyChainSelect");
-  if (input) input.value = address;
-  
-  if (select) {
-    const isSolana = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address) && !address.startsWith("0x");
-    if (isSolana) {
-      select.value = "solana";
-    } else if (chain) {
-      const lower = String(chain).toLowerCase();
-      const options = Array.from(select.options).map(o => o.value);
-      const matched = options.find(opt => lower.includes(opt));
-      if (matched) {
-        select.value = matched;
-      } else {
-        select.value = "base";
-      }
-    }
-  }
-
+  document.getElementById("genealogyInput").value = address;
+  pickChainOption(document.getElementById("genealogyChainSelect"), unesc(chain), address);
   switchTab("genealogy");
-  const form = document.getElementById("genealogyForm");
-  if (form) {
-    form.dispatchEvent(new Event("submit"));
-    window.scrollTo({ top: 350, behavior: "smooth" });
-  }
+  submitForm("genealogyForm");
+  document.getElementById("tabContentGenealogy")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+
+const autoAnalyzeDestination = openInGenealogy;
+const autoTraceDepositSender = openInGenealogy;
 
 // Quick Sample for Tab 3
 function fillGenealogy(address, chain) {
   setDiscoveryMode("single");
-  const input = document.getElementById("genealogyInput");
-  const select = document.getElementById("genealogyChainSelect");
-  if (input) input.value = address;
-  if (select && chain) select.value = chain;
+  document.getElementById("genealogyInput").value = address;
+  if (chain) document.getElementById("genealogyChainSelect").value = chain;
   switchTab("genealogy");
-  const form = document.getElementById("genealogyForm");
-  if (form) {
-    form.dispatchEvent(new Event("submit"));
-  }
+  submitForm("genealogyForm");
 }
 
 // Handle Genealogy & Sybil Form Submission
 async function handleGenealogySubmit(e) {
   if (e && e.preventDefault) e.preventDefault();
   const btn = document.getElementById("btnSubmitGenealogy");
-  const btnText = btn ? btn.querySelector(".btn-text") : null;
-  const btnLoader = btn ? btn.querySelector(".btn-loader") : null;
   const container = document.getElementById("genealogyResultContainer");
-  const dict = translations[currentLang] || translations.id;
   const chain = document.getElementById("genealogyChainSelect").value;
   currentSelectedChain = chain;
+  const isBatch = currentDiscoveryMode === "batch";
 
-  if (btn) btn.disabled = true;
-  if (btnText) btnText.style.display = "none";
-  if (btnLoader) btnLoader.style.display = "inline-flex";
-
-  container.style.display = "block";
-
-  if (currentDiscoveryMode === "batch") {
-    const rawBatch = (document.getElementById("genealogyBatchInput").value || "").trim();
-    const addresses = rawBatch.split(/[\n,;]+/).map(a => a.trim()).filter(a => a.length >= 20);
+  let request;
+  if (isBatch) {
+    const raw = document.getElementById("genealogyBatchInput").value || "";
+    const addresses = [...new Set(raw.split(/[\s,;]+/).map(a => a.trim()).filter(a => a.length >= 20))];
     if (addresses.length < 2) {
-      container.innerHTML = `
-        <div class="card" style="border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.05);">
-          <p style="color: var(--accent-red); font-weight: 700;">${dict.batch_min_error || 'Masukkan minimal 2 alamat wallet untuk analisis batch Sybil.'}</p>
-        </div>
-      `;
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.style.display = "inline-flex";
-      if (btnLoader) btnLoader.style.display = "none";
+      renderError(container, t("batch_title_short"), t("batch_min_error"));
       return;
     }
-
-    container.innerHTML = `
-      <div class="card" style="text-align: center; padding: 48px 24px;">
-        <i class="fa-solid fa-circle-notch fa-spin text-lime" style="font-size: 2.2rem; margin-bottom: 16px;"></i>
-        <p style="color: var(--text-pure); font-size: 1.1rem; font-weight: 700;">${dict.batch_scanning_title || 'Memindai Relasi Antar-Dompet All-Time...'} (${addresses.length} ${dict.wallets_checked_suffix || 'Wallets'})</p>
-        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 4px;">${dict.batch_scanning_sub || 'Pemeriksaan shared genesis gas provider & consolidation exit targets...'}</p>
-      </div>
-    `;
-
-    try {
-      const res = await fetch("/api/wallet/batch-sybil", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ addresses, chain })
-      });
-      const result = await res.json();
-      if (!result.success) {
-        container.innerHTML = `<div class="card" style="border-color: rgba(248,113,113,0.4);"><p style="color: var(--accent-red);">${result.error}</p></div>`;
-        return;
-      }
-      renderBatchSybilDashboard(result, container);
-    } catch (err) {
-      container.innerHTML = `<div class="card"><p style="color: var(--accent-red);">${err.message}</p></div>`;
-    } finally {
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.style.display = "inline-flex";
-      if (btnLoader) btnLoader.style.display = "none";
-    }
+    if (addresses.length > 20) showToast(t("batch_trimmed"));
+    request = { url: "/api/wallet/batch-sybil", body: { addresses: addresses.slice(0, 20), chain } };
+    renderLoading(container, `${t("batch_scanning_title")} (${Math.min(addresses.length, 20)} ${t("wallets_checked_suffix")})`, t("batch_scanning_sub"));
   } else {
-    // Single Mode
     const address = document.getElementById("genealogyInput").value.trim();
-    if (!address) {
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.style.display = "inline-flex";
-      if (btnLoader) btnLoader.style.display = "none";
+    if (!address) return;
+    if (SOLANA_ADDR_RE.test(address) && chain !== "solana") {
+      document.getElementById("genealogyChainSelect").value = "solana";
+    }
+    request = { url: "/api/wallet/genealogy", body: { address, chain: SOLANA_ADDR_RE.test(address) ? "solana" : chain } };
+    renderLoading(container, t("btn_analyzing"), "Genesis Gas Provider &bull; Clean Verified Capital &bull; CEX Exit Destinations");
+  }
+
+  setLoading(btn, true);
+  try {
+    const result = await apiFetch("genealogy", request.url, postJSON(request.body));
+    if (!result) return;
+    if (!result.success) {
+      renderError(container, t("wallet_analysis_failed"), result.error);
       return;
     }
-
-    container.innerHTML = `
-      <div class="card" style="text-align: center; padding: 48px 24px;">
-        <i class="fa-solid fa-circle-notch fa-spin text-lime" style="font-size: 2.2rem; margin-bottom: 16px;"></i>
-        <p style="color: var(--text-pure); font-size: 1.1rem; font-weight: 700;">${dict.btn_analyzing || 'Menganalisis Alur Kas All-Time...'}</p>
-        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 4px;">Genesis Gas Provider &bull; Clean Verified Capital &bull; CEX Exit Destinations</p>
-      </div>
-    `;
-
-    try {
-      const res = await fetch(`/api/wallet/genealogy?address=${encodeURIComponent(address)}&chain=${encodeURIComponent(chain)}`);
-      const result = await res.json();
-      if (!result.success) {
-        container.innerHTML = `
-          <div class="card" style="border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.05);">
-            <h3 style="color: var(--accent-red); display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'id' ? 'Gagal Menganalisis Wallet' : 'Wallet Analysis Failed'}
-            </h3>
-            <p style="color: var(--text-muted); font-size: 0.92rem;">${result.error || (currentLang === 'id' ? 'Terjadi kesalahan saat memproses data.' : 'Error occurred while processing data.')}</p>
-          </div>
-        `;
-        return;
-      }
-      renderGenealogyDashboard(result, container);
-    } catch (err) {
-      container.innerHTML = `
-        <div class="card" style="border-color: rgba(248, 113, 113, 0.4);">
-          <h3 style="color: var(--accent-red);">${currentLang === 'id' ? 'Kesalahan Jaringan' : 'Network Error'}</h3>
-          <p style="color: var(--text-muted);">${err.message}</p>
-        </div>
-      `;
-    } finally {
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.style.display = "inline-flex";
-      if (btnLoader) btnLoader.style.display = "none";
-    }
+    if (isBatch) renderBatchSybilDashboard(result, container);
+    else renderGenealogyDashboard(result, container);
+  } catch (err) {
+    renderError(container, t("network_error"), esc(err.message));
+  } finally {
+    if (!isBusy("genealogy")) setLoading(btn, false);
   }
 }
+
 
 // Render Single Wallet Genealogy Dashboard (2-Column Cyberpunk Grid + GMGN Toolbar)
 function renderGenealogyDashboard(data, container) {
@@ -1290,7 +1371,7 @@ function renderGenealogyDashboard(data, container) {
             <span class="genealogy-addr-pill" title="${data.targetAddress}">
               ${data.targetAddress}
             </span>
-            <button class="icon-action-btn" onclick="copyToClipboard('${data.targetAddress}', '${dict.col_wallet_addr}')">
+            <button class="icon-action-btn" data-copy="${data.targetAddress}" data-copy-label="${dict.col_wallet_addr}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
           </div>
@@ -1337,18 +1418,18 @@ function renderGenealogyDashboard(data, container) {
               </div>
               <div class="funder-addr" title="${genesis.address}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <span style="font-family: var(--font-mono); word-break: break-all;">${genesis.address}</span>
-                <button class="icon-action-btn-mini" onclick="copyToClipboard('${genesis.address}', '${dict.funder_gas_title || 'Genesis Funder'}')" title="Copy funder address" style="flex-shrink: 0;">
+                <button class="icon-action-btn-mini" data-copy="${genesis.address}" data-copy-label="${dict.funder_gas_title || 'Genesis Funder'}" title="Copy funder address" style="flex-shrink: 0;">
                   <i class="fa-regular fa-copy"></i>
                 </button>
               </div>
               <div class="funder-meta-row">
                 <div class="funder-amount">
-                  +${genesis.amount} ${genesis.tokenSymbol}
+                  ${genesis.amount && genesis.amount !== "-" ? `+${genesis.amount} ${genesis.tokenSymbol}` : (currentLang === "id" ? "Pembayar fee / pembuat akun" : "Fee payer / account creator")}
                 </div>
                 <div class="funder-time">
                   ${genesis.days_ago !== undefined ? `<i class="fa-regular fa-clock"></i> ${genesis.days_ago} ${dict.days_ago_suffix || 'hari lalu'}` : ''}
                   ${genesis.txHash ? `
-                    <a href="https://basescan.org/tx/${genesis.txHash}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-lime); margin-left: 8px; text-decoration: none;" title="Lihat Tx Gas Pertama">
+                    <a href="${genesis.txUrl || '#'}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-lime); margin-left: 8px; text-decoration: none;" title="Lihat Tx Gas Pertama">
                       <i class="fa-solid fa-arrow-up-right-from-square"></i> Tx
                     </a>
                   ` : ''}
@@ -1382,7 +1463,7 @@ function renderGenealogyDashboard(data, container) {
                     </div>
                     <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                       <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.sender, 10)} &bull; ${item.txCount} txs</span>
-                      <button class="icon-action-btn-mini" onclick="copyToClipboard('${item.sender}', 'Sender')" title="Copy full wallet address">
+                      <button class="icon-action-btn-mini" data-copy="${item.sender}" data-copy-label="Sender" title="Copy full wallet address">
                         <i class="fa-regular fa-copy"></i> Copy
                       </button>
                     </div>
@@ -1434,7 +1515,7 @@ function renderGenealogyDashboard(data, container) {
                     </div>
                     <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                       <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.recipient, 10)} &bull; ${item.txCount} txs</span>
-                      <button class="icon-action-btn-mini outflow-copy" onclick="copyToClipboard('${item.recipient}', 'Exit Target')" title="Copy full wallet address">
+                      <button class="icon-action-btn-mini outflow-copy" data-copy="${item.recipient}" data-copy-label="Exit Target" title="Copy full wallet address">
                         <i class="fa-regular fa-copy"></i> Copy
                       </button>
                     </div>
@@ -1676,7 +1757,7 @@ function renderBatchSybilDashboard(data, container) {
                     ${w.confidence}%
                   </td>
                   <td style="padding: 12px 8px; text-align: right;">
-                    <button class="icon-action-btn" onclick="copyToClipboard('${w.address}', '${dict.col_wallet_addr}')">
+                    <button class="icon-action-btn" data-copy="${w.address}" data-copy-label="${dict.col_wallet_addr}">
                       <i class="fa-regular fa-copy"></i>
                     </button>
                   </td>
@@ -1693,55 +1774,26 @@ function renderBatchSybilDashboard(data, container) {
 // ==================== TAB 4: EXCHANGE DEPOSIT INFLOW TRACER FUNCTIONS ====================
 
 function switchDepositMode(mode) {
-  currentDepositMode = mode;
-  const pillA = document.getElementById("depositModeAPill");
-  const pillB = document.getElementById("depositModeBPill");
-  const wrapA = document.getElementById("depositAddressInputWrap");
-  const wrapB = document.getElementById("depositManualInputWrap");
-
-  if (mode === "address") {
-    if (pillA) pillA.classList.add("active");
-    if (pillB) pillB.classList.remove("active");
-    if (wrapA) wrapA.style.display = "block";
-    if (wrapB) wrapB.style.display = "none";
-  } else {
-    if (pillB) pillB.classList.add("active");
-    if (pillA) pillA.classList.remove("active");
-    if (wrapB) wrapB.style.display = "block";
-    if (wrapA) wrapA.style.display = "none";
-  }
+  currentDepositMode = mode === "manual" ? "manual" : "address";
+  const isManual = currentDepositMode === "manual";
+  document.getElementById("depositModeAPill")?.classList.toggle("active", !isManual);
+  document.getElementById("depositModeBPill")?.classList.toggle("active", isManual);
+  document.getElementById("depositAddressInputWrap").style.display = isManual ? "none" : "block";
+  document.getElementById("depositManualInputWrap").style.display = isManual ? "block" : "none";
 }
 
 function updateThresholdDisplay(val) {
   const disp = document.getElementById("minThresholdDisplay");
-  if (disp) {
-    disp.textContent = `$${val} USD`;
-  }
+  if (disp) disp.textContent = `$${val} USD`;
 }
 
 function clearDepositInput() {
   const inp = document.getElementById("depositAddressInput");
-  if (inp) {
-    inp.value = "";
-    inp.focus();
-  }
+  inp.value = "";
+  inp.focus();
 }
 
-function loadDepositSample(type) {
-  switchTab("deposit");
-  if (type === "solana") {
-    switchDepositMode("address");
-    document.getElementById("depositAddressInput").value = "2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h";
-    document.getElementById("depositChainSelect").value = "solana";
-    document.getElementById("depositTraceForm").dispatchEvent(new Event("submit"));
-  } else if (type === "evm") {
-    switchDepositMode("address");
-    document.getElementById("depositAddressInput").value = "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a";
-    document.getElementById("depositChainSelect").value = "base";
-    document.getElementById("depositTraceForm").dispatchEvent(new Event("submit"));
-  } else if (type === "csv") {
-    switchDepositMode("manual");
-    const sampleCsv = `from,to,amount,token_symbol,token_decimal,timestamp,tx_hash
+const SAMPLE_DEPOSIT_CSV = `from,to,amount,token_symbol,token_decimal,timestamp,tx_hash
 0x45a90d8a5948f98c8c22428ad5e051c092a48be1,0xDepositVault,12500.0,USDC,6,1710500000,0x9a8f...
 0x82f9c4b2a8d5e051c092a48be145a90d8a5948f9,0xDepositVault,4200.0,USDT,6,1710400000,0x8b7c...
 2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h,SolanaDepositVault,52.22,SOL,9,1710300000,5XGx...
@@ -1752,74 +1804,78 @@ function loadDepositSample(type) {
 0xRepeatedMicroBot,0xDepositVault,0.5,USDC,6,1709800000,0xrep2...
 0xRepeatedMicroBot,0xDepositVault,0.5,USDC,6,1709700000,0xrep3...
 0xRepeatedMicroBot,0xDepositVault,0.5,USDC,6,1709600000,0xrep4...`;
-    document.getElementById("depositCsvTextarea").value = sampleCsv;
-    document.getElementById("depositTraceForm").dispatchEvent(new Event("submit"));
+
+const DEPOSIT_SAMPLES = {
+  solana: { address: "2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h", chain: "solana" },
+  evm: { address: "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a", chain: "base" }
+};
+
+function loadDepositSample(type) {
+  switchTab("deposit");
+  if (type === "csv") {
+    switchDepositMode("manual");
+    document.getElementById("depositCsvTextarea").value = SAMPLE_DEPOSIT_CSV;
+  } else {
+    const sample = DEPOSIT_SAMPLES[type] || DEPOSIT_SAMPLES.evm;
+    switchDepositMode("address");
+    document.getElementById("depositAddressInput").value = sample.address;
+    document.getElementById("depositChainSelect").value = sample.chain;
   }
+  submitForm("depositTraceForm");
 }
 
 async function handleDepositSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById("btnSubmitDeposit");
-  const btnText = btn.querySelector(".btn-text");
-  const btnLoader = btn.querySelector(".btn-loader");
   const container = document.getElementById("depositResultContainer");
-  const dict = translations[currentLang] || translations.id;
 
   const mode = currentDepositMode;
   const address = document.getElementById("depositAddressInput").value.trim();
   const rawData = document.getElementById("depositCsvTextarea").value.trim();
   const chain = document.getElementById("depositChainSelect").value;
-  const minThreshold = parseFloat(document.getElementById("minThresholdSlider").value) || 50.0;
-  const excludeDust = document.getElementById("excludeDustCheck").checked;
-  const filterPhishing = document.getElementById("filterPhishingCheck").checked;
 
   if (mode === "address" && !address) {
-    showToast(currentLang === "id" ? "Masukkan alamat deposit valid!" : "Enter a valid deposit address!");
+    showToast(t("enter_deposit_address"));
+    document.getElementById("depositAddressInput").focus();
     return;
   }
   if (mode === "manual" && !rawData) {
-    showToast(currentLang === "id" ? "Tempel data CSV transaksi!" : "Paste CSV transaction data!");
+    showToast(t("paste_csv_data"));
+    document.getElementById("depositCsvTextarea").focus();
     return;
   }
 
-  btn.disabled = true;
-  btnText.style.display = "none";
-  btnLoader.style.display = "inline-flex";
+  const isSolana = mode === "address" && (SOLANA_ADDR_RE.test(address) || chain === "solana");
+  const sub = mode === "manual" ? "CSV" : (isSolana ? t("deposit_scan_sub_solana") : (chain === "auto" ? t("deposit_scan_sub_multi") : esc(chain.toUpperCase())));
+  setLoading(btn, true);
+  renderLoading(container, t("btn_tracing_deposit"), sub);
 
   try {
-    const res = await fetch("/api/deposit/trace", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        mode: mode,
-        address: address,
-        raw_data: rawData,
-        chain: chain,
-        min_threshold_usd: minThreshold,
-        dust_threshold_usd: 5.0,
-        exclude_dust: excludeDust,
-        filter_phishing: filterPhishing
-      })
-    });
-
-    const data = await res.json();
+    const data = await apiFetch("deposit", "/api/deposit/trace", postJSON({
+      mode,
+      address,
+      raw_data: rawData,
+      chain,
+      min_threshold_usd: parseFloat(document.getElementById("minThresholdSlider").value) || 0,
+      dust_threshold_usd: 5.0,
+      exclude_dust: document.getElementById("excludeDustCheck").checked,
+      filter_phishing: document.getElementById("filterPhishingCheck").checked
+    }));
+    if (!data) return;
     if (!data.success) {
-      showToast(data.error || "Gagal memindai aliran masuk deposit.");
+      renderError(container, t("deposit_failed"), data.error);
       return;
     }
-
     lastDepositData = data;
     renderDepositResults(data, container);
-    container.style.display = "block";
     container.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (err) {
-    showToast(currentLang === "id" ? "Terjadi kesalahan koneksi server." : "Server connection error.");
+    renderError(container, t("network_error"), esc(err.message));
   } finally {
-    btn.disabled = false;
-    btnText.style.display = "inline-flex";
-    btnLoader.style.display = "none";
+    if (!isBusy("deposit")) setLoading(btn, false);
   }
 }
+
 
 function renderDepositResults(data, container) {
   const dict = translations[currentLang] || translations.id;
@@ -1941,7 +1997,7 @@ function renderDepositResults(data, container) {
                 </td>
               </tr>
             ` : qualified.map((s, idx) => `
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s ease;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+              <tr class="hover-row" style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s ease;">
                 <td style="padding: 12px 8px; color: var(--text-dim); font-weight: 700;">${idx + 1}</td>
                 <td style="padding: 12px 8px; font-family: var(--font-mono); color: var(--text-pure); font-weight: 600;">
                   ${truncateAddress(s.sender_address, 10)}
@@ -1970,7 +2026,7 @@ function renderDepositResults(data, container) {
                 </td>
                 <td style="padding: 12px 8px; text-align: right;">
                   <div style="display: inline-flex; gap: 6px; align-items: center;">
-                    <button class="icon-action-btn-mini" onclick="copyToClipboard('${s.sender_address}', '${dict.col_sender_address}')" title="Copy Address">
+                    <button class="icon-action-btn-mini" data-copy="${s.sender_address}" data-copy-label="${dict.col_sender_address}" title="Copy Address">
                       <i class="fa-regular fa-copy"></i>
                     </button>
                     ${s.explorer_url ? `
@@ -1978,7 +2034,7 @@ function renderDepositResults(data, container) {
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                       </a>
                     ` : ''}
-                    <button class="btn btn-sample" style="padding: 3px 8px; font-size: 0.74rem; border-color: var(--accent-lime); color: var(--accent-lime);" onclick="autoTraceDepositSender('${s.sender_address}', '${s.chain}')" title="Lacak hubungan wallet ini di Tab 3">
+                    <button class="btn btn-sample" style="padding: 3px 8px; font-size: 0.74rem; border-color: var(--accent-lime); color: var(--accent-lime);" data-action="trace-sender" data-addr="${s.sender_address}" data-chain="${s.chain}" title="Lacak hubungan wallet ini di Tab 3">
                       <i class="fa-solid fa-diagram-project"></i> <span>${dict.btn_trace_tab3}</span>
                     </button>
                   </div>
@@ -2028,7 +2084,7 @@ function renderDepositResults(data, container) {
                   ${f.tx_count}
                 </td>
                 <td style="padding: 8px; text-align: right;">
-                  <button class="icon-action-btn-mini" onclick="copyToClipboard('${f.sender_address}', 'Filtered Sender')">
+                  <button class="icon-action-btn-mini" data-copy="${f.sender_address}" data-copy-label="Filtered Sender">
                     <i class="fa-regular fa-copy"></i>
                   </button>
                 </td>
@@ -2043,120 +2099,154 @@ function renderDepositResults(data, container) {
 
 function toggleFilteredDrawer() {
   const drawer = document.getElementById("filteredSendersDrawer");
-  if (!drawer) return;
-  drawer.style.display = drawer.style.display === "none" ? "block" : "none";
+  if (drawer) drawer.style.display = drawer.style.display === "none" ? "block" : "none";
 }
 
 function exportDepositGMGN() {
-  if (!lastDepositData || !lastDepositData.qualified_senders || lastDepositData.qualified_senders.length === 0) {
-    showToast(currentLang === "id" ? "Tidak ada alamat terkualifikasi untuk diekspor." : "No qualified addresses to export.");
+  const senders = lastDepositData?.qualified_senders || [];
+  if (!senders.length) {
+    showToast(t("no_qualified_export"));
     return;
   }
-
-  let csvContent = "Address,Total_Deposit_USD,Tx_Count,Chain,Tag\n";
-  lastDepositData.qualified_senders.forEach(s => {
-    csvContent += `"${s.sender_address}",${s.total_deposit_usd},${s.tx_count},"${s.chain}","Deposit_Source"\n`;
-  });
-
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", `deposit_sources_gmgn_${Date.now()}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  showToast(currentLang === "id" ? "GMGN CSV berhasil diunduh!" : "GMGN CSV downloaded!");
+  const rows = [["Address", "Total_Deposit_USD", "Tx_Count", "Chain", "Tag"]].concat(
+    senders.map(s => [s.sender_address, s.total_deposit_usd, s.tx_count, s.chain, "Deposit_Source"])
+  );
+  downloadCsv(`deposit_sources_gmgn_${Date.now()}.csv`, rows);
+  showToast(t("gmgn_csv_downloaded"));
 }
 
 function copyQualifiedSenders() {
-  if (!lastDepositData || !lastDepositData.qualified_senders || lastDepositData.qualified_senders.length === 0) {
-    showToast(currentLang === "id" ? "Tidak ada alamat terkualifikasi." : "No qualified addresses.");
+  const senders = lastDepositData?.qualified_senders || [];
+  if (!senders.length) {
+    showToast(t("no_qualified"));
     return;
   }
-
-  const addrs = lastDepositData.qualified_senders.map(s => s.sender_address).join("\n");
-  navigator.clipboard.writeText(addrs).then(() => {
-    showToast(currentLang === "id" ? `${lastDepositData.qualified_senders.length} alamat tersalin ke clipboard!` : `${lastDepositData.qualified_senders.length} addresses copied!`);
-  });
+  copyToClipboard(senders.map(s => s.sender_address).join("\n"), `${senders.length} ${t("addresses_word")}`);
 }
 
-function autoTraceDepositSender(senderAddr, chain) {
-  switchTab("genealogy");
-  document.getElementById("genealogyInput").value = senderAddr;
-  if (chain && document.getElementById("genealogyChainSelect")) {
-    document.getElementById("genealogyChainSelect").value = chain.toLowerCase();
+// ==================== GLOBAL EVENT WIRING ====================
+
+// One delegated listener for every dynamic button (copy / hand-off / export).
+document.addEventListener("click", e => {
+  const copyEl = e.target.closest("[data-copy]");
+  if (copyEl) {
+    copyToClipboard(copyEl.dataset.copy, copyEl.dataset.copyLabel);
+    return;
   }
-  document.getElementById("genealogyTrackForm").dispatchEvent(new Event("submit"));
-}
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const { action, addr, chain, id } = el.dataset;
+  if (action === "analyze-dest" || action === "trace-sender") openInGenealogy(addr, chain);
+  else if (action === "gmgn-csv") downloadGmgnCsv(id, chain);
+});
 
-// Initialize Language on load
+const TX_LIKE_RE = /(\/tx\/|^0x[a-fA-F0-9]{64}$|^[1-9A-HJ-NP-Za-km-z]{80,90}$)/;
+
 document.addEventListener("DOMContentLoaded", () => {
   setLanguage(currentLang);
+  switchTab(store.get("omniroute_tab", "tx"));
+
+  const txInput = document.getElementById("txInput");
+  const lastTx = store.get("omniroute_last_tx", "");
+  if (txInput && lastTx && !txInput.value) txInput.value = lastTx;
+
+  // Paste an explorer link / hash → track immediately (no extra click).
+  txInput?.addEventListener("paste", () => {
+    setTimeout(() => {
+      if (TX_LIKE_RE.test(txInput.value.trim()) && !isBusy("tx")) submitForm("txTrackForm");
+    }, 0);
+  });
+
+  // Ctrl/Cmd + Enter submits the batch textarea / CSV textarea.
+  ["genealogyBatchInput", "depositCsvTextarea"].forEach(id => {
+    document.getElementById(id)?.addEventListener("keydown", e => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        e.target.form?.requestSubmit();
+      }
+    });
+  });
+
+  // Keyboard shortcuts: Alt+1..4 switch tabs.
+  document.addEventListener("keydown", e => {
+    if (!e.altKey || e.ctrlKey || e.metaKey) return;
+    const tab = { "1": "tx", "2": "address", "3": "genealogy", "4": "deposit" }[e.key];
+    if (tab) {
+      e.preventDefault();
+      switchTab(tab);
+    }
+  });
+
+  startHeartbeat();
 });
 
 // Graceful Exit App Handler
 async function quitOmniRouteApp() {
-  const isId = currentLang === 'id';
-  const msg = isId 
-    ? "Tutup aplikasi OmniRoute dan matikan server lokal?" 
-    : "Close OmniRoute app and stop local server?";
-  if (!confirm(msg)) {
-    return;
-  }
-  showToast(isId ? "Menghentikan server..." : "Stopping server...");
+  if (!confirm(t("confirm_quit"))) return;
+  stopHeartbeat();
+  showToast(t("stopping_server"));
   try {
     await fetch("/api/shutdown", { method: "POST" });
-  } catch (e) {}
-  setTimeout(() => {
-    window.close();
-  }, 350);
+  } catch { /* server already gone */ }
+  setTimeout(() => window.close(), 350);
+}
+
+function setOfflineOverlay(show) {
+  const overlay = document.getElementById("omnirouteOfflineOverlay");
+  if (!overlay) return;
+  if (show && overlay.style.display !== "flex") {
+    document.getElementById("offlineTitle").textContent = t("offline_title");
+    document.getElementById("offlineDesc").textContent = t("offline_desc");
+    document.getElementById("btnReconnectText").textContent = t("reconnect");
+    document.getElementById("btnCloseAppText").textContent = t("close_window");
+  }
+  overlay.style.display = show ? "flex" : "none";
 }
 
 // Check Server Connection & Reload
 async function checkServerAndReload() {
   const btn = document.getElementById("btnReconnectText");
-  if (btn) btn.textContent = currentLang === "id" ? "Memeriksa..." : "Checking...";
+  if (btn) btn.textContent = t("checking");
   try {
     const res = await fetch("/api/ping", { cache: "no-store" });
     if (res.ok) {
-      document.getElementById("omnirouteOfflineOverlay").style.display = "none";
+      setOfflineOverlay(false);
       window.location.reload();
       return;
     }
-  } catch (e) {}
-  if (btn) btn.textContent = currentLang === "id" ? "Gagal, coba lagi" : "Retry";
-  showToast(currentLang === "id" ? "Server belum menyala. Buka OmniRoute App lalu klik sambungkan lagi." : "Server not running. Start OmniRoute App and retry.");
+  } catch { /* still offline */ }
+  if (btn) btn.textContent = t("retry");
+  showToast(t("server_not_running"));
 }
 
-// Background Connection Heartbeat
+// Background connection heartbeat: every 15s, paused while the window is hidden,
+// re-checked immediately when the window becomes visible again.
+const HEARTBEAT_MS = 15000;
+let heartbeatTimer = null;
 let failedHeartbeats = 0;
-setInterval(async () => {
+
+async function heartbeat() {
   try {
     const res = await fetch("/api/ping", { cache: "no-store" });
-    if (res.ok) {
-      failedHeartbeats = 0;
-      const overlay = document.getElementById("omnirouteOfflineOverlay");
-      if (overlay && overlay.style.display === "flex") {
-        overlay.style.display = "none";
-      }
-    } else {
-      failedHeartbeats++;
-    }
-  } catch (err) {
+    if (!res.ok) throw new Error(String(res.status));
+    failedHeartbeats = 0;
+    setOfflineOverlay(false);
+  } catch {
     failedHeartbeats++;
-    if (failedHeartbeats >= 2) {
-      const overlay = document.getElementById("omnirouteOfflineOverlay");
-      if (overlay && overlay.style.display !== "flex") {
-        const isId = currentLang === "id";
-        document.getElementById("offlineTitle").textContent = isId ? "Server Sedang Offline" : "Server is Offline";
-        document.getElementById("offlineDesc").textContent = isId 
-          ? "Server lokal OmniRoute dihentikan atau belum aktif. Jika Anda sengaja menghentikannya, Anda bisa menutup jendela ini."
-          : "The local OmniRoute server was stopped or is inactive. If you stopped it intentionally, you can close this window.";
-        document.getElementById("btnReconnectText").textContent = isId ? "Sambungkan Kembali" : "Reconnect";
-        document.getElementById("btnCloseAppText").textContent = isId ? "Tutup Jendela" : "Close Window";
-        overlay.style.display = "flex";
-      }
-    }
+    if (failedHeartbeats >= 2) setOfflineOverlay(true);
   }
-}, 4000);
+}
+
+function startHeartbeat() {
+  stopHeartbeat();
+  heartbeatTimer = setInterval(() => { if (!document.hidden) heartbeat(); }, HEARTBEAT_MS);
+}
+
+function stopHeartbeat() {
+  clearInterval(heartbeatTimer);
+  heartbeatTimer = null;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && heartbeatTimer) heartbeat();
+});

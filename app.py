@@ -1,115 +1,146 @@
 import os
+import threading
+import time
 from flask import Flask, render_template, request, jsonify
 import relay_core
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config["JSON_SORT_KEYS"] = False
+
+MAX_QUERY_LEN = 300
+MAX_BATCH = 20
+MAX_CSV_LEN = 500_000
+
+# ==================== SHORT-LIVED RESPONSE CACHE ====================
+# Re-running the same lookup (language switch, back/forward, double click) is served instantly.
+_RESP_CACHE: dict = {}
+_RESP_LOCK = threading.Lock()
+RESP_TTL = 60
+
+
+def cached_call(key: tuple, fn):
+    now = time.time()
+    with _RESP_LOCK:
+        hit = _RESP_CACHE.get(key)
+        if hit and now - hit[0] < RESP_TTL:
+            return hit[1]
+    result = fn()
+    if result.get("success"):
+        with _RESP_LOCK:
+            if len(_RESP_CACHE) > 200:
+                _RESP_CACHE.pop(min(_RESP_CACHE, key=lambda k: _RESP_CACHE[k][0]))
+            _RESP_CACHE[key] = (now, result)
+    return result
+
+
+def bad_request(msg: str):
+    return jsonify({"success": False, "error": msg}), 400
+
+
+def _payload() -> dict:
+    return request.get_json(silent=True) or {}
+
+
+def _str(data: dict, key: str, default: str = "") -> str:
+    return str(data.get(key) or default).strip()
+
+
+def _clamp_float(value, default: float, lo: float, hi: float) -> float:
+    try:
+        return max(lo, min(hi, float(value)))
+    except (TypeError, ValueError):
+        return default
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/api/track", methods=["POST"])
 def track():
-    data = request.get_json(silent=True) or {}
-    query = data.get("query", "").strip()
+    query = _str(_payload(), "query")
     if not query:
-        return jsonify({"success": False, "error": "Query tidak boleh kosong / Query cannot be empty."}), 400
-    
-    result = relay_core.track_cross_chain(query)
-    return jsonify(result)
+        return bad_request("Query tidak boleh kosong / Query cannot be empty.")
+    if len(query) > MAX_QUERY_LEN:
+        return bad_request("Query terlalu panjang / Query too long.")
+    return jsonify(cached_call(("track", query), lambda: relay_core.track_cross_chain(query)))
+
 
 @app.route("/api/inspect", methods=["POST"])
 def inspect():
-    data = request.get_json(silent=True) or {}
-    address = data.get("address", "").strip()
-    chain = data.get("chain", "ethereum").strip()
+    data = _payload()
+    address = _str(data, "address")
+    chain = _str(data, "chain", "ethereum")
     if not address:
-        return jsonify({"success": False, "error": "Alamat tidak boleh kosong / Address cannot be empty."}), 400
-    
-    result = relay_core.inspect_address_details(address, chain)
-    return jsonify({"success": True, "data": result})
+        return bad_request("Alamat tidak boleh kosong / Address cannot be empty.")
+    if len(address) > 100:
+        return bad_request("Alamat tidak valid / Invalid address.")
+    return jsonify({"success": True, "data": relay_core.inspect_address_details(address, chain)})
+
 
 @app.route("/api/wallet/genealogy", methods=["GET", "POST"])
 def wallet_genealogy():
-    if request.method == "POST":
-        data = request.get_json(silent=True) or {}
-        address = data.get("address", "").strip()
-        chain = data.get("chain", "base").strip()
-    else:
-        address = request.args.get("address", "").strip()
-        chain = request.args.get("chain", "base").strip()
-        
+    data = _payload() if request.method == "POST" else request.args
+    address = _str(data, "address")
+    chain = _str(data, "chain", "base")
     if not address:
-        return jsonify({"success": False, "error": "Alamat dompet tidak boleh kosong / Wallet address cannot be empty."}), 400
-        
-    result = relay_core.analyze_wallet_genealogy(address, chain)
-    return jsonify(result)
+        return bad_request("Alamat dompet tidak boleh kosong / Wallet address cannot be empty.")
+    if len(address) > 100:
+        return bad_request("Alamat tidak valid / Invalid address.")
+    return jsonify(relay_core.analyze_wallet_genealogy(address, chain))
+
 
 @app.route("/api/wallet/batch-sybil", methods=["POST"])
 def batch_sybil():
-    data = request.get_json(silent=True) or {}
-    addresses = data.get("addresses", [])
-    chain = data.get("chain", "base").strip()
-    if not addresses:
-        return jsonify({"success": False, "error": "Daftar alamat tidak boleh kosong / Addresses cannot be empty."}), 400
-    res = relay_core.analyze_batch_sybil(addresses, chain)
-    return jsonify(res)
+    data = _payload()
+    addresses = data.get("addresses") or []
+    if not isinstance(addresses, list) or not addresses:
+        return bad_request("Daftar alamat tidak boleh kosong / Addresses cannot be empty.")
+    addresses = [str(a)[:100] for a in addresses[:MAX_BATCH]]
+    return jsonify(relay_core.analyze_batch_sybil(addresses, _str(data, "chain", "base")))
+
 
 @app.route("/api/deposit/trace", methods=["POST"])
 def deposit_trace():
-    data = request.get_json(silent=True) or {}
-    mode = data.get("mode", "address").strip()
-    target_input = data.get("address", "") if mode == "address" else data.get("raw_data", "")
-    chain = data.get("chain", "auto").strip()
-    
-    try:
-        min_threshold_usd = float(data.get("min_threshold_usd", 50.0))
-    except (ValueError, TypeError):
-        min_threshold_usd = 50.0
+    data = _payload()
+    mode = "manual" if _str(data, "mode", "address") == "manual" else "address"
+    target_input = str(data.get("raw_data") if mode == "manual" else data.get("address") or "").strip()
+    if not target_input:
+        return bad_request("Input tidak boleh kosong / Input cannot be empty.")
+    if len(target_input) > (MAX_CSV_LEN if mode == "manual" else 100):
+        return bad_request("Input terlalu panjang / Input too long.")
 
-    try:
-        dust_threshold_usd = float(data.get("dust_threshold_usd", 5.0))
-    except (ValueError, TypeError):
-        dust_threshold_usd = 5.0
-
-    exclude_dust = bool(data.get("exclude_dust", True))
-    filter_phishing = bool(data.get("filter_phishing", True))
-
-    if not target_input.strip():
-        return jsonify({"success": False, "error": "Input tidak boleh kosong / Input cannot be empty."}), 400
-
-    res = relay_core.trace_deposit_inflow(
+    params = dict(
         target_input=target_input,
         mode=mode,
-        chain=chain,
-        min_threshold_usd=min_threshold_usd,
-        dust_threshold_usd=dust_threshold_usd,
-        exclude_dust=exclude_dust,
-        filter_phishing=filter_phishing
+        chain=_str(data, "chain", "auto"),
+        min_threshold_usd=_clamp_float(data.get("min_threshold_usd"), 50.0, 0, 1e9),
+        dust_threshold_usd=_clamp_float(data.get("dust_threshold_usd"), 5.0, 0, 1e6),
+        exclude_dust=bool(data.get("exclude_dust", True)),
+        filter_phishing=bool(data.get("filter_phishing", True)),
     )
-    return jsonify(res)
+    key = ("deposit",) + tuple(sorted(params.items()))
+    return jsonify(cached_call(key, lambda: relay_core.trace_deposit_inflow(**params)))
+
+
+_PRIORITY_CHAIN_IDS = [4663, 792703809, 1, 8453, 42161, 10, 56, 137]
+
 
 @app.route("/api/chains", methods=["GET"])
 def chains():
-    chains_dict = relay_core.get_all_chains()
-    simplified = [
-        {
-            "id": c.get("id"),
-            "name": c.get("name"),
-            "displayName": c.get("displayName"),
-            "iconUrl": c.get("iconUrl"),
-            "explorerUrl": c.get("explorerUrl")
-        }
-        for c in chains_dict.values()
-    ]
-    priority_ids = [4663, 792703809, 1, 8453, 42161, 10, 56, 137]
-    def sort_key(item):
-        cid = item.get("id")
-        return (priority_ids.index(cid) if cid in priority_ids else 9999, str(item.get("displayName")))
-    
-    simplified.sort(key=sort_key)
-    return jsonify({"success": True, "chains": simplified})
+    def build():
+        simplified = [
+            {k: c.get(k) for k in ("id", "name", "displayName", "iconUrl", "explorerUrl")}
+            for c in relay_core.get_all_chains().values()
+        ]
+        simplified.sort(key=lambda item: (
+            _PRIORITY_CHAIN_IDS.index(item["id"]) if item["id"] in _PRIORITY_CHAIN_IDS else 9999,
+            str(item.get("displayName")),
+        ))
+        return {"success": True, "chains": simplified}
+    return jsonify(cached_call(("chains",), build))
+
 
 @app.route("/api/samples", methods=["GET"])
 def samples():
@@ -136,20 +167,24 @@ def samples():
         }
     })
 
+
 @app.route("/api/ping", methods=["GET"])
 def ping():
     return jsonify({"status": "ok", "app": "OmniRoute"})
 
+
 @app.route("/api/shutdown", methods=["POST"])
 def shutdown():
-    import threading, time
     def kill_server():
         time.sleep(0.4)
         os._exit(0)
     threading.Thread(target=kill_server, daemon=True).start()
     return jsonify({"success": True, "message": "Server shutting down..."})
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"[*] OmniRoute running on http://127.0.0.1:{port}")
-    app.run(host="0.0.0.0", port=port, debug=False)
+    # Warm the chain registry so the first lookup doesn't pay for it.
+    threading.Thread(target=relay_core.get_all_chains, daemon=True).start()
+    app.run(host="127.0.0.1", port=port, debug=False, threaded=True)

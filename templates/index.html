@@ -103,7 +103,7 @@
       <h2 class="hero-title">
         <span data-i18n="hero_title_1">Lacak Alamat</span> 
         <span class="text-lime" data-i18n="hero_title_lime">Wallet Tujuan</span> 
-        <span data-i18n="hero_title_2">& Alur Kas Keluar</span>
+        <span data-i18n="hero_title_2">dalam Hitungan Detik</span>
       </h2>
       <p class="hero-desc" data-i18n="hero_desc">
         Bongkar alur transaksi cross-chain dari pengirim, router protokol, hingga dompet penerima tujuan. Lacak sumber modal awal (Genesis Funder) dan cash out keluar (CEX/DEX).
@@ -127,9 +127,9 @@
   <!-- Main Container -->
   <main class="main-content">
     <!-- Mode Tabs (3 Tabs Architecture) -->
-    <div class="tabs-nav">
+    <div class="tabs-nav" role="tablist">
       <!-- Tab 1: TX Breakdown -->
-      <button class="tab-btn active" id="tabBtnTx" onclick="switchTab('tx')">
+      <button class="tab-btn active" role="tab" id="tabBtnTx" onclick="switchTab('tx')">
         <div class="tab-icon-wrap">
           <i class="fa-solid fa-route"></i>
         </div>
@@ -140,7 +140,7 @@
       </button>
 
       <!-- Tab 2: Target & Address Verifier -->
-      <button class="tab-btn" id="tabBtnAddress" onclick="switchTab('address')">
+      <button class="tab-btn" role="tab" id="tabBtnAddress" onclick="switchTab('address')">
         <div class="tab-icon-wrap">
           <i class="fa-solid fa-shield-halved"></i>
         </div>
@@ -151,7 +151,7 @@
       </button>
 
       <!-- Tab 3: Wallet Cluster & Relationship Tracer -->
-      <button class="tab-btn" id="tabBtnGenealogy" onclick="switchTab('genealogy')">
+      <button class="tab-btn" role="tab" id="tabBtnGenealogy" onclick="switchTab('genealogy')">
         <div class="tab-icon-wrap" style="color: var(--accent-lime);">
           <i class="fa-solid fa-diagram-project"></i>
         </div>
@@ -162,7 +162,7 @@
       </button>
 
       <!-- Tab 4: Exchange Deposit Inflow Tracer -->
-      <button class="tab-btn" id="tabBtnDeposit" onclick="switchTab('deposit')">
+      <button class="tab-btn" role="tab" id="tabBtnDeposit" onclick="switchTab('deposit')">
         <div class="tab-icon-wrap" style="color: var(--accent-cyan);">
           <i class="fa-solid fa-vault"></i>
         </div>
@@ -172,6 +172,8 @@
         </div>
       </button>
     </div>
+
+    <p class="shortcuts-hint"><i class="fa-regular fa-keyboard"></i> <span data-i18n="shortcuts_hint">Alt+1…4</span></p>
 
     <!-- ==================== TAB 1: MULTI-PROTOCOL TX TRACKER ==================== -->
     <section id="tabContentTx" class="tab-section active">
@@ -199,6 +201,13 @@
           </div>
         </div>
 
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">Cara pakai</span></span>
+          <ol class="how-guide-steps"><li><span class="guide-num">1</span><span data-i18n="guide_tx_1"></span></li><li><span class="guide-num">2</span><span data-i18n="guide_tx_2"></span></li><li><span class="guide-num">3</span><span data-i18n="guide_tx_3"></span></li></ol>
+          <p class="how-guide-tip" data-i18n="guide_tx_tip"></p>
+        </div>
+
         <form id="txTrackForm" onsubmit="handleTxSubmit(event)" class="search-form">
           <div class="input-wrapper">
             <i class="fa-solid fa-link input-icon"></i>
@@ -206,6 +215,7 @@
               type="text" 
               id="txInput" 
               class="main-input" 
+              data-i18n-placeholder="ph_tx"
               placeholder="https://robin.etherscan.io/tx/0x2a17... atau 0x... / Solana signature" 
               autocomplete="off"
               required
@@ -247,6 +257,13 @@
           </div>
         </div>
 
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">Cara pakai</span></span>
+          <ol class="how-guide-steps"><li><span class="guide-num">1</span><span data-i18n="guide_addr_1"></span></li><li><span class="guide-num">2</span><span data-i18n="guide_addr_2"></span></li><li><span class="guide-num">3</span><span data-i18n="guide_addr_3"></span></li></ol>
+          <p class="how-guide-tip" data-i18n="guide_addr_tip"></p>
+        </div>
+
         <form id="addressVerifyForm" onsubmit="handleAddressSubmit(event)" class="search-form">
           <div class="input-group-row">
             <div class="input-wrapper flex-grow">
@@ -255,6 +272,7 @@
                 type="text" 
                 id="addressInput" 
                 class="main-input" 
+                data-i18n-placeholder="ph_address"
                 placeholder="0x... atau Solana Base58 address" 
                 autocomplete="off"
                 required
@@ -327,6 +345,13 @@
           </div>
         </div>
 
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">Cara pakai</span></span>
+          <ol class="how-guide-steps"><li><span class="guide-num">1</span><span data-i18n="guide_gen_1"></span></li><li><span class="guide-num">2</span><span data-i18n="guide_gen_2"></span></li><li><span class="guide-num">3</span><span data-i18n="guide_gen_3"></span></li></ol>
+          <p class="how-guide-tip" data-i18n="guide_gen_tip"></p>
+        </div>
+
         <!-- Multi-Angle Discovery Mode Bar -->
         <div class="discovery-mode-bar">
           <button type="button" class="mode-pill active" id="btnModeSingle" onclick="setDiscoveryMode('single')">
@@ -348,6 +373,7 @@
                 type="text" 
                 id="genealogyInput" 
                 class="main-input" 
+                data-i18n-placeholder="ph_genealogy"
                 placeholder="Paste alamat wallet (0x... atau Solana public key) untuk melacak funder & exit..." 
                 autocomplete="off"
               />
@@ -423,6 +449,13 @@
           </div>
         </div>
 
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">Cara pakai</span></span>
+          <ol class="how-guide-steps"><li><span class="guide-num">1</span><span data-i18n="guide_dep_1"></span></li><li><span class="guide-num">2</span><span data-i18n="guide_dep_2"></span></li><li><span class="guide-num">3</span><span data-i18n="guide_dep_3"></span></li></ol>
+          <p class="how-guide-tip" data-i18n="guide_dep_tip"></p>
+        </div>
+
         <!-- Mode Switcher Pills: Mode A vs Mode B -->
         <div class="batch-mode-toggle" style="margin-bottom: 20px;">
           <button type="button" class="mode-pill active" id="depositModeAPill" onclick="switchDepositMode('address')">
@@ -451,6 +484,7 @@
                   type="text" 
                   id="depositAddressInput" 
                   class="main-input" 
+                  data-i18n-placeholder="ph_deposit"
                   placeholder="Tempel alamat deposit exchange (0x... atau Solana Base58 public key)..." 
                   autocomplete="off"
                 >
@@ -461,7 +495,7 @@
 
               <!-- Chain Selector -->
               <div style="min-width: 180px;">
-                <select id="depositChainSelect" class="chain-select" style="width: 100%; height: 54px; background: #0c0d14; border: 1px solid var(--border-color); color: #fff; border-radius: 12px; padding: 0 14px;">
+                <select id="depositChainSelect" class="chain-select chain-select-full">
                   <option value="auto" data-i18n="chain_auto">Auto-Detect Chain</option>
                   <option value="solana">Solana (SVM)</option>
                   <option value="base">Base</option>
