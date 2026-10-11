@@ -42,6 +42,11 @@ SCENARIO = [
 ]
 
 
+def NO_ACCOUNTS(chain, addresses):
+    """Offline stand-in for the RPC account-type lookup."""
+    return {}
+
+
 class StubFetcher:
     def __init__(self, transfers, delay=0.0):
         self.transfers = transfers
@@ -63,7 +68,8 @@ def fixed_prices(monkeypatch):
 
 def run(seeds, transfers=SCENARIO, **kw):
     fetcher = kw.pop("fetcher", None) or StubFetcher(transfers)
-    params = dict(chain="solana", depth=4, fanout=4, min_native=0.1, tokens=["SOL", "USDC"], fetcher=fetcher)
+    params = dict(chain="solana", depth=4, fanout=4, min_native=0.1, tokens=["SOL", "USDC"], fetcher=fetcher,
+                  account_detector=kw.pop("account_detector", NO_ACCOUNTS))
     params.update(kw)
     return ft.trace_flow(seeds, **params), fetcher
 
@@ -266,7 +272,7 @@ def test_expand_merges_and_reruns_detectors():
     fetcher = StubFetcher(SCENARIO)
     res, _ = run([SEED_B], fetcher=fetcher, depth=1)
     assert not res["clusters"]
-    merged = ft.expand_graph(res, DEP, fetcher=fetcher, chain="solana", direction="both", min_native=0.1, tokens=["SOL", "USDC"])
+    merged = ft.expand_graph(res, DEP, fetcher=fetcher, account_detector=NO_ACCOUNTS, chain="solana", direction="both", min_native=0.1, tokens=["SOL", "USDC"])
     assert merged["success"] and merged["expandedAddress"] == DEP
     ids = {n["id"] for n in merged["nodes"]}
     assert BINANCE in ids and SEED_B in ids
@@ -283,7 +289,7 @@ def test_expand_ignores_client_labels():
     res, _ = run([SEED_B], depth=1)
     for n in res["nodes"]:
         n["label"] = "<script>alert(1)</script>"
-    merged = ft.expand_graph(res, DEP, fetcher=StubFetcher(SCENARIO), chain="solana", min_native=0.1)
+    merged = ft.expand_graph(res, DEP, fetcher=StubFetcher(SCENARIO), account_detector=NO_ACCOUNTS, chain="solana", min_native=0.1)
     assert all("<script>" not in str(n["label"]) for n in merged["nodes"])
 
 
@@ -299,3 +305,59 @@ def test_test_addresses_are_valid_base58():
     import relay_core as rc
     for a in (SEED_A, SEED_B, P1, P2, P3, DEP, SPLIT_X, DUST, USDC_DST):
         assert rc.SOLANA_ADDR_RE.match(a), a
+
+
+# ---- account type (EOA vs contract) ----
+
+def test_contract_is_marked_and_not_traversed():
+    kinds = {SEED_A: "eoa", P1: "pda", DUST: "eoa"}
+    res, fetcher = run([SEED_A], account_detector=lambda c, addrs: {a: kinds.get(a, "eoa") for a in addrs})
+    p1 = next(n for n in res["nodes"] if n["id"] == P1)
+    assert p1["account"] == "pda" and p1["type"] == "contract"
+    assert P1 not in fetcher.calls and P2 not in {n["id"] for n in res["nodes"]}
+    assert res["stats"]["contracts"] == 1 and res["stats"]["eoa"] >= 1
+
+
+def test_seed_contract_is_still_traced():
+    res, fetcher = run([SEED_A], depth=1, account_detector=lambda c, addrs: {a: "contract" for a in addrs})
+    seed = next(n for n in res["nodes"] if n["id"] == SEED_A)
+    assert seed["account"] == "contract" and seed["type"] == "wallet" and SEED_A in fetcher.calls
+
+
+def test_smart_account_is_traversed():
+    res, fetcher = run([SEED_A], depth=2, account_detector=lambda c, addrs: {a: "smart_account" for a in addrs})
+    assert P1 in fetcher.calls
+    assert next(n for n in res["nodes"] if n["id"] == P1)["account"] == "smart_account"
+
+
+def test_detector_failure_does_not_break_trace():
+    def boom(chain, addrs):
+        raise RuntimeError("rpc down")
+    res, _ = run([SEED_A, SEED_B], account_detector=boom)
+    assert res["success"] and len(res["nodes"]) > 3
+
+
+def test_classifiers():
+    import relay_core as rc
+    assert rc.classify_evm_code("0x") == "eoa"
+    assert rc.classify_evm_code("0xef0100" + "ab" * 20) == "smart_account"
+    assert rc.classify_evm_code("0x6080604052") == "contract"
+    assert ft.classify_solana_account(None) == "eoa"
+    assert ft.classify_solana_account({"owner": ft.SOLANA_SYSTEM_PROGRAM, "executable": False}) == "eoa"
+    assert ft.classify_solana_account({"owner": "BPFLoaderUpgradeab1e11111111111111111111111", "executable": True}) == "program"
+    assert ft.classify_solana_account({"owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "executable": False}) == "pda"
+
+
+def test_detect_account_kinds_batches_and_caches(monkeypatch):
+    calls = []
+
+    def fake_batch(chain, method, params_list, timeout=10):
+        calls.append(len(params_list))
+        return ["0x" if p[0].endswith("1") else "0x6080" for p in params_list]
+
+    monkeypatch.setattr(ft.rc, "rpc_batch", fake_batch)
+    ft._ACCOUNT_CACHE.clear()
+    addrs = ["0x" + "0" * 39 + "1", "0x" + "0" * 39 + "2"]
+    assert ft.detect_account_kinds("ethereum", addrs) == {addrs[0]: "eoa", addrs[1]: "contract"}
+    assert ft.detect_account_kinds("ethereum", addrs) == {addrs[0]: "eoa", addrs[1]: "contract"}
+    assert calls == [2]  # second call served from cache

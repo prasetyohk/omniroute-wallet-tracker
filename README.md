@@ -135,6 +135,14 @@ Menelusuri dana melewati beberapa hop dari 1–10 dompet seed, lalu menampilkann
    * **Peeling chain, konsolidasi, dan pola bintang CEX.**
 5. **Graf interaktif:** ketebalan garis sebanding dengan nilai USD. Klik node untuk detail; klik dua kali untuk **Expand +1 hop**. Klaster bisa diekspor ke GMGN CSV, dan seluruh graf ke CSV atau JSON.
 
+6. **EOA vs Smart Contract:** setiap node diberi label EOA (dompet biasa), Smart Account (EIP-7702), Smart Contract, Program, atau PDA (akun milik program di Solana). Kontrak tanpa label otomatis tidak ditelusuri lebih jauh, tapi tetap bisa di-Expand manual.
+7. **Tandai & simpan:**
+   * Klik node, lalu **Tandai alamat** dengan label, warna, dan catatan. Alamat yang ditandai tersorot di setiap trace berikutnya.
+   * **Simpan trace** menyimpan hasil beserta pengaturannya. Dari daftar *Trace tersimpan*, **Buka** menampilkan snapshot tanpa memanggil API, sedangkan **Trace ulang** menjalankan ulang dan menandai node **BARU** sejak terakhir disimpan.
+   * Data tersimpan di folder lokal `data/` dan tidak ikut ter-upload ke GitHub.
+
+**RPC PublicNode (gratis, tanpa key):** Ethereum, Base, Arbitrum, Optimism, Polygon, BNB Chain, opBNB, Robinhood, Ink, Arc, dan Solana. Endpoint ini dipakai sebagai RPC cadangan dan untuk mendeteksi EOA vs kontrak (`eth_getCode` / `getMultipleAccounts`). PublicNode **tidak** menyediakan riwayat transaksi per alamat, jadi penelusuran tetap memakai Helius/Etherscan/Blockscout. RPC kustom per chain bisa diisi di `.env` (`RPC_ETHEREUM=...`).
+
 **Sumber data (key gratis, opsional, di `.env`):**
 
 | Kebutuhan | Disarankan | Tanpa key |
@@ -296,6 +304,14 @@ Traces funds across several hops from 1–10 seed wallets and shows them as an i
    * **Shared-deposit clusters:** ≥2 wallets depositing into the same deposit address. Exchanges issue one address per user, so this is a strong same-owner signal.
    * **Peeling chains, consolidation, and CEX star patterns.**
 5. **Interactive graph:** line thickness follows USD value. Click a node for details; double-click it to **Expand +1 hop**. Clusters export to GMGN CSV, and the whole graph to CSV or JSON.
+
+6. **EOA vs Smart Contract:** every node is labelled EOA (regular wallet), Smart Account (EIP-7702), Smart Contract, Program, or PDA (program-owned account on Solana). Unlabelled contracts stop automatic tracing, but you can still expand them by hand.
+7. **Mark & save:**
+   * Click a node, then **Mark this address** with a label, colour, and note. Marked addresses are highlighted in every later trace.
+   * **Save trace** stores the result together with its settings. From *Saved traces*, **Open** shows the snapshot without any API call, and **Re-trace** runs it again and tags every node that is **NEW** since it was saved.
+   * Data lives in the local `data/` folder and is never uploaded to GitHub.
+
+**PublicNode RPCs (free, no key):** Ethereum, Base, Arbitrum, Optimism, Polygon, BNB Chain, opBNB, Robinhood, Ink, Arc, and Solana. These endpoints serve as fallback RPCs and power EOA-vs-contract detection (`eth_getCode` / `getMultipleAccounts`). PublicNode does **not** serve per-address transaction history, so tracing still uses Helius/Etherscan/Blockscout. Custom per-chain RPCs can be set in `.env` (`RPC_ETHEREUM=...`).
 
 **Data sources (free, optional keys in `.env`):**
 

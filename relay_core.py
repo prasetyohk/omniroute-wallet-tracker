@@ -312,8 +312,90 @@ DEFAULT_CHAINS_INFO = {
         "rpc": "https://api.avax.network/ext/bc/C/rpc",
         "nativeCurrency": {"symbol": "AVAX", "decimals": 18},
         "iconUrl": "https://assets.relay.link/icons/43114/light.png"
+    },
+    204: {
+        "id": 204,
+        "name": "opbnb",
+        "displayName": "opBNB",
+        "explorerUrl": "https://opbnb.bscscan.com",
+        "blockscoutApi": "",
+        "rpc": "https://opbnb-rpc.publicnode.com",
+        "nativeCurrency": {"symbol": "BNB", "decimals": 18},
+        "iconUrl": "https://assets.relay.link/icons/204/light.png"
+    },
+    57073: {
+        "id": 57073,
+        "name": "ink",
+        "displayName": "Ink",
+        "explorerUrl": "https://explorer.inkonchain.com",
+        "blockscoutApi": "",
+        "rpc": "https://ink-rpc.publicnode.com",
+        "nativeCurrency": {"symbol": "ETH", "decimals": 18},
+        "iconUrl": "https://assets.relay.link/icons/57073/light.png"
+    },
+    5042: {
+        "id": 5042,
+        "name": "arc",
+        "displayName": "Arc",
+        "explorerUrl": "",
+        "blockscoutApi": "",
+        "rpc": "https://arc-rpc.publicnode.com",
+        "nativeCurrency": {"symbol": "USDC", "decimals": 18},
+        "iconUrl": ""
     }
 }
+
+# PublicNode endpoints (free, no key). Used as a second RPC when the primary one fails, and for
+# account-type detection (eth_getCode / getMultipleAccounts). They do NOT serve address history:
+# eth_getLogs needs an address filter or an archive token, so tracing still uses Helius/Etherscan.
+PUBLICNODE_RPC = {
+    "ethereum": "https://ethereum-rpc.publicnode.com",
+    "base": "https://base-rpc.publicnode.com",
+    "arbitrum": "https://arbitrum-one-rpc.publicnode.com",
+    "optimism": "https://optimism-rpc.publicnode.com",
+    "polygon": "https://polygon-bor-rpc.publicnode.com",
+    "bsc": "https://bsc-rpc.publicnode.com",
+    "robinhood": "https://robinhood-rpc.publicnode.com",
+    "opbnb": "https://opbnb-rpc.publicnode.com",
+    "ink": "https://ink-rpc.publicnode.com",
+    "arc": "https://arc-rpc.publicnode.com",
+    "solana": "https://solana-rpc.publicnode.com",
+}
+
+
+def rpc_candidates(chain: str) -> List[str]:
+    """Ordered, de-duplicated RPC URLs for a chain: .env override, chain default, PublicNode."""
+    name = str(chain or "").lower()
+    urls = [load_env_value(f"RPC_{name.upper()}")]
+    if name == "solana":
+        urls.append(SOLANA_RPC)
+    else:
+        urls.append(get_chain_info(name).get("rpc", ""))
+    urls.append(PUBLICNODE_RPC.get(name, ""))
+    out: List[str] = []
+    for u in urls:
+        if u and u not in out:
+            out.append(u)
+    return out
+
+
+def rpc_batch(chain: str, method: str, params_list: List[list], timeout: float = 10) -> Optional[List[Any]]:
+    """One JSON-RPC batch request, tried on each candidate RPC in turn. Returns results in input
+    order (None for items that errored), or None if every endpoint failed."""
+    if not params_list:
+        return []
+    body = [{"jsonrpc": "2.0", "id": i, "method": method, "params": p} for i, p in enumerate(params_list)]
+    for url in rpc_candidates(chain):
+        try:
+            r = HTTP.post(url, json=body, timeout=timeout)
+            data = r.json() if r.status_code == 200 else None
+        except Exception:
+            data = None
+        if isinstance(data, list):
+            by_id = {item.get("id"): item for item in data}
+            if all(i in by_id for i in range(len(body))):
+                return [by_id[i].get("result") if "error" not in by_id[i] else None for i in range(len(body))]
+    return None
 
 _CHAINS_TTL = 3600
 _chains_lock = threading.Lock()
@@ -944,26 +1026,52 @@ def inspect_address_details(address: str, chain_id_or_name: str = "ethereum") ->
         "explorer_url": build_explorer_addr_url(chain_info.get("id"), checksum_addr)
     }
 
-    w3 = get_web3(chain_info.get("rpc"))
-    if not w3:
+    urls = rpc_candidates(chain_info.get("name") or str(chain_id_or_name))
+    if not urls:
         result["rpc_status"] = "RPC tidak tersedia untuk chain ini / No RPC for this chain"
         return result
 
-    # bytecode + balance in parallel
-    f_code = _POOL.submit(w3.eth.get_code, checksum_addr)
-    f_bal = _POOL.submit(w3.eth.get_balance, checksum_addr)
-    try:
-        is_contract = len(f_code.result(timeout=8)) > 0
-        result["is_contract"] = is_contract
-        result["target_type"] = "SMART CONTRACT (Router / Pool / Gateway)" if is_contract else "EOA (Dompet Biasa / User Wallet)"
-    except Exception as e:
-        result["rpc_error"] = str(e)[:200]
-    try:
-        symbol = chain_info.get("nativeCurrency", {}).get("symbol", "ETH")
-        result["native_balance"] = f"{Web3.from_wei(f_bal.result(timeout=8), 'ether'):.4f} {symbol}"
-    except Exception:
-        result["native_balance"] = "N/A"
+    symbol = chain_info.get("nativeCurrency", {}).get("symbol", "ETH")
+    last_error = ""
+    for url in urls:  # primary RPC first, then the PublicNode fallback
+        w3 = get_web3(url)
+        f_code = _POOL.submit(w3.eth.get_code, checksum_addr)
+        f_bal = _POOL.submit(w3.eth.get_balance, checksum_addr)
+        try:
+            code = bytes(f_code.result(timeout=8))
+        except Exception as e:
+            last_error = str(e)[:200]
+            continue
+        kind = classify_evm_code(code)
+        result["account_kind"] = kind
+        result["is_contract"] = kind == "contract"
+        result["target_type"] = {
+            "contract": "SMART CONTRACT (Router / Pool / Gateway)",
+            "smart_account": "SMART ACCOUNT (EOA + EIP-7702 delegation)",
+        }.get(kind, "EOA (Dompet Biasa / User Wallet)")
+        try:
+            result["native_balance"] = f"{Web3.from_wei(f_bal.result(timeout=8), 'ether'):.4f} {symbol}"
+        except Exception:
+            result["native_balance"] = "N/A"
+        result["rpc_used"] = url.split("/")[2]
+        return result
+    result["rpc_error"] = last_error or "Semua RPC gagal / All RPCs failed"
     return result
+
+
+EIP7702_PREFIX = bytes.fromhex("ef0100")
+
+
+def classify_evm_code(code: Any) -> str:
+    """'eoa' (no code), 'smart_account' (EIP-7702 delegated EOA: still a user wallet) or 'contract'."""
+    if isinstance(code, str):
+        code = bytes.fromhex(code[2:] if code.startswith("0x") else code) if code not in ("", "0x") else b""
+    code = bytes(code or b"")
+    if not code:
+        return "eoa"
+    if code.startswith(EIP7702_PREFIX) and len(code) == 23:
+        return "smart_account"
+    return "contract"
 
 
 # ==================== WALLET GENEALOGY, FLOW & SYBIL ANALYZER ====================

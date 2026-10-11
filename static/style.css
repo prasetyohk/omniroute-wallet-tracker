@@ -2712,3 +2712,185 @@ input[type=range]::-webkit-slider-thumb:hover {
     display: none;
   }
 }
+
+/* ==================== TAB 5: ACCOUNT TYPES, MARKS, SAVED TRACES ==================== */
+.acct-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.acct-badge.acct-eoa {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+.acct-badge.acct-contract,
+.acct-badge.acct-program,
+.acct-badge.acct-pda {
+  background: rgba(192, 132, 252, 0.18);
+  color: var(--accent-purple);
+}
+.acct-badge.acct-smart_account {
+  background: rgba(0, 240, 255, 0.14);
+  color: var(--accent-cyan);
+}
+.flow-panel-account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.flow-panel-account.acct-contract,
+.flow-panel-account.acct-program,
+.flow-panel-account.acct-pda {
+  background: rgba(192, 132, 252, 0.12);
+  color: var(--accent-purple);
+}
+.flow-panel-account.acct-smart_account {
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--accent-cyan);
+}
+.flow-legend .lg-ring {
+  border: 2px solid var(--accent-amber);
+  background: transparent !important;
+}
+.flow-legend .lg-new {
+  background: var(--accent-lime) !important;
+  box-shadow: 0 0 8px var(--accent-lime);
+}
+.flow-save-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px 16px;
+}
+.flow-save-bar .main-input {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.flow-saved-as {
+  flex: 1 1 auto;
+  color: var(--text-main);
+  font-size: 0.82rem;
+}
+.flow-saved-as i {
+  color: var(--accent-lime);
+}
+.flow-diff-notice {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-lime);
+  border-radius: var(--radius-md);
+  background: rgba(158, 255, 0, 0.06);
+  color: var(--accent-lime);
+  font-size: 0.82rem;
+}
+.flow-mark-form {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+.flow-mark-form summary {
+  color: var(--accent-amber);
+  font-weight: 700;
+  cursor: pointer;
+}
+.flow-mark-form[open] summary {
+  margin-bottom: 8px;
+}
+.flow-mark-form .main-input,
+.flow-mark-form textarea {
+  width: 100%;
+  margin-bottom: 8px;
+}
+.flow-mark-colors {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.flow-mark-colors input {
+  position: absolute;
+  opacity: 0;
+}
+.flow-mark-colors span {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.flow-mark-colors input:checked + span {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+.flow-mark-colors input:focus-visible + span {
+  outline: 2px solid var(--accent-lime);
+}
+.flow-mark-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.flow-library {
+  margin: 16px 0;
+  padding: 14px 16px;
+}
+.flow-library-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.flow-library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.flow-lib-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.25);
+}
+.flow-lib-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  color: var(--text-pure);
+  font-size: 0.86rem;
+}
+.flow-lib-meta {
+  color: var(--text-dim);
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+}
+.flow-lib-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.flow-mark-label {
+  color: var(--mark);
+  font-weight: 800;
+}

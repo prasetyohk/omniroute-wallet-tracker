@@ -79,3 +79,6 @@ coverage.xml
 nosetests.xml
 *.mo
 *.pot
+
+# Local app data (saved traces, marked addresses)
+data/

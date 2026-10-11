@@ -4,6 +4,7 @@ import time
 from flask import Flask, render_template, request, jsonify
 import relay_core
 import flow_trace
+import storage
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["JSON_SORT_KEYS"] = False
@@ -179,6 +180,62 @@ def flow_expand():
     params = _flow_params(data)
     graph = data.get("graph") if isinstance(data.get("graph"), dict) else {}
     return jsonify(flow_trace.expand_graph(graph, address, **params))
+
+
+# ---- saved traces & marked addresses (local ./data, gitignored) ----
+
+@app.route("/api/flow/saved", methods=["GET"])
+def flow_saved_list():
+    return jsonify({"success": True, "traces": storage.list_traces()})
+
+
+@app.route("/api/flow/saved", methods=["POST"])
+def flow_saved_create():
+    data = _payload()
+    snapshot = data.get("snapshot")
+    if not isinstance(snapshot, dict) or not snapshot.get("nodes"):
+        return bad_request("Belum ada hasil trace untuk disimpan / Nothing to save yet.")
+    params = data.get("params") if isinstance(data.get("params"), dict) else {}
+    try:
+        record = storage.save_trace(_str(data, "name"), params, snapshot, trace_id=_str(data, "id") or None)
+    except ValueError as e:
+        return bad_request(f"Gagal menyimpan / Cannot save: {e}")
+    return jsonify({"success": True, "trace": record})
+
+
+@app.route("/api/flow/saved/<trace_id>", methods=["GET"])
+def flow_saved_get(trace_id):
+    trace = storage.get_trace(trace_id)
+    if not trace:
+        return jsonify({"success": False, "error": "Trace tidak ditemukan / Trace not found."}), 404
+    return jsonify({"success": True, "trace": trace})
+
+
+@app.route("/api/flow/saved/<trace_id>", methods=["DELETE"])
+def flow_saved_delete(trace_id):
+    return jsonify({"success": storage.delete_trace(trace_id)})
+
+
+@app.route("/api/flow/marks", methods=["GET"])
+def flow_marks_list():
+    return jsonify({"success": True, "marks": storage.list_marks()})
+
+
+@app.route("/api/flow/marks", methods=["POST"])
+def flow_marks_set():
+    data = _payload()
+    try:
+        mark = storage.set_mark(_str(data, "chain"), _str(data, "address"), _str(data, "label"),
+                                _str(data, "color", "amber"), _str(data, "note"))
+    except ValueError as e:
+        return bad_request(str(e))
+    return jsonify({"success": True, "mark": mark})
+
+
+@app.route("/api/flow/marks", methods=["DELETE"])
+def flow_marks_delete():
+    data = _payload()
+    return jsonify({"success": storage.delete_mark(_str(data, "chain"), _str(data, "address"))})
 
 
 _PRIORITY_CHAIN_IDS = [4663, 792703809, 1, 8453, 42161, 10, 56, 137]

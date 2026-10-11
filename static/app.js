@@ -319,7 +319,53 @@ const translations = {
     flow_seed_added: "Ditambahkan ke daftar seed",
     flow_graph_btn: "Graf Aliran (Tab 5)",
     flow_graph_btn_hint: "Buka di Tab 5 untuk penelusuran multi-hop & klaster deposit CEX",
-    flow_graph_senders: "Graf semua pengirim (Tab 5)"
+    flow_graph_senders: "Graf semua pengirim (Tab 5)",
+
+    // Account types
+    acct_eoa: "EOA — dompet biasa (dikendalikan private key)",
+    acct_contract: "Smart Contract (router, pool, vault, token)",
+    acct_smart_account: "Smart Account — EOA dengan delegasi EIP-7702 (tetap dompet pengguna)",
+    acct_program: "Program Solana (kode on-chain)",
+    acct_pda: "PDA — akun milik program (vault, pool, escrow)",
+    acct_unknown: "Tipe akun belum diketahui",
+    flow_stat_contracts: "Kontrak",
+    flow_contract_stop_note: "Kontrak/program tanpa label tidak ditelusuri otomatis (biasanya pool/router). Klik Expand kalau tetap ingin menelusurinya.",
+
+    // Saved traces & marks
+    flow_saved_title: "Trace tersimpan",
+    flow_marks_title: "Alamat ditandai",
+    flow_saved_empty: "Belum ada trace tersimpan. Jalankan trace lalu klik \"Simpan trace\".",
+    flow_marks_empty: "Belum ada alamat ditandai. Klik node di graf lalu pilih \"Tandai alamat\".",
+    flow_dir_short_forward: "maju",
+    flow_dir_short_backward: "mundur",
+    flow_dir_short_both: "dua arah",
+    flow_updated: "diperbarui",
+    flow_open_snapshot: "Buka",
+    flow_open_snapshot_hint: "Tampilkan hasil yang tersimpan tanpa memanggil API",
+    flow_retrace: "Trace ulang",
+    flow_retrace_hint: "Jalankan ulang dengan pengaturan yang sama & tandai node BARU sejak disimpan",
+    flow_delete: "Hapus",
+    flow_confirm_delete: "Klik lagi untuk hapus",
+    flow_trace_this: "Trace",
+    flow_unmark: "Hapus tanda",
+    flow_save_btn: "Simpan trace",
+    flow_save_name_ph: "Nama trace (mis. Klaster Binance #1)",
+    flow_saved_as: "Tersimpan sebagai",
+    flow_snapshot_view: "tampilan snapshot",
+    flow_update_snapshot: "Perbarui snapshot",
+    flow_saved_ok: "Trace tersimpan!",
+    flow_snapshot_updated: "Snapshot diperbarui!",
+    flow_diff_text: "{nodes} node baru & {edges} aliran baru sejak disimpan ({date}). Node baru diberi tanda BARU dan cahaya hijau.",
+    lg_marked: "Ditandai",
+    lg_new: "BARU",
+    flow_mark_btn: "Tandai alamat ini",
+    flow_edit_mark: "Edit tanda",
+    flow_mark_label_ph: "Label (mis. Penipu, Dompet utama)",
+    flow_mark_note_ph: "Catatan (opsional)",
+    flow_mark_save: "Simpan tanda",
+    flow_mark_default: "Ditandai",
+    flow_marked_ok: "Alamat ditandai — akan tersorot di setiap trace",
+    flow_unmarked_ok: "Tanda dihapus"
   },
   en: {
     tagline: "Cross-Chain Swap & Bridge Destination Wallet Resolver",
@@ -640,7 +686,53 @@ const translations = {
     flow_seed_added: "Added to the seed list",
     flow_graph_btn: "Flow Graph (Tab 5)",
     flow_graph_btn_hint: "Open in Tab 5 for multi-hop tracing & CEX deposit clustering",
-    flow_graph_senders: "Graph all senders (Tab 5)"
+    flow_graph_senders: "Graph all senders (Tab 5)",
+
+    // Account types
+    acct_eoa: "EOA — regular wallet (controlled by a private key)",
+    acct_contract: "Smart Contract (router, pool, vault, token)",
+    acct_smart_account: "Smart Account — EOA with EIP-7702 delegation (still a user wallet)",
+    acct_program: "Solana Program (on-chain code)",
+    acct_pda: "PDA — program-owned account (vault, pool, escrow)",
+    acct_unknown: "Account type unknown",
+    flow_stat_contracts: "Contracts",
+    flow_contract_stop_note: "Unlabelled contracts/programs are not traced automatically (usually pools/routers). Click Expand if you still want to follow it.",
+
+    // Saved traces & marks
+    flow_saved_title: "Saved traces",
+    flow_marks_title: "Marked addresses",
+    flow_saved_empty: "No saved traces yet. Run a trace, then click \"Save trace\".",
+    flow_marks_empty: "No marked addresses yet. Click a node in the graph and choose \"Mark this address\".",
+    flow_dir_short_forward: "forward",
+    flow_dir_short_backward: "backward",
+    flow_dir_short_both: "both ways",
+    flow_updated: "updated",
+    flow_open_snapshot: "Open",
+    flow_open_snapshot_hint: "Show the saved result without calling any API",
+    flow_retrace: "Re-trace",
+    flow_retrace_hint: "Run again with the same settings & flag nodes that are NEW since saving",
+    flow_delete: "Delete",
+    flow_confirm_delete: "Click again to delete",
+    flow_trace_this: "Trace",
+    flow_unmark: "Remove mark",
+    flow_save_btn: "Save trace",
+    flow_save_name_ph: "Trace name (e.g. Binance cluster #1)",
+    flow_saved_as: "Saved as",
+    flow_snapshot_view: "snapshot view",
+    flow_update_snapshot: "Update snapshot",
+    flow_saved_ok: "Trace saved!",
+    flow_snapshot_updated: "Snapshot updated!",
+    flow_diff_text: "{nodes} new nodes & {edges} new flows since saving ({date}). New nodes are tagged NEW with a green glow.",
+    lg_marked: "Marked",
+    lg_new: "NEW",
+    flow_mark_btn: "Mark this address",
+    flow_edit_mark: "Edit mark",
+    flow_mark_label_ph: "Label (e.g. Scammer, Main wallet)",
+    flow_mark_note_ph: "Note (optional)",
+    flow_mark_save: "Save mark",
+    flow_mark_default: "Marked",
+    flow_marked_ok: "Address marked — it will be highlighted in every trace",
+    flow_unmarked_ok: "Mark removed"
   }
 };
 
@@ -2552,6 +2644,7 @@ async function ensureFlowInit() {
     if (res?.success) {
       flowConfig = res;
       onFlowChainChange();
+      refreshFlowLibrary();
     }
   } catch { /* retried next time the tab opens */ }
 }
@@ -2636,6 +2729,13 @@ async function handleFlowSubmit(e) {
     }
     flowParams = params;
     flowData = result;
+    if (pendingRetrace) {
+      result.diff = computeDiff(pendingRetrace, result);
+      flowSavedCtx = { id: pendingRetrace.id, name: pendingRetrace.name, updated: pendingRetrace.updated };
+    } else {
+      flowSavedCtx = null;
+    }
+    pendingRetrace = null;
     renderFlowResult(result, container);
   } catch (err) {
     renderError(container, t("network_error"), esc(err.message));
@@ -2691,6 +2791,7 @@ const FINDING_ICONS = {
 
 function renderFlowResult(data, container) {
   const s = data.stats || {};
+  const acctOf = Object.fromEntries((data.nodes || []).map(n => [n.id, n.account]));
   const notices = [];
   if (s.truncated) notices.push(t(s.truncate_reason === "time_budget" ? "flow_trunc_time" : "flow_trunc_nodes"));
   if ((data.notices || []).length) notices.push(t("flow_limited_notice"));
@@ -2705,8 +2806,20 @@ function renderFlowResult(data, container) {
       <div class="flow-stat"><span>${t("flow_stat_dust")}</span><strong>${s.dust_filtered}</strong></div>
       <div class="flow-stat"><span>${t("flow_stat_spoofed")}</span><strong>${s.spoofed}</strong></div>
       <div class="flow-stat"><span>${t("flow_stat_findings")}</span><strong class="text-lime">${(data.findings || []).length}</strong></div>
+      <div class="flow-stat"><span>EOA</span><strong>${s.eoa ?? "-"}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_contracts")}</span><strong style="color: var(--accent-purple);">${s.contracts ?? "-"}</strong></div>
       <div class="flow-stat-meta">${esc(data.chainName)} &bull; ${data.provider} ${elapsedBadge(s.elapsed_ms)}</div>
     </div>
+    <div class="card flow-save-bar">
+      ${flowSavedCtx ? `
+        <span class="flow-saved-as"><i class="fa-solid fa-bookmark"></i> ${t("flow_saved_as")} <strong>${flowSavedCtx.name}</strong> &bull; ${fmtDate(flowSavedCtx.updated)}${flowSavedCtx.fromSnapshot ? ` &bull; <em>${t("flow_snapshot_view")}</em>` : ""}</span>
+        <button type="button" class="icon-action-btn primary" data-action="flow-save-update"><i class="fa-solid fa-floppy-disk"></i> ${t("flow_update_snapshot")}</button>
+      ` : `
+        <input id="flowSaveName" class="main-input flow-num" maxlength="80" placeholder="${t("flow_save_name_ph")}">
+        <button type="button" class="icon-action-btn primary" data-action="flow-save"><i class="fa-solid fa-bookmark"></i> ${t("flow_save_btn")}</button>
+      `}
+    </div>
+    ${data.diff ? `<div class="flow-diff-notice"><i class="fa-solid fa-code-compare"></i> ${t("flow_diff_text").replace("{nodes}", data.diff.newNodes.length).replace("{edges}", data.diff.newEdges).replace("{date}", fmtDate(data.diff.since))}</div>` : ""}
     ${notices.length ? `<div class="flow-notice"><i class="fa-solid fa-circle-info"></i> ${notices.join(" &bull; ")}</div>` : ""}
 
     <div class="flow-graph-wrap">
@@ -2714,6 +2827,8 @@ function renderFlowResult(data, container) {
         <div class="flow-graph-toolbar">
           <div class="flow-legend">
             ${["seed", "wallet", "deposit", "cex", "hub", "bridge", "contract"].map(k => `<span><i style="background:${FLOW_COLORS[k]}"></i>${t("lg_" + k)}</span>`).join("")}
+            <span><i class="lg-ring"></i>${t("lg_marked")}</span>
+            ${data.diff ? `<span><i class="lg-new"></i>${t("lg_new")}</span>` : ""}
           </div>
           <div class="flow-toolbar-actions">
             <button type="button" class="icon-action-btn" data-action="flow-layout" title="${t("flow_layout_toggle")}"><i class="fa-solid fa-diagram-project"></i> ${t("flow_layout_toggle")}</button>
@@ -2778,8 +2893,8 @@ function renderFlowResult(data, container) {
           <tbody>
             ${data.edges.slice(0, 60).map(e => `
               <tr class="hover-row">
-                <td><button type="button" class="addr-copy-btn" data-copy="${e.from}" title="${e.from}"><span>${shortAddr(e.from)}</span><i class="fa-regular fa-copy"></i></button></td>
-                <td><button type="button" class="addr-copy-btn" data-copy="${e.to}" title="${e.to}"><span>${shortAddr(e.to)}</span><i class="fa-regular fa-copy"></i></button></td>
+                <td><button type="button" class="addr-copy-btn" data-copy="${e.from}" title="${e.from}"><span>${shortAddr(e.from)}</span><i class="fa-regular fa-copy"></i></button>${accountBadge(acctOf[e.from])}</td>
+                <td><button type="button" class="addr-copy-btn" data-copy="${e.to}" title="${e.to}"><span>${shortAddr(e.to)}</span><i class="fa-regular fa-copy"></i></button>${accountBadge(acctOf[e.to])}</td>
                 <td>${fmtAmount(e.amount)} ${e.token}${e.count > 1 ? ` <small>(${e.count} tx)</small>` : ""}</td>
                 <td>$${fmtUsd(e.usd)}</td>
                 <td>${e.txUrl ? `<a href="${e.txUrl}" target="_blank" rel="noopener noreferrer" class="icon-action-btn-mini" title="Explorer"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ""}
@@ -2806,19 +2921,25 @@ async function drawFlowGraph(data) {
     return;
   }
   const reverse = data.direction === "backward";
+  const newIds = new Set(data.diff?.newNodes || []);
   const nodes = data.nodes.map(n => {
     const cat = flowNodeCategory(n);
     const color = FLOW_COLORS[cat];
-    const name = n.label ? unesc(n.label) : shortAddr(n.address);
+    const id = unesc(n.id);
+    const mark = getMark(n.address, data.chain);
+    const acctTag = n.account === "smart_account" ? " (7702)" : (["contract", "program", "pda"].includes(n.account) && !n.label ? " [SC]" : "");
+    const name = (n.label ? unesc(n.label) : shortAddr(n.address)) + acctTag;
+    const base = n.label && cat !== "wallet" ? `${name}\n${shortAddr(n.address)}` : name;
+    const border = mark ? MARK_COLORS[mark.color] : ((n.roles || []).includes("fetch_failed") ? "#ef4444" : color);
     return {
-      id: unesc(n.id),
-      label: n.label && cat !== "wallet" ? `${name}\n${shortAddr(n.address)}` : name,
-      title: `${unesc(n.address)}\n${t("lg_" + cat)}${n.cex ? " -> " + unesc(n.cex) : ""}\nIn $${fmtUsd(n.inUsd)} / Out $${fmtUsd(n.outUsd)}`,
-      shape: cat === "cex" ? "diamond" : (cat === "hub" ? "square" : (cat === "seed" ? "star" : "dot")),
+      id,
+      label: (mark ? `⚑ ${unesc(mark.label)}\n` : "") + (newIds.has(id) ? `${t("lg_new")} • ` : "") + base,
+      title: `${unesc(n.address)}\n${t("lg_" + cat)} • ${accountLabel(n.account)}${n.cex ? " -> " + unesc(n.cex) : ""}${mark ? "\n⚑ " + unesc(mark.label) + (mark.note ? ": " + unesc(mark.note) : "") : ""}\nIn $${fmtUsd(n.inUsd)} / Out $${fmtUsd(n.outUsd)}`,
+      shape: cat === "cex" ? "diamond" : (cat === "hub" ? "square" : (cat === "seed" ? "star" : (cat === "contract" ? "hexagon" : "dot"))),
       size: cat === "cex" ? 26 : (cat === "seed" ? 24 : (cat === "deposit" ? 18 : 13)),
-      color: { background: color, border: (n.roles || []).includes("fetch_failed") ? "#ef4444" : color,
-               highlight: { background: "#ffffff", border: color } },
-      borderWidth: n.expanded ? 1 : 3,
+      color: { background: color, border, highlight: { background: "#ffffff", border } },
+      shadow: newIds.has(id) ? { enabled: true, color: "rgba(158,255,0,0.9)", size: 18, x: 0, y: 0 } : false,
+      borderWidth: mark ? 5 : (n.expanded ? 1 : 3),
       shapeProperties: { borderDashes: n.expanded || n.type !== "wallet" ? false : [4, 3] },
       font: { color: "#e2e8f0", size: 12, face: "JetBrains Mono" },
       level: reverse ? -n.depth : n.depth
@@ -2877,13 +2998,19 @@ function showFlowNodePanel(id) {
   const ins = flowData.edges.filter(e => unesc(e.to) === id);
   const outs = flowData.edges.filter(e => unesc(e.from) === id);
   const firstIn = [...ins].sort((a, b) => (a.ts || 0) - (b.ts || 0))[0];
-  const canExpand = !n.expanded && !["cex", "bridge", "contract", "mixer"].includes(n.type) && !n.hub;
+  // unlabelled contracts/programs stop the automatic trace, but can still be expanded by hand
+  const unlabelledCode = n.type === "contract" && !n.label && ["contract", "program", "pda"].includes(n.account);
+  const canExpand = !n.expanded && !n.hub && (unlabelledCode || !["cex", "bridge", "contract", "mixer"].includes(n.type));
   panel.innerHTML = `
     <div class="flow-panel-head">
       <span class="flow-panel-dot" style="background:${FLOW_COLORS[cat]}"></span>
       <strong>${n.label || t("lg_" + cat)}</strong>
     </div>
     <button type="button" class="flow-panel-addr" data-copy="${n.address}" data-copy-label="${t("col_wallet_addr")}" title="${t("copy_btn")}">${n.address} <i class="fa-regular fa-copy"></i></button>
+    <div class="flow-panel-account acct-${n.account || "unknown"}">
+      <i class="fa-solid ${["contract", "program", "pda"].includes(n.account) ? "fa-file-code" : (n.account === "smart_account" ? "fa-user-gear" : "fa-user")}"></i>
+      <span>${accountLabel(n.account)}</span>
+    </div>
     <div class="flow-panel-tags">
       <span class="proto-tag">${t("lg_" + cat)}</span>
       <span class="proto-tag">hop ${n.depth}</span>
@@ -2902,7 +3029,8 @@ function showFlowNodePanel(id) {
       ${firstIn?.tx ? `<button type="button" class="icon-action-btn" data-action="track-tx" data-tx="${firstIn.tx}"><i class="fa-solid fa-route"></i> ${t("flow_track_first_in")}</button>` : ""}
       <button type="button" class="icon-action-btn" data-action="flow-add-seed" data-addr="${n.address}"><i class="fa-solid fa-seedling"></i> ${t("flow_add_seed")}</button>
     </div>
-    ${!n.expanded && canExpand ? `<p class="flow-panel-note">${t("flow_not_expanded")}</p>` : ""}
+    ${!n.expanded && canExpand ? `<p class="flow-panel-note">${t(unlabelledCode ? "flow_contract_stop_note" : "flow_not_expanded")}</p>` : ""}
+    ${markFormHtml(n)}
   `;
   if (window.matchMedia("(max-width: 900px)").matches) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
@@ -2910,7 +3038,8 @@ function showFlowNodePanel(id) {
 async function expandFlowNode(address) {
   address = unesc(address);
   const n = findFlowNode(address);
-  if (!flowData || !n || n.expanded || n.hub || n.type !== "wallet") return;
+  const manualContract = n && n.type === "contract" && !n.label;
+  if (!flowData || !n || n.expanded || n.hub || (n.type !== "wallet" && !manualContract)) return;
   showToast(t("flow_expanding"));
   const graph = {
     chain: flowData.chain,
@@ -2974,6 +3103,7 @@ async function openFlow(seeds, chain, opts = {}) {
 }
 
 function handleFlowAction(action, el) {
+  if (handleLibraryAction(action, el)) return true;
   switch (action) {
     case "flow-sample": {
       const s = FLOW_SAMPLES[el.dataset.sample];
@@ -3076,3 +3206,258 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   if (store.get("omniroute_tab", "") === "flow") ensureFlowInit();
 });
+
+// ==================== TAB 5: SAVED TRACES & MARKED ADDRESSES ====================
+
+const MARK_COLORS = { red: "#f87171", amber: "#fbbf24", lime: "#9eff00", cyan: "#00f0ff", purple: "#c084fc" };
+const ACCOUNT_LABEL_KEYS = { eoa: "acct_eoa", contract: "acct_contract", smart_account: "acct_smart_account",
+                             program: "acct_program", pda: "acct_pda", unknown: "acct_unknown" };
+let flowMarks = {};
+let flowSaved = [];
+let flowSavedCtx = null;     // {id, name, updated} when the graph on screen belongs to a saved trace
+let pendingRetrace = null;   // saved trace being re-run, used to diff the fresh result
+
+function markKey(chain, address) {
+  const a = unesc(address || "").trim();
+  return `${unesc(chain || "").toLowerCase()}:${a.startsWith("0x") ? a.toLowerCase() : a}`;
+}
+
+function getMark(address, chain = flowData?.chain) {
+  return flowMarks[markKey(chain, address)] || null;
+}
+
+function accountLabel(kind) {
+  return t(ACCOUNT_LABEL_KEYS[kind] || "acct_unknown");
+}
+
+function accountBadge(kind) {
+  if (!kind || kind === "unknown") return "";
+  const code = { eoa: "EOA", smart_account: "7702", contract: "SC", program: "PRG", pda: "PDA" }[kind] || kind;
+  return `<span class="acct-badge acct-${kind}" title="${accountLabel(kind)}">${code}</span>`;
+}
+
+function fmtDate(ts) {
+  return ts ? new Date(ts * 1000).toLocaleString(currentLang === "id" ? "id-ID" : "en-US", { dateStyle: "medium", timeStyle: "short" }) : "-";
+}
+
+async function refreshFlowLibrary() {
+  try {
+    const [saved, marks] = await Promise.all([
+      apiFetch("flowsaved", "/api/flow/saved"),
+      apiFetch("flowmarks", "/api/flow/marks")
+    ]);
+    if (saved?.success) flowSaved = saved.traces;
+    if (marks?.success) flowMarks = marks.marks;
+  } catch { /* library is optional */ }
+  renderFlowLibrary();
+}
+
+function renderFlowLibrary() {
+  const savedBox = document.getElementById("flowSavedList");
+  const marksBox = document.getElementById("flowMarksList");
+  if (!savedBox || !marksBox) return;
+  document.getElementById("flowSavedCount").textContent = flowSaved.length;
+  const markList = Object.values(flowMarks).sort((a, b) => b.updated - a.updated);
+  document.getElementById("flowMarksCount").textContent = markList.length;
+
+  savedBox.innerHTML = flowSaved.length ? flowSaved.map(tr => `
+    <div class="flow-lib-item">
+      <div class="flow-lib-main">
+        <strong>${tr.name}</strong>
+        <span class="flow-lib-meta">${esc(tr.chain)} &bull; ${(tr.params?.seeds || []).length} seed &bull; ${tr.params?.depth || "?"} hop &bull; ${t("flow_dir_short_" + (tr.params?.direction || "forward"))}</span>
+        <span class="flow-lib-meta">${tr.summary.nodes} node &bull; ${tr.summary.findings} ${t("flow_stat_findings").toLowerCase()} &bull; ${tr.summary.clusters} cluster &bull; ${t("flow_updated")} ${fmtDate(tr.updated)}</span>
+      </div>
+      <div class="flow-lib-actions">
+        <button type="button" class="icon-action-btn" data-action="flow-saved-open" data-id="${tr.id}" title="${t("flow_open_snapshot_hint")}"><i class="fa-regular fa-folder-open"></i> ${t("flow_open_snapshot")}</button>
+        <button type="button" class="icon-action-btn primary" data-action="flow-saved-retrace" data-id="${tr.id}" title="${t("flow_retrace_hint")}"><i class="fa-solid fa-rotate"></i> ${t("flow_retrace")}</button>
+        <button type="button" class="icon-action-btn" data-action="flow-saved-delete" data-id="${tr.id}" title="${t("flow_delete")}"><i class="fa-regular fa-trash-can"></i></button>
+      </div>
+    </div>`).join("") : `<p class="flow-empty">${t("flow_saved_empty")}</p>`;
+
+  marksBox.innerHTML = markList.length ? markList.map(m => `
+    <div class="flow-lib-item">
+      <div class="flow-lib-main">
+        <span class="flow-mark-label" style="--mark:${MARK_COLORS[m.color] || MARK_COLORS.amber}"><i class="fa-solid fa-flag"></i> ${m.label}</span>
+        <button type="button" class="addr-copy-btn" data-copy="${m.address}" title="${m.address}"><span>${truncateAddress(m.address, 8)}</span><i class="fa-regular fa-copy"></i></button>
+        <span class="flow-lib-meta">${m.chain}${m.note ? " &bull; " + m.note : ""}</span>
+      </div>
+      <div class="flow-lib-actions">
+        <button type="button" class="icon-action-btn" data-action="flow-mark-trace" data-addr="${m.address}" data-chain="${m.chain}"><i class="fa-solid fa-circle-nodes"></i> ${t("flow_trace_this")}</button>
+        <button type="button" class="icon-action-btn" data-action="flow-mark-delete" data-addr="${m.address}" data-chain="${m.chain}" title="${t("flow_unmark")}"><i class="fa-regular fa-trash-can"></i></button>
+      </div>
+    </div>`).join("") : `<p class="flow-empty">${t("flow_marks_empty")}</p>`;
+}
+
+function setFlowFormFromParams(p) {
+  const chainSel = document.getElementById("flowChain");
+  chainSel.value = p.chain || chainSel.value;
+  onFlowChainChange();
+  document.getElementById("flowSeeds").value = (p.seeds || []).map(unesc).join("\n");
+  document.getElementById("flowDirection").value = p.direction || "forward";
+  for (const [id, val] of [["flowDepth", p.depth], ["flowFanout", p.fanout]]) {
+    if (!val) continue;
+    const el = document.getElementById(id);
+    el.value = Math.min(Number(val), Number(el.max));
+    document.getElementById(id + "Val").textContent = el.value;
+  }
+  if (p.min_native !== undefined && p.min_native !== null && p.min_native !== "") document.getElementById("flowMinNative").value = p.min_native;
+  if (p.min_stable_usd !== undefined && p.min_stable_usd !== null) document.getElementById("flowMinStable").value = p.min_stable_usd;
+  if (Array.isArray(p.tokens) && p.tokens.length) {
+    document.querySelectorAll("#flowTokens input").forEach(i => { i.checked = p.tokens.includes(i.value); });
+  }
+}
+
+async function loadSavedTrace(id) {
+  const res = await apiFetch("flowsavedget", `/api/flow/saved/${encodeURIComponent(unesc(id))}`);
+  if (!res?.success) {
+    showToast(res ? unesc(res.error) : t("generic_error"));
+    return null;
+  }
+  return res.trace;
+}
+
+async function openSavedTrace(id) {
+  const tr = await loadSavedTrace(id);
+  if (!tr) return;
+  await ensureFlowInit();
+  setFlowFormFromParams(tr.params || {});
+  flowParams = { ...flowFormParams() };
+  flowSavedCtx = { id: tr.id, name: tr.name, updated: tr.updated, fromSnapshot: true };
+  flowData = tr.snapshot;
+  renderFlowResult(flowData, document.getElementById("flowResultContainer"));
+  document.getElementById("flowResultContainer").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function retraceSaved(id) {
+  const tr = await loadSavedTrace(id);
+  if (!tr) return;
+  await ensureFlowInit();
+  setFlowFormFromParams(tr.params || {});
+  pendingRetrace = {
+    id: tr.id, name: tr.name, updated: tr.updated,
+    oldNodes: new Set((tr.snapshot.nodes || []).map(n => unesc(n.id))),
+    oldEdges: new Set((tr.snapshot.edges || []).map(e => `${unesc(e.from)}>${unesc(e.to)}>${e.token}`))
+  };
+  submitForm("flowForm");
+  document.getElementById("flowResultContainer").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// What changed since the saved snapshot: nodes/edges that did not exist before.
+function computeDiff(ctx, data) {
+  const newNodes = data.nodes.map(n => unesc(n.id)).filter(id => !ctx.oldNodes.has(id));
+  const newEdges = data.edges.filter(e => !ctx.oldEdges.has(`${unesc(e.from)}>${unesc(e.to)}>${e.token}`)).length;
+  return { since: ctx.updated, newNodes, newEdges };
+}
+
+async function saveCurrentTrace(update = false) {
+  if (!flowData) return;
+  const nameEl = document.getElementById("flowSaveName");
+  const name = update ? (flowSavedCtx?.name ? unesc(flowSavedCtx.name) : "") : (nameEl?.value || "").trim();
+  const params = { ...(flowParams || flowFormParams()), seeds: flowData.seeds.map(unesc) };
+  const snapshot = deepUnesc({ ...flowData, diff: undefined });
+  try {
+    const res = await apiFetch("flowsave", "/api/flow/saved", postJSON({
+      name, params, snapshot, id: update && flowSavedCtx ? unesc(flowSavedCtx.id) : ""
+    }));
+    if (!res?.success) {
+      showToast(res ? unesc(res.error) : t("generic_error"));
+      return;
+    }
+    flowSavedCtx = { id: res.trace.id, name: res.trace.name, updated: res.trace.updated };
+    if (flowData.diff) delete flowData.diff;
+    showToast(update ? t("flow_snapshot_updated") : t("flow_saved_ok"));
+    renderFlowResult(flowData, document.getElementById("flowResultContainer"));
+    refreshFlowLibrary();
+  } catch (err) {
+    showToast(err.message);
+  }
+}
+
+async function saveMark(address) {
+  const panel = document.getElementById("flowNodePanel");
+  const label = panel.querySelector("#flowMarkLabel")?.value.trim() || t("flow_mark_default");
+  const color = panel.querySelector("input[name='flowMarkColor']:checked")?.value || "amber";
+  const note = panel.querySelector("#flowMarkNote")?.value.trim() || "";
+  const res = await apiFetch("flowmarkset", "/api/flow/marks", postJSON({ chain: unesc(flowData.chain), address: unesc(address), label, color, note }));
+  if (!res?.success) {
+    showToast(res ? unesc(res.error) : t("generic_error"));
+    return;
+  }
+  flowMarks[markKey(flowData.chain, address)] = res.mark;
+  showToast(t("flow_marked_ok"));
+  renderFlowLibrary();
+  redrawKeepingPanel(unesc(address));
+}
+
+async function deleteMark(address, chain) {
+  const res = await apiFetch("flowmarkdel", "/api/flow/marks", { method: "DELETE", body: JSON.stringify({ chain: unesc(chain), address: unesc(address) }) });
+  if (res?.success) {
+    delete flowMarks[markKey(chain, address)];
+    showToast(t("flow_unmarked_ok"));
+    renderFlowLibrary();
+    if (flowData) redrawKeepingPanel(unesc(address));
+  }
+}
+
+function redrawKeepingPanel(address) {
+  if (!flowData) return;
+  drawFlowGraph(flowData).then(() => {
+    if (findFlowNode(address)) {
+      selectFlowNodes([address]);
+      showFlowNodePanel(address);
+    }
+  });
+}
+
+function markFormHtml(n) {
+  const m = getMark(n.address);
+  return `
+    <details class="flow-mark-form" ${m ? "open" : ""}>
+      <summary><i class="fa-solid fa-flag"></i> ${m ? t("flow_edit_mark") : t("flow_mark_btn")}</summary>
+      <input id="flowMarkLabel" class="main-input flow-num" maxlength="40" placeholder="${t("flow_mark_label_ph")}" value="${m ? m.label : ""}">
+      <div class="flow-mark-colors">
+        ${Object.entries(MARK_COLORS).map(([k, c]) => `
+          <label title="${k}"><input type="radio" name="flowMarkColor" value="${k}" ${(m?.color || "amber") === k ? "checked" : ""}><span style="background:${c}"></span></label>`).join("")}
+      </div>
+      <textarea id="flowMarkNote" class="batch-textarea" rows="2" maxlength="300" placeholder="${t("flow_mark_note_ph")}">${m ? m.note : ""}</textarea>
+      <div class="flow-mark-buttons">
+        <button type="button" class="icon-action-btn primary" data-action="flow-mark-save" data-addr="${n.address}"><i class="fa-solid fa-check"></i> ${t("flow_mark_save")}</button>
+        ${m ? `<button type="button" class="icon-action-btn" data-action="flow-mark-delete" data-addr="${n.address}" data-chain="${flowData.chain}"><i class="fa-regular fa-trash-can"></i> ${t("flow_unmark")}</button>` : ""}
+      </div>
+    </details>`;
+}
+
+function handleLibraryAction(action, el) {
+  switch (action) {
+    case "flow-lib-tab": {
+      const saved = el.dataset.tab === "saved";
+      document.getElementById("flowSavedList").style.display = saved ? "" : "none";
+      document.getElementById("flowMarksList").style.display = saved ? "none" : "";
+      document.getElementById("flowLibSavedBtn").classList.toggle("active", saved);
+      document.getElementById("flowLibMarksBtn").classList.toggle("active", !saved);
+      return true;
+    }
+    case "flow-save": saveCurrentTrace(false); return true;
+    case "flow-save-update": saveCurrentTrace(true); return true;
+    case "flow-saved-open": openSavedTrace(el.dataset.id); return true;
+    case "flow-saved-retrace": retraceSaved(el.dataset.id); return true;
+    case "flow-saved-delete":
+      // two-step confirm without a blocking dialog
+      if (el.dataset.armed !== "1") {
+        el.dataset.armed = "1";
+        el.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${t("flow_confirm_delete")}`;
+        setTimeout(() => { if (el.isConnected) { el.dataset.armed = ""; el.innerHTML = '<i class="fa-regular fa-trash-can"></i>'; } }, 3000);
+        return true;
+      }
+      apiFetch("flowsaveddel", `/api/flow/saved/${encodeURIComponent(unesc(el.dataset.id))}`, { method: "DELETE" })
+        .then(() => {
+          if (flowSavedCtx && unesc(flowSavedCtx.id) === unesc(el.dataset.id)) flowSavedCtx = null;
+          refreshFlowLibrary();
+        });
+      return true;
+    case "flow-mark-save": saveMark(el.dataset.addr); return true;
+    case "flow-mark-delete": deleteMark(el.dataset.addr, el.dataset.chain); return true;
+    case "flow-mark-trace": openFlow([el.dataset.addr], el.dataset.chain); return true;
+    default: return false;
+  }
+}

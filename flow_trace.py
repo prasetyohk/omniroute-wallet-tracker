@@ -365,6 +365,80 @@ def node_type(address: str) -> Tuple[str, Optional[str]]:
     return mapping.get(cat, "wallet"), cls.get("name")
 
 
+# ==================== ACCOUNT TYPE (EOA vs SMART CONTRACT) ====================
+# EVM   : eth_getCode -> "eoa" | "smart_account" (EIP-7702 delegated EOA) | "contract"
+# Solana: getMultipleAccounts owner/executable -> "eoa" (System-owned wallet) | "program" | "pda"
+#         (account owned by a program: vault, pool, token/escrow account)
+SOLANA_SYSTEM_PROGRAM = "11111111111111111111111111111111"
+ACCOUNT_KINDS_CODE = {"contract", "program", "pda"}   # not user wallets -> not auto-traversed
+_ACCOUNT_CACHE: Dict[Tuple[str, str], str] = {}
+
+
+def classify_solana_account(value: Optional[Dict[str, Any]]) -> str:
+    if not value:
+        return "eoa"  # no account data: an unfunded/closed plain address
+    if value.get("executable"):
+        return "program"
+    return "eoa" if value.get("owner") == SOLANA_SYSTEM_PROGRAM else "pda"
+
+
+def detect_account_kinds(chain: str, addresses: List[str]) -> Dict[str, str]:
+    """Batch account-type lookup (cached). Unknown/failed lookups are simply left out."""
+    out: Dict[str, str] = {}
+    todo = []
+    for a in addresses:
+        hit = _ACCOUNT_CACHE.get((chain, a))
+        if hit:
+            out[a] = hit
+        elif a not in todo:
+            todo.append(a)
+    if chain == "solana":
+        for i in range(0, len(todo), 100):
+            chunk = todo[i:i + 100]
+            res = rc.rpc_batch("solana", "getMultipleAccounts",
+                               [[chunk, {"encoding": "base64", "dataSlice": {"offset": 0, "length": 0}}]])
+            values = ((res or [None])[0] or {}).get("value")
+            if isinstance(values, list) and len(values) == len(chunk):
+                for a, v in zip(chunk, values):
+                    out[a] = classify_solana_account(v)
+    else:
+        for i in range(0, len(todo), 50):
+            chunk = todo[i:i + 50]
+            res = rc.rpc_batch(chain, "eth_getCode", [[a, "latest"] for a in chunk])
+            for a, code in zip(chunk, res or []):
+                if isinstance(code, str):
+                    out[a] = rc.classify_evm_code(code)
+    for a in todo:
+        if a in out:
+            _ACCOUNT_CACHE[(chain, a)] = out[a]
+    return out
+
+
+def account_counts(nodes) -> Dict[str, int]:
+    counts = {"eoa": 0, "contracts": 0, "smart_accounts": 0}
+    for n in nodes:
+        kind = n.get("account")
+        if kind == "eoa":
+            counts["eoa"] += 1
+        elif kind == "smart_account":
+            counts["smart_accounts"] += 1
+        elif kind in ACCOUNT_KINDS_CODE:
+            counts["contracts"] += 1
+    return counts
+
+
+def apply_account_kinds(nodes: Dict[str, Dict[str, Any]], kinds: Dict[str, str]) -> None:
+    for addr, kind in kinds.items():
+        n = nodes.get(addr)
+        if not n:
+            continue
+        n["account"] = kind
+        # An unlabelled contract / program / PDA is infrastructure: shown, but not walked through
+        # automatically (DEX pools and routers would explode the graph). Seeds are always traced.
+        if kind in ACCOUNT_KINDS_CODE and n["type"] == "wallet" and not n["isSeed"]:
+            n["type"] = "contract"
+
+
 def normalize_address(chain: str, address: str) -> Optional[str]:
     address = (address or "").strip()
     if chain == "solana":
@@ -385,8 +459,10 @@ def trace_flow(
     max_nodes: int = MAX_NODES,
     time_budget: float = TIME_BUDGET_S,
     workers: Optional[int] = None,
+    account_detector: Optional[Callable[[str, List[str]], Dict[str, str]]] = None,
 ) -> Dict[str, Any]:
     started = time.time()
+    detect = account_detector or detect_account_kinds
     chain = (chain or "").lower().strip()
     if chain not in TARGET_TOKENS:
         return {"success": False, "error": f"Chain '{chain}' belum didukung untuk graph tracing. / Chain not supported: {', '.join(SUPPORTED_CHAINS)}."}
@@ -434,6 +510,7 @@ def trace_flow(
         ntype, label = node_type(addr)
         nodes[addr] = {"id": addr, "address": addr, "type": ntype, "label": label, "depth": d, "isSeed": seed,
                        "expanded": False, "hub": False, "roles": [], "inUsd": 0.0, "outUsd": 0.0, "cex": None,
+                       "account": "unknown",
                        "explorerUrl": rc.build_explorer_addr_url(rc.get_chain_info(chain).get("id"), addr)}
         return True
 
@@ -455,6 +532,10 @@ def trace_flow(
     frontier = list(clean_seeds)
     n_workers = max(1, workers or pinfo["workers"])
     for level in range(depth):
+        try:
+            apply_account_kinds(nodes, detect(chain, [a for a in frontier if nodes[a]["account"] == "unknown"]))
+        except Exception:
+            pass  # account typing is best-effort; tracing continues without it
         to_expand = [a for a in frontier if nodes[a]["type"] not in TERMINAL_TYPES and not nodes[a]["hub"]
                      and not nodes[a]["expanded"]]
         if not to_expand:
@@ -555,6 +636,11 @@ def trace_flow(
                         next_frontier.append(cp)
         frontier = next_frontier
 
+    try:
+        apply_account_kinds(nodes, detect(chain, [a for a, n in nodes.items() if n["account"] == "unknown"]))
+    except Exception:
+        pass
+
     # volumes
     for e in edges.values():
         if e["from"] in nodes:
@@ -592,7 +678,7 @@ def trace_flow(
         "edges": edge_list,
         "findings": findings,
         "clusters": clusters,
-        "stats": {**stats, "nodes": len(nodes), "edges": len(edge_list),
+        "stats": {**stats, "nodes": len(nodes), "edges": len(edge_list), **account_counts(nodes.values()),
                   "elapsed_ms": int((time.time() - started) * 1000)},
     }
 
@@ -602,12 +688,14 @@ MAX_GRAPH_NODES = 300
 
 
 def expand_graph(graph: Dict[str, Any], address: str, fetcher: Callable[[str, str], Any] = default_fetcher,
+                 account_detector: Optional[Callable[[str, List[str]], Dict[str, str]]] = None,
                  **params: Any) -> Dict[str, Any]:
     """Trace one more hop from `address` and merge it into an existing graph, then re-run every
     detector on the merged graph (a cluster can span the old and the new part)."""
     chain = (params.get("chain") or graph.get("chain") or "").lower()
     params = {**params, "chain": chain, "depth": 1}
-    sub = trace_flow([address], fetcher=fetcher, **params)
+    detect = account_detector or detect_account_kinds
+    sub = trace_flow([address], fetcher=fetcher, account_detector=detect, **params)
     if not sub.get("success"):
         return sub
 
@@ -622,7 +710,7 @@ def expand_graph(graph: Dict[str, Any], address: str, fetcher: Callable[[str, st
                        "depth": int(n.get("depth") or 0), "isSeed": addr in seeds,
                        "expanded": bool(n.get("expanded")), "hub": bool(n.get("hub")),
                        "roles": [r for r in n.get("roles") or [] if r in ("hub", "fetch_failed")],
-                       "inUsd": 0.0, "outUsd": 0.0, "cex": None,
+                       "inUsd": 0.0, "outUsd": 0.0, "cex": None, "account": "unknown",
                        "explorerUrl": rc.build_explorer_addr_url(rc.get_chain_info(chain).get("id"), addr)}
     base_depth = nodes.get(sub["seeds"][0], {}).get("depth", 0)
 
@@ -648,6 +736,10 @@ def expand_graph(graph: Dict[str, Any], address: str, fetcher: Callable[[str, st
                           "usd": float(e.get("usd") or 0), "count": int(e.get("count") or 0),
                           "tx": str(e.get("tx") or ""), "ts": int(e.get("ts") or 0), "txUrl": e.get("txUrl", "")}
 
+    try:  # cached lookups: only nodes never seen before cost an RPC call
+        apply_account_kinds(nodes, detect(chain, [a for a, n in nodes.items() if n.get("account", "unknown") == "unknown"]))
+    except Exception:
+        pass
     for n in nodes.values():
         n["roles"] = [r for r in n["roles"] if r not in DETECTOR_ROLES]
         n["clusters"], n["cex"], n["inUsd"], n["outUsd"] = [], None, 0.0, 0.0
@@ -661,7 +753,7 @@ def expand_graph(graph: Dict[str, Any], address: str, fetcher: Callable[[str, st
     edge_list = sorted(edges.values(), key=lambda x: -x["usd"])
     return {**sub, "seeds": seeds or sub["seeds"], "expandedAddress": sub["seeds"][0],
             "nodes": list(nodes.values()), "edges": edge_list, "findings": findings, "clusters": clusters,
-            "stats": {**sub["stats"], "nodes": len(nodes), "edges": len(edge_list),
+            "stats": {**sub["stats"], "nodes": len(nodes), "edges": len(edge_list), **account_counts(nodes.values()),
                       "addedNodes": len(nodes) - len(graph.get("nodes") or [])}}
 
 
