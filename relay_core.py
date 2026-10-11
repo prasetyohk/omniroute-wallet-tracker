@@ -25,7 +25,24 @@ HTTP.mount("https://", _adapter)
 HTTP.mount("http://", _adapter)
 HTTP.headers.update({"User-Agent": "Mozilla/5.0 (OmniRoute)"})
 
-SOLANA_RPC = "https://api.mainnet-beta.solana.com"
+def load_env_value(name: str) -> str:
+    """Value from the environment, else from the project's gitignored .env file."""
+    value = os.environ.get(name, "").strip()
+    if value:
+        return value
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    try:
+        with open(env_path, encoding="utf-8") as fh:
+            for line in fh:
+                key, _, val = line.strip().partition("=")
+                if key.strip() == name:
+                    return val.strip().strip('"').strip("'")
+    except OSError:
+        pass
+    return ""
+
+
+SOLANA_RPC = load_env_value("SOLANA_RPC_URL") or "https://api.mainnet-beta.solana.com"
 SOLANA_ADDR_RE = re.compile(r"^(?!0x)[1-9A-HJ-NP-Za-km-z]{32,44}$")
 SOURCE_DOWN_ERROR = ("Sumber data (Blockscout) tidak merespons — kemungkinan rate-limit. Coba lagi dalam 1 menit. "
                      "/ Data source (Blockscout) did not respond — likely rate-limited. Try again in a minute.")
@@ -156,7 +173,17 @@ KNOWN_ENTITIES = {
     "0x722122dF12D4e14e13Ac3b6895a86e84145b6967": {"name": "Tornado.Cash: Governance", "type": "mixer", "is_noisy": False},
     "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b": {"name": "Tornado.Cash: Router", "type": "mixer", "is_noisy": False},
     "0x47CE0C6eD5B0Ce3d3A51fdb1C52DC66a7c3c2936": {"name": "Tornado.Cash: 0.1 ETH", "type": "mixer", "is_noisy": False},
-    "0x910Cbd523D972eb0a6f4cAe4618aD62622b39DbF": {"name": "Tornado.Cash: 1 ETH", "type": "mixer", "is_noisy": False}
+    "0x910Cbd523D972eb0a6f4cAe4618aD62622b39DbF": {"name": "Tornado.Cash: 1 ETH", "type": "mixer", "is_noisy": False},
+    # Solana CEX hot wallets (public explorer tags; each checked to be a live high-volume account)
+    "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM": {"name": "Binance Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9": {"name": "Binance Hot Wallet 2 (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "H8sMJSCQxfKiFTCfDR3DUMLPwcRbM61LGFJ8N4dK3WjS": {"name": "Coinbase Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "2AQdpHJ2JpcEgPiATUXjQxA8QmafFegfQwSLWSprPicm": {"name": "Coinbase Hot Wallet 2 (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "GJRs4FwHtemZ5ZE9x3FNvJ8TMwitKTh21yxdRPqn7npE": {"name": "Coinbase Hot Wallet 3 (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "AC5RDfQFmDS1deWZos921JfqscXdByf8BKHs5ACWjtW2": {"name": "Bybit Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR": {"name": "Bitget Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ": {"name": "MEXC Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True},
+    "u6PJ8DtQuPFnfmwHbGFULQ4u4EgjDiyYKjVEsynXq2w": {"name": "Gate.io Hot Wallet (Solana)", "type": "cex_hot_wallet", "is_noisy": True}
 }
 
 _BRIDGE_KEYWORDS = ("Relay", "Across", "Li.Fi", "Stargate")
@@ -314,7 +341,8 @@ def get_all_chains() -> Dict[int, Dict[str, Any]]:
                 "displayName": c.get("displayName") or c.get("name") or base.get("displayName", str(cid)),
                 "explorerUrl": c.get("explorerUrl") or base.get("explorerUrl", ""),
                 # keep our known-good public RPC when we have one
-                "rpc": base.get("rpc") or c.get("httpRpcUrl", ""),
+                "rpc": load_env_value(f"RPC_{str(c.get('name') or base.get('name', '')).upper()}")
+                       or base.get("rpc") or c.get("httpRpcUrl", ""),
                 "iconUrl": c.get("iconUrl") or base.get("iconUrl", ""),
                 "nativeCurrency": base.get("nativeCurrency") or {"symbol": currency.get("symbol", "ETH"), "decimals": currency.get("decimals", 18)},
                 "blockscoutApi": base.get("blockscoutApi", ""),
@@ -524,24 +552,7 @@ def _parse_relay_request(req: Dict[str, Any], tx_hash: str = "") -> Dict[str, An
     }
 
 
-def _load_relay_api_key() -> str:
-    """RELAY_API_KEY from the environment, else from the project's .env file (gitignored)."""
-    key = os.environ.get("RELAY_API_KEY", "").strip()
-    if key:
-        return key
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
-    try:
-        with open(env_path, encoding="utf-8") as fh:
-            for line in fh:
-                name, _, value = line.strip().partition("=")
-                if name.strip() == "RELAY_API_KEY":
-                    return value.strip().strip('"').strip("'")
-    except OSError:
-        pass
-    return ""
-
-
-RELAY_API_KEY = _load_relay_api_key()
+RELAY_API_KEY = load_env_value("RELAY_API_KEY")
 RELAY_V2_RETIREMENT = "2026-11-24"
 _relay_state = {"last_ok": True}
 

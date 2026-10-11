@@ -122,6 +122,28 @@ Berikan satu alamat deposit bursa (misal deposit Binance, Bybit, OKX, atau perso
 * **Pintasan** — `Alt+1…4` pindah tab, `Ctrl+Enter` mengirim isian batch / CSV. Tab & bahasa terakhir diingat.
 * **Batas sumber data publik** — RPC Solana publik hanya mengizinkan ±10 transaksi / 10 detik, jadi pemindaian deposit Solana (25 tx) butuh ±30–40 detik. Bila Blockscout membatasi permintaan, aplikasi menampilkan pesan jelas (bukan hasil kosong).
 
+#### 🕸️ Tab 5: Fund Flow Graph (Graf Aliran Dana Multi-Hop)
+
+Menelusuri dana melewati beberapa hop dari 1–10 dompet seed, lalu menampilkannya sebagai graf interaktif.
+
+1. **Arah:** maju (dana dikirim ke mana), mundur (dana berasal dari mana), atau dua arah. Kedalaman bisa 1–4 hop, dengan 1–8 cabang per dompet.
+2. **Filter anti-spam:** hanya token target per chain yang diikuti (Solana: SOL, USDC, USDT, USDG; EVM: koin native, USDC, USDT, USDG). Token dicocokkan lewat **alamat kontrak**, jadi token palsu bernama "USDT" otomatis ditolak. Transfer di bawah minimum (default 0,1 SOL / 0,005 ETH / $10 stablecoin) tidak membuat cabang baru.
+3. **Berhenti di infrastruktur:** penelusuran tidak menembus hot wallet CEX, bridge, router, mixer, atau dompet "hub" yang sangat sibuk.
+4. **Deteksi pola otomatis:**
+   * **Alamat deposit CEX:** dompet yang menyapu ≥70% dana keluarnya ke hot wallet exchange.
+   * **Klaster alamat deposit bersama:** ≥2 dompet yang menyetor ke alamat deposit yang sama. Exchange memberi satu alamat per pengguna, jadi ini sinyal kuat satu pemilik.
+   * **Peeling chain, konsolidasi, dan pola bintang CEX.**
+5. **Graf interaktif:** ketebalan garis sebanding dengan nilai USD. Klik node untuk detail; klik dua kali untuk **Expand +1 hop**. Klaster bisa diekspor ke GMGN CSV, dan seluruh graf ke CSV atau JSON.
+
+**Sumber data (key gratis, opsional, di `.env`):**
+
+| Kebutuhan | Disarankan | Tanpa key |
+|---|---|---|
+| Solana | `HELIUS_API_KEY` (dashboard.helius.dev) | RPC publik: maks. 2 hop / 3 cabang, sekitar 15 detik per dompet |
+| EVM | `ETHERSCAN_API_KEY` (satu key untuk semua chain) | Blockscout publik (bisa terkena rate-limit; BNB Chain butuh key) |
+
+WebSocket (WSS) **tidak dibutuhkan** untuk penelusuran, karena tracing membaca riwayat lewat HTTP. WSS baru berguna untuk fitur pemantauan live di masa depan. Pilihan gratisnya: Helius WSS (Solana) atau `wss://ethereum-rpc.publicnode.com` (EVM, tanpa key).
+
 ### 🔑 Relay API Key (wajib mulai 24 November 2026)
 
 Relay menghentikan endpoint `/requests/v2` pada **24 November 2026** (batasnya juga diperketat bertahap sebelum itu). OmniRoute sudah mendukung `/requests/v3`, yang membutuhkan API key:
@@ -261,6 +283,28 @@ Given an exchange deposit address, OmniRoute scans and aggregates all incoming f
 * **Paste = track** — pasting an explorer link / TX hash into Tab 1 starts tracking immediately.
 * **Shortcuts** — `Alt+1…4` switch tabs, `Ctrl+Enter` submits the batch / CSV box. Last tab and language are remembered.
 * **Public data-source limits** — the public Solana RPC allows ~10 transactions per 10s, so a Solana deposit scan (25 txs) takes ~30–40s. When Blockscout rate-limits requests, the app shows a clear message instead of an empty result.
+
+#### 🕸️ Tab 5: Fund Flow Graph (Multi-Hop Tracing)
+
+Traces funds across several hops from 1–10 seed wallets and shows them as an interactive graph.
+
+1. **Direction:** forward (where did funds go), backward (where did they come from), or both. Depth is 1–4 hops, with 1–8 branches per wallet.
+2. **Anti-spam filters:** only each chain's target tokens are followed (Solana: SOL, USDC, USDT, USDG; EVM: native coin, USDC, USDT, USDG). Tokens are matched by **contract address**, so fake tokens named "USDT" are rejected. Transfers below the minimum (default 0.1 SOL / 0.005 ETH / $10 stablecoin) never start a new branch.
+3. **Stops at infrastructure:** tracing never walks through CEX hot wallets, bridges, routers, mixers, or very busy "hub" wallets.
+4. **Automatic pattern detection:**
+   * **CEX deposit addresses:** wallets that sweep ≥70% of their outflow into an exchange hot wallet.
+   * **Shared-deposit clusters:** ≥2 wallets depositing into the same deposit address. Exchanges issue one address per user, so this is a strong same-owner signal.
+   * **Peeling chains, consolidation, and CEX star patterns.**
+5. **Interactive graph:** line thickness follows USD value. Click a node for details; double-click it to **Expand +1 hop**. Clusters export to GMGN CSV, and the whole graph to CSV or JSON.
+
+**Data sources (free, optional keys in `.env`):**
+
+| Need | Recommended | Without a key |
+|---|---|---|
+| Solana | `HELIUS_API_KEY` (dashboard.helius.dev) | public RPC: max 2 hops / 3 branches, about 15s per wallet |
+| EVM | `ETHERSCAN_API_KEY` (one key for every chain) | public Blockscout (may be rate-limited; BNB Chain needs a key) |
+
+WebSockets (WSS) are **not needed** for tracing, because tracing reads history over HTTP. WSS only matters for a future live-monitoring feature. Free options: Helius WSS (Solana) or `wss://ethereum-rpc.publicnode.com` (EVM, no key).
 
 ### 🔑 Relay API Key (required from November 24, 2026)
 

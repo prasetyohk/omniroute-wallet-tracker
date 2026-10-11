@@ -171,6 +171,17 @@
           <span class="tab-hint" data-i18n="tab_deposit_desc">Cumulative Sender Aggregator & Spam Filter</span>
         </div>
       </button>
+
+      <!-- Tab 5: Fund Flow Graph -->
+      <button class="tab-btn" role="tab" id="tabBtnFlow" onclick="switchTab('flow')">
+        <div class="tab-icon-wrap" style="color: var(--accent-purple);">
+          <i class="fa-solid fa-circle-nodes"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_flow_title">5 · Fund Flow Graph</span>
+          <span class="tab-hint" data-i18n="tab_flow_desc">Multi-hop tracing & CEX clustering</span>
+        </div>
+      </button>
     </div>
 
     <p class="shortcuts-hint"><i class="fa-regular fa-keyboard"></i> <span data-i18n="shortcuts_hint">Alt+1…4</span></p>
@@ -584,6 +595,99 @@
 
       <!-- Deposit Inflow Result Container -->
       <div id="depositResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+    <!-- ==================== TAB 5: FUND FLOW GRAPH ==================== -->
+    <section id="tabContentFlow" class="tab-section">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-circle-nodes text-lime"></i>
+              <span data-i18n="flow_title">Fund Flow Graph</span>
+            </h3>
+            <p class="card-desc" data-i18n="flow_desc">Trace funds across multiple hops, detect CEX deposit addresses and cluster wallets that deposit into the same address.</p>
+          </div>
+          <div class="samples-group">
+            <span class="samples-label" data-i18n="quick_examples">Quick Samples:</span>
+            <button type="button" class="btn btn-sample" data-action="flow-sample" data-sample="solana">
+              <i class="fa-solid fa-bolt text-lime"></i> Solana
+            </button>
+            <button type="button" class="btn btn-sample" data-action="flow-sample" data-sample="evm">
+              <i class="fa-solid fa-cube text-lime"></i> Ethereum: Binance deposit
+            </button>
+          </div>
+        </div>
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">How it works</span></span>
+          <ol class="how-guide-steps"><li><span class="guide-num">1</span><span data-i18n="guide_flow_1"></span></li><li><span class="guide-num">2</span><span data-i18n="guide_flow_2"></span></li><li><span class="guide-num">3</span><span data-i18n="guide_flow_3"></span></li></ol>
+          <p class="how-guide-tip" data-i18n="guide_flow_tip"></p>
+        </div>
+
+        <div id="flowProviderBanner" class="flow-provider-banner" style="display: none;"></div>
+
+        <form id="flowForm" onsubmit="handleFlowSubmit(event)" class="search-form">
+          <div class="flow-form-grid">
+            <div class="flow-field flow-field-wide">
+              <label for="flowSeeds" data-i18n="flow_seeds_label">Seed wallets (1-10, one per line)</label>
+              <textarea id="flowSeeds" class="batch-textarea" rows="3" data-i18n-placeholder="ph_flow_seeds" placeholder="0x... / Solana address"></textarea>
+            </div>
+            <div class="flow-field">
+              <label for="flowChain" data-i18n="flow_chain_label">Chain</label>
+              <select id="flowChain" class="chain-select chain-select-full">
+                <option value="solana">Solana</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="base">Base</option>
+                <option value="arbitrum">Arbitrum</option>
+                <option value="optimism">Optimism</option>
+                <option value="polygon">Polygon</option>
+                <option value="bsc">BNB Chain</option>
+              </select>
+            </div>
+            <div class="flow-field">
+              <label for="flowDirection" data-i18n="flow_direction_label">Direction</label>
+              <select id="flowDirection" class="chain-select chain-select-full">
+                <option value="forward" data-i18n="flow_dir_forward">Forward (where did funds go?)</option>
+                <option value="backward" data-i18n="flow_dir_backward">Backward (where did funds come from?)</option>
+                <option value="both" data-i18n="flow_dir_both">Both directions</option>
+              </select>
+            </div>
+            <div class="flow-field">
+              <label for="flowDepth"><span data-i18n="flow_depth_label">Depth (hops)</span>: <strong class="text-lime" id="flowDepthVal">2</strong></label>
+              <input type="range" id="flowDepth" min="1" max="4" value="2" class="flow-range">
+            </div>
+            <div class="flow-field">
+              <label for="flowFanout"><span data-i18n="flow_fanout_label">Branches per wallet</span>: <strong class="text-lime" id="flowFanoutVal">4</strong></label>
+              <input type="range" id="flowFanout" min="1" max="8" value="4" class="flow-range">
+            </div>
+            <div class="flow-field">
+              <label for="flowMinNative"><span data-i18n="flow_min_native_label">Min. native</span> (<span id="flowNativeSym">SOL</span>)</label>
+              <input type="number" id="flowMinNative" class="main-input flow-num" min="0" step="any" value="0.1">
+            </div>
+            <div class="flow-field">
+              <label for="flowMinStable" data-i18n="flow_min_stable_label">Min. stablecoin (USD)</label>
+              <input type="number" id="flowMinStable" class="main-input flow-num" min="0" step="any" value="10">
+            </div>
+            <div class="flow-field flow-field-wide">
+              <label data-i18n="flow_tokens_label">Target tokens</label>
+              <div id="flowTokens" class="flow-tokens"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitFlow">
+            <span class="btn-text">
+              <i class="fa-solid fa-circle-nodes"></i>
+              <span data-i18n="btn_trace_flow">Trace Fund Flow</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+              <span data-i18n="btn_tracing_flow">Tracing hops...</span>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <div id="flowResultContainer" class="result-area" style="display: none;"></div>
     </section>
   </main>
 

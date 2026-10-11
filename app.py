@@ -3,6 +3,7 @@ import threading
 import time
 from flask import Flask, render_template, request, jsonify
 import relay_core
+import flow_trace
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["JSON_SORT_KEYS"] = False
@@ -122,6 +123,62 @@ def deposit_trace():
     )
     key = ("deposit",) + tuple(sorted(params.items()))
     return jsonify(cached_call(key, lambda: relay_core.trace_deposit_inflow(**params)))
+
+
+# ==================== TAB 5: FUND FLOW GRAPH ====================
+
+def _flow_params(data: dict) -> dict:
+    tokens = data.get("tokens")
+    min_native = data.get("min_native")
+    return dict(
+        chain=_str(data, "chain", "solana").lower(),
+        direction=_str(data, "direction", "forward"),
+        depth=int(_clamp_float(data.get("depth"), 2, 1, flow_trace.MAX_DEPTH)),
+        fanout=int(_clamp_float(data.get("fanout"), 4, 1, flow_trace.MAX_FANOUT)),
+        min_native=None if min_native in (None, "") else _clamp_float(min_native, 0.0, 0, 1e9),
+        min_stable_usd=_clamp_float(data.get("min_stable_usd"), flow_trace.DEFAULT_MIN_STABLE_USD, 0, 1e12),
+        tokens=[str(t).upper()[:10] for t in tokens][:10] if isinstance(tokens, list) else None,
+    )
+
+
+@app.route("/api/flow/config", methods=["GET"])
+def flow_config():
+    return jsonify({
+        "success": True,
+        "chains": {
+            c: {"tokens": list(flow_trace.TARGET_TOKENS[c]),
+                "native": next(s for s, v in flow_trace.TARGET_TOKENS[c].items() if v.get("native")),
+                "provider": flow_trace.provider_info(c)}
+            for c in flow_trace.SUPPORTED_CHAINS
+        },
+        "defaults": {"minNative": flow_trace.DEFAULT_MIN_NATIVE, "minStableUsd": flow_trace.DEFAULT_MIN_STABLE_USD,
+                     "maxDepth": flow_trace.MAX_DEPTH, "maxFanout": flow_trace.MAX_FANOUT, "maxSeeds": flow_trace.MAX_SEEDS},
+    })
+
+
+@app.route("/api/flow/trace", methods=["POST"])
+def flow_trace_route():
+    data = _payload()
+    seeds = data.get("seeds") or []
+    if isinstance(seeds, str):
+        seeds = seeds.split()
+    seeds = [str(s).strip()[:100] for s in seeds if str(s).strip()][:flow_trace.MAX_SEEDS]
+    if not seeds:
+        return bad_request("Masukkan minimal 1 alamat seed / Enter at least one seed address.")
+    params = _flow_params(data)
+    key = ("flow", tuple(seeds)) + tuple((k, tuple(v) if isinstance(v, list) else v) for k, v in sorted(params.items()))
+    return jsonify(cached_call(key, lambda: flow_trace.trace_flow(seeds, **params)))
+
+
+@app.route("/api/flow/expand", methods=["POST"])
+def flow_expand():
+    data = _payload()
+    address = _str(data, "address")[:100]
+    if not address:
+        return bad_request("Alamat kosong / Address is empty.")
+    params = _flow_params(data)
+    graph = data.get("graph") if isinstance(data.get("graph"), dict) else {}
+    return jsonify(flow_trace.expand_graph(graph, address, **params))
 
 
 _PRIORITY_CHAIN_IDS = [4663, 792703809, 1, 8453, 42161, 10, 56, 137]

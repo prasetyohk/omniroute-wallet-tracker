@@ -218,7 +218,7 @@ const translations = {
     guide_dep_2: "Pengirim dikelompokkan & dinilai dalam USD",
     guide_dep_3: "Spam/dust disaring — ekspor sisanya",
     guide_dep_tip: "Deteksi Otomatis memindai 5 chain EVM sekaligus. Ctrl+Enter mengirim isian CSV.",
-    shortcuts_hint: "Pintasan: Alt+1…4 pindah tab",
+    shortcuts_hint: "Pintasan: Alt+1…5 pindah tab",
     first_funding_tx: "Tx Pendanaan Pertama",
     bridge_funding_tx: "Didanai via Bridge Cross-Chain",
     cross_chain_badge: "CROSS-CHAIN",
@@ -226,7 +226,99 @@ const translations = {
     track_source_hint: "Buka di Tab 1 untuk melihat chain asal & dompet pengirim sebenarnya",
     bridge_funding_note: "Dana pertama datang dari bridge/solver, bukan dari pengirim asli. Klik untuk melacak chain asal dan dompet pengirim sebenarnya.",
     origin_chain_label: "Chain asal",
-    real_sender_label: "Pengirim asli"
+    real_sender_label: "Pengirim asli",
+
+    // Tab 5: Fund Flow Graph
+    tab_flow_title: "5 · Graf Aliran Dana",
+    tab_flow_desc: "Lacak multi-hop & klaster CEX",
+    flow_title: "Graf Aliran Dana (Multi-Hop)",
+    flow_desc: "Telusuri dana melewati beberapa hop, deteksi alamat deposit CEX, dan kelompokkan dompet yang menyetor ke alamat deposit yang sama (kemungkinan besar satu pemilik).",
+    guide_flow_1: "Tempel 1–10 dompet seed & pilih chain",
+    guide_flow_2: "Atur kedalaman, cabang & minimum token",
+    guide_flow_3: "Klik node untuk detail / Expand +1 hop",
+    guide_flow_tip: "Transfer di bawah minimum (dust/spam) tidak membuat cabang baru. Penelusuran berhenti di CEX, bridge & kontrak. Klik dua kali node untuk menambah 1 hop.",
+    ph_flow_seeds: "Satu alamat per baris (0x… atau Solana)",
+    flow_seeds_label: "Dompet seed (1–10, satu per baris)",
+    flow_chain_label: "Jaringan",
+    flow_direction_label: "Arah penelusuran",
+    flow_dir_forward: "Maju (dana dikirim ke mana?)",
+    flow_dir_backward: "Mundur (dana berasal dari mana?)",
+    flow_dir_both: "Dua arah",
+    flow_depth_label: "Kedalaman (hop)",
+    flow_fanout_label: "Cabang per dompet",
+    flow_min_native_label: "Min. koin native",
+    flow_min_stable_label: "Min. stablecoin (USD)",
+    flow_tokens_label: "Token target",
+    btn_trace_flow: "Telusuri Aliran Dana",
+    btn_tracing_flow: "Menelusuri hop demi hop...",
+    vis_load_failed: "Library graf gagal dimuat (cek koneksi internet).",
+    flow_provider_none: "Chain ini butuh ETHERSCAN_API_KEY di file .env (tidak ada sumber data publik).",
+    flow_provider_label: "Sumber data",
+    flow_provider_limited: "mode publik dibatasi maks.",
+    flow_branches_word: "cabang",
+    flow_provider_hint: "Untuk lebih cepat & dalam, isi key gratis di .env:",
+    flow_need_seed: "Masukkan minimal 1 alamat seed.",
+    flow_seeds_trimmed: "Maksimal 10 seed — sisanya diabaikan.",
+    flow_need_token: "Pilih minimal 1 token target.",
+    flow_slow_hint: "RPC publik Solana lambat (±15 detik per dompet)",
+    flow_failed: "Penelusuran Gagal",
+    fd_cex_deposit: "Alamat deposit {cex} — {share}% dana keluar disapu ke exchange (${usd})",
+    fd_shared_deposit: "{count} dompet menyetor ke alamat deposit {cex} yang sama → kemungkinan satu pemilik",
+    fd_multi_seed: "Beberapa seed terhubung!",
+    fd_cex_star: "{count} alamat deposit bermuara ke {cex} (pola bintang)",
+    fd_consolidation: "{count} dompet mengumpulkan dana ke satu dompet (${usd})",
+    fd_peeling: "Peeling chain sepanjang {count} hop (dana dikupas sedikit demi sedikit)",
+    flow_trunc_time: "Batas waktu tercapai — sebagian cabang belum ditelusuri",
+    flow_trunc_nodes: "Batas 80 node tercapai — persempit cabang atau naikkan minimum",
+    flow_limited_notice: "Kedalaman/cabang dikurangi otomatis sesuai batas sumber data publik",
+    flow_fetch_failed: "dompet gagal dimuat (rate-limit)",
+    flow_stat_nodes: "Node",
+    flow_stat_edges: "Aliran",
+    flow_stat_scanned: "Dompet dipindai",
+    flow_stat_dust: "Dust disaring",
+    flow_stat_spoofed: "Token palsu",
+    flow_stat_findings: "Temuan",
+    lg_seed: "Seed",
+    lg_wallet: "Dompet",
+    lg_deposit: "Deposit CEX",
+    lg_cex: "CEX",
+    lg_hub: "Hub/layanan",
+    lg_bridge: "Bridge",
+    lg_contract: "Kontrak",
+    lg_mixer: "Mixer",
+    flow_layout_toggle: "Ganti tata letak",
+    flow_graph_hint: "Klik node = detail • klik dua kali = expand +1 hop • scroll = zoom • garis tebal = nilai besar",
+    flow_panel_empty: "Klik sebuah node di graf untuk melihat detail & aksi.",
+    flow_findings_title: "Temuan Pola",
+    flow_focus_hint: "Klik untuk sorot di graf",
+    flow_no_findings: "Belum ada pola terdeteksi. Coba tambah kedalaman (deposit CEX biasanya terlihat mulai hop 2).",
+    flow_clusters_title: "Klaster Alamat Deposit Bersama",
+    flow_clusters_desc: "Exchange memberi 1 alamat deposit per pengguna, jadi dompet yang menyetor ke alamat yang sama kemungkinan besar dikendalikan orang yang sama. Langsung = 90%, lewat hop sebelumnya = 60%.",
+    flow_deposit_to: "Deposit ke",
+    flow_copy_members: "Salin anggota",
+    flow_cluster_to_tab3: "Cek relasi (Tab 3)",
+    flow_edges_title: "Daftar Aliran",
+    flow_col_from: "Dari",
+    flow_col_to: "Ke",
+    flow_col_amount: "Jumlah",
+    flow_edges_more: "Menampilkan 60 aliran terbesar — ekspor CSV/JSON untuk semua data.",
+    role_cex_deposit: "Alamat deposit",
+    role_consolidation: "Konsolidasi",
+    role_peel: "Peeling",
+    role_hub: "Hub (dihentikan)",
+    role_fetch_failed: "Gagal dimuat",
+    flow_links: "aliran",
+    flow_expand: "Expand +1 hop",
+    flow_open_tab3: "Buka di Tab 3",
+    flow_track_first_in: "Lacak dana masuk pertama (Tab 1)",
+    flow_add_seed: "Jadikan seed",
+    flow_not_expanded: "Dompet ini belum ditelusuri (garis putus-putus). Klik Expand untuk melihat ke mana dananya mengalir.",
+    flow_expanding: "Menelusuri 1 hop lagi...",
+    flow_nodes_added: "node baru ditambahkan",
+    flow_seed_added: "Ditambahkan ke daftar seed",
+    flow_graph_btn: "Graf Aliran (Tab 5)",
+    flow_graph_btn_hint: "Buka di Tab 5 untuk penelusuran multi-hop & klaster deposit CEX",
+    flow_graph_senders: "Graf semua pengirim (Tab 5)"
   },
   en: {
     tagline: "Cross-Chain Swap & Bridge Destination Wallet Resolver",
@@ -446,7 +538,7 @@ const translations = {
     guide_dep_2: "Senders are grouped & valued in USD",
     guide_dep_3: "Spam/dust filtered out — export the rest",
     guide_dep_tip: "Auto-Detect scans 5 EVM chains at once. Ctrl+Enter submits the CSV box.",
-    shortcuts_hint: "Shortcuts: Alt+1…4 switch tabs",
+    shortcuts_hint: "Shortcuts: Alt+1…5 switch tabs",
     first_funding_tx: "First Funding Tx",
     bridge_funding_tx: "Funded via Cross-Chain Bridge",
     cross_chain_badge: "CROSS-CHAIN",
@@ -454,7 +546,99 @@ const translations = {
     track_source_hint: "Open in Tab 1 to see the origin chain & the real sender wallet",
     bridge_funding_note: "The first funds came from a bridge/solver, not the original sender. Click to trace the origin chain and the real sender wallet.",
     origin_chain_label: "Origin chain",
-    real_sender_label: "Real sender"
+    real_sender_label: "Real sender",
+
+    // Tab 5: Fund Flow Graph
+    tab_flow_title: "5 · Fund Flow Graph",
+    tab_flow_desc: "Multi-hop tracing & CEX clustering",
+    flow_title: "Fund Flow Graph (Multi-Hop)",
+    flow_desc: "Trace funds across several hops, detect CEX deposit addresses, and cluster wallets that deposit into the same address (very likely one owner).",
+    guide_flow_1: "Paste 1–10 seed wallets & pick a chain",
+    guide_flow_2: "Set depth, branches & token minimums",
+    guide_flow_3: "Click a node for details / Expand +1 hop",
+    guide_flow_tip: "Transfers below the minimum (dust/spam) never start a new branch. Tracing stops at CEXs, bridges & contracts. Double-click a node to add one hop.",
+    ph_flow_seeds: "One address per line (0x… or Solana)",
+    flow_seeds_label: "Seed wallets (1–10, one per line)",
+    flow_chain_label: "Network",
+    flow_direction_label: "Trace direction",
+    flow_dir_forward: "Forward (where did funds go?)",
+    flow_dir_backward: "Backward (where did funds come from?)",
+    flow_dir_both: "Both directions",
+    flow_depth_label: "Depth (hops)",
+    flow_fanout_label: "Branches per wallet",
+    flow_min_native_label: "Min. native coin",
+    flow_min_stable_label: "Min. stablecoin (USD)",
+    flow_tokens_label: "Target tokens",
+    btn_trace_flow: "Trace Fund Flow",
+    btn_tracing_flow: "Tracing hop by hop...",
+    vis_load_failed: "Graph library failed to load (check your internet connection).",
+    flow_provider_none: "This chain needs ETHERSCAN_API_KEY in the .env file (no public data source).",
+    flow_provider_label: "Data source",
+    flow_provider_limited: "public mode capped at",
+    flow_branches_word: "branches",
+    flow_provider_hint: "For faster & deeper traces add a free key to .env:",
+    flow_need_seed: "Enter at least one seed address.",
+    flow_seeds_trimmed: "Maximum 10 seeds — the rest were ignored.",
+    flow_need_token: "Select at least one target token.",
+    flow_slow_hint: "public Solana RPC is slow (~15s per wallet)",
+    flow_failed: "Trace Failed",
+    fd_cex_deposit: "{cex} deposit address — {share}% of outflow swept to the exchange (${usd})",
+    fd_shared_deposit: "{count} wallets deposit into the same {cex} address → likely one owner",
+    fd_multi_seed: "Several seeds are linked!",
+    fd_cex_star: "{count} deposit addresses feed {cex} (star pattern)",
+    fd_consolidation: "{count} wallets consolidate funds into one wallet (${usd})",
+    fd_peeling: "Peeling chain over {count} hops (funds peeled off step by step)",
+    flow_trunc_time: "Time budget reached — some branches were not traced",
+    flow_trunc_nodes: "80-node budget reached — narrow branches or raise the minimums",
+    flow_limited_notice: "Depth/branches reduced automatically to fit the public data source",
+    flow_fetch_failed: "wallets failed to load (rate-limited)",
+    flow_stat_nodes: "Nodes",
+    flow_stat_edges: "Flows",
+    flow_stat_scanned: "Wallets scanned",
+    flow_stat_dust: "Dust filtered",
+    flow_stat_spoofed: "Fake tokens",
+    flow_stat_findings: "Findings",
+    lg_seed: "Seed",
+    lg_wallet: "Wallet",
+    lg_deposit: "CEX deposit",
+    lg_cex: "CEX",
+    lg_hub: "Hub/service",
+    lg_bridge: "Bridge",
+    lg_contract: "Contract",
+    lg_mixer: "Mixer",
+    flow_layout_toggle: "Switch layout",
+    flow_graph_hint: "Click node = details • double-click = expand +1 hop • scroll = zoom • thick line = large value",
+    flow_panel_empty: "Click a node in the graph to see details & actions.",
+    flow_findings_title: "Detected Patterns",
+    flow_focus_hint: "Click to highlight in graph",
+    flow_no_findings: "No patterns yet. Try more depth (CEX deposits usually show from hop 2).",
+    flow_clusters_title: "Shared Deposit Address Clusters",
+    flow_clusters_desc: "Exchanges issue one deposit address per user, so wallets depositing to the same address are very likely controlled by the same person. Direct = 90%, via earlier hops = 60%.",
+    flow_deposit_to: "Deposits to",
+    flow_copy_members: "Copy members",
+    flow_cluster_to_tab3: "Check relations (Tab 3)",
+    flow_edges_title: "Flows",
+    flow_col_from: "From",
+    flow_col_to: "To",
+    flow_col_amount: "Amount",
+    flow_edges_more: "Showing the 60 largest flows — export CSV/JSON for all data.",
+    role_cex_deposit: "Deposit address",
+    role_consolidation: "Consolidation",
+    role_peel: "Peeling",
+    role_hub: "Hub (stopped)",
+    role_fetch_failed: "Failed to load",
+    flow_links: "flows",
+    flow_expand: "Expand +1 hop",
+    flow_open_tab3: "Open in Tab 3",
+    flow_track_first_in: "Track first incoming funds (Tab 1)",
+    flow_add_seed: "Use as seed",
+    flow_not_expanded: "This wallet hasn't been traced yet (dashed border). Click Expand to see where its funds went.",
+    flow_expanding: "Tracing one more hop...",
+    flow_nodes_added: "new nodes added",
+    flow_seed_added: "Added to the seed list",
+    flow_graph_btn: "Flow Graph (Tab 5)",
+    flow_graph_btn_hint: "Open in Tab 5 for multi-hop tracing & CEX deposit clustering",
+    flow_graph_senders: "Graph all senders (Tab 5)"
   }
 };
 
@@ -650,6 +834,9 @@ function setLanguage(lang) {
   if (depositBox && lastDepositData) renderDepositResults(lastDepositData, depositBox);
   const txBox = visible("txResultContainer");
   if (txBox && lastTxResult) renderTxResult(lastTxResult, txBox);
+  if (typeof flowConfig !== "undefined" && flowConfig) onFlowChainChange();
+  const flowBox = visible("flowResultContainer");
+  if (flowBox && flowData) renderFlowResult(flowData, flowBox);
 }
 
 // Global Tab 4 state
@@ -661,7 +848,8 @@ const TABS = {
   tx: ["tabBtnTx", "tabContentTx"],
   address: ["tabBtnAddress", "tabContentAddress"],
   genealogy: ["tabBtnGenealogy", "tabContentGenealogy"],
-  deposit: ["tabBtnDeposit", "tabContentDeposit"]
+  deposit: ["tabBtnDeposit", "tabContentDeposit"],
+  flow: ["tabBtnFlow", "tabContentFlow"]
 };
 
 // Tab Switching
@@ -675,6 +863,7 @@ function switchTab(tabId) {
     document.getElementById(sectionId)?.classList.toggle("active", active);
   }
   store.set("omniroute_tab", tabId);
+  if (tabId === "flow") ensureFlowInit();
 }
 
 // Toast Notification
@@ -1276,6 +1465,9 @@ function renderGmgnToolbar(wallets, identityName, chain = "base", confidenceScor
           <button type="button" class="btn-gmgn-copy" onclick="copyWalletsForGmgn()" title="Format baris baru tanpa kutip, siap paste langsung ke GMGN Watchlist">
             <i class="fa-regular fa-clipboard"></i> <span>${dict.copy_for_gmgn || '📋 Copy for GMGN'}</span>
           </button>
+          <button type="button" class="btn-gmgn-copy" data-action="flow-from-tab3" title="${t("flow_graph_btn_hint")}">
+            <i class="fa-solid fa-circle-nodes"></i> <span>${t("flow_graph_btn")}</span>
+          </button>
           <button type="button" class="btn-gmgn-csv" data-action="gmgn-csv" data-id="${identityName}" data-chain="${chain}" title="Unduh file CSV Address,Tag,Chain untuk import massal GMGN">
             <i class="fa-solid fa-file-arrow-down"></i> <span>${dict.export_gmgn_csv || '📥 Export GMGN CSV'}</span>
           </button>
@@ -1370,6 +1562,7 @@ async function handleGenealogySubmit(e) {
 // Render Single Wallet Genealogy Dashboard (2-Column Cyberpunk Grid + GMGN Toolbar)
 function renderGenealogyDashboard(data, container) {
   lastGenealogyData = data;
+  currentFlowSeedsFromTab3 = [data.targetAddress];
   const dict = translations[currentLang] || translations.id;
   const genesis = data.genesisFunder;
   const inflows = data.topInflows || [];
@@ -1605,6 +1798,7 @@ function renderGenealogyDashboard(data, container) {
 // Render Batch Sybil Dashboard with False Positive Mitigation
 function renderBatchSybilDashboard(data, container) {
   lastBatchData = data;
+  currentFlowSeedsFromTab3 = (data.walletGenealogies || []).map(g => g.targetAddress).slice(0, 10);
   const dict = translations[currentLang] || translations.id;
   const linkedWallets = data.linkedWallets || [];
   const sharedFunders = data.sharedFunders || [];
@@ -2012,6 +2206,9 @@ function renderDepositResults(data, container) {
         <button class="btn btn-sample" style="border-color: var(--accent-lime); color: var(--accent-lime);" onclick="exportDepositGMGN()">
           <i class="fa-solid fa-file-arrow-down"></i> ${dict.export_deposit_csv}
         </button>
+        <button class="btn btn-sample" data-action="flow-from-deposit" title="${t("flow_graph_btn_hint")}">
+          <i class="fa-solid fa-circle-nodes"></i> ${t("flow_graph_senders")}
+        </button>
         <button class="btn btn-sample" onclick="copyQualifiedSenders()">
           <i class="fa-solid fa-copy"></i> ${dict.copy_qualified_addrs}
         </button>
@@ -2089,6 +2286,9 @@ function renderDepositResults(data, container) {
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                       </a>
                     ` : ''}
+                    <button type="button" class="icon-action-btn-mini" data-action="flow-open" data-seeds="${s.sender_address}" data-chain="${s.chain}" title="${t("flow_graph_btn_hint")}">
+                      <i class="fa-solid fa-circle-nodes"></i>
+                    </button>
                     <button class="btn btn-sample" style="padding: 3px 8px; font-size: 0.74rem; border-color: var(--accent-lime); color: var(--accent-lime);" data-action="trace-sender" data-addr="${s.sender_address}" data-chain="${s.chain}" title="Lacak hubungan wallet ini di Tab 3">
                       <i class="fa-solid fa-diagram-project"></i> <span>${dict.btn_trace_tab3}</span>
                     </button>
@@ -2191,6 +2391,7 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-action]");
   if (!el) return;
   const { action, addr, chain, id } = el.dataset;
+  if (handleFlowAction(action, el)) return;
   if (action === "analyze-dest" || action === "trace-sender") openInGenealogy(addr, chain);
   else if (action === "track-tx") trackTxInTab1(el.dataset.tx);
   else if (action === "gmgn-csv") downloadGmgnCsv(id, chain);
@@ -2226,7 +2427,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Keyboard shortcuts: Alt+1..4 switch tabs.
   document.addEventListener("keydown", e => {
     if (!e.altKey || e.ctrlKey || e.metaKey) return;
-    const tab = { "1": "tx", "2": "address", "3": "genealogy", "4": "deposit" }[e.key];
+    const tab = { "1": "tx", "2": "address", "3": "genealogy", "4": "deposit", "5": "flow" }[e.key];
     if (tab) {
       e.preventDefault();
       switchTab(tab);
@@ -2305,4 +2506,562 @@ function stopHeartbeat() {
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden && heartbeatTimer) heartbeat();
+});
+
+// ==================== TAB 5: FUND FLOW GRAPH ====================
+
+const VIS_URL = "https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js";
+const FLOW_SAMPLES = {
+  solana: { chain: "solana", seeds: ["2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h"] },
+  // a real Binance deposit address on Ethereum, traced backward to its depositors
+  evm: { chain: "ethereum", seeds: ["0xe96925333ef201a7988f1f1473614396d3ed3396"], direction: "backward", depth: 2 }
+};
+const FLOW_COLORS = {
+  seed: "#9eff00", cex: "#f87171", deposit: "#fbbf24", hub: "#fb923c",
+  bridge: "#00f0ff", contract: "#c084fc", mixer: "#e879f9", wallet: "#64748b"
+};
+
+let flowConfig = null;
+let flowData = null;
+let flowNetwork = null;
+let flowParams = null;
+let visPromise = null;
+
+// vis-network (~690KB) is only downloaded the first time Tab 5 is opened.
+function loadVis() {
+  if (window.vis?.Network) return Promise.resolve();
+  if (!visPromise) {
+    visPromise = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = VIS_URL;
+      s.onload = resolve;
+      s.onerror = () => { visPromise = null; reject(new Error(t("vis_load_failed"))); };
+      document.head.appendChild(s);
+    });
+  }
+  return visPromise;
+}
+
+async function ensureFlowInit() {
+  loadVis().catch(() => {});
+  if (flowConfig) return;
+  try {
+    const res = await apiFetch("flowcfg", "/api/flow/config");
+    if (res?.success) {
+      flowConfig = res;
+      onFlowChainChange();
+    }
+  } catch { /* retried next time the tab opens */ }
+}
+
+function flowChainInfo() {
+  const chain = document.getElementById("flowChain").value;
+  return { chain, info: flowConfig?.chains?.[chain] };
+}
+
+function onFlowChainChange() {
+  const { info } = flowChainInfo();
+  if (!info) return;
+  document.getElementById("flowTokens").innerHTML = info.tokens.map(tok => `
+    <label class="flow-token-chip"><input type="checkbox" value="${tok}" checked> <span>${tok}</span></label>
+  `).join("");
+  document.getElementById("flowNativeSym").textContent = info.native;
+  const minNative = flowConfig.defaults.minNative[info.native];
+  if (minNative !== undefined) document.getElementById("flowMinNative").value = minNative;
+
+  // Sliders follow the provider's safe limits (public Solana RPC is heavily rate-limited).
+  const p = info.provider;
+  for (const [id, max] of [["flowDepth", p.max_depth], ["flowFanout", p.max_fanout]]) {
+    const el = document.getElementById(id);
+    el.max = Math.max(1, max);
+    if (Number(el.value) > el.max) el.value = el.max;
+    document.getElementById(id + "Val").textContent = el.value;
+  }
+
+  const banner = document.getElementById("flowProviderBanner");
+  banner.style.display = "flex";
+  banner.className = `flow-provider-banner ${p.keyed ? "ok" : "warn"}`;
+  if (p.source === "none") {
+    banner.innerHTML = `<i class="fa-solid fa-key"></i><span>${t("flow_provider_none")}</span>`;
+  } else if (p.keyed) {
+    banner.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${t("flow_provider_label")}: <strong>${p.source}</strong></span>`;
+  } else {
+    const keyName = document.getElementById("flowChain").value === "solana" ? "HELIUS_API_KEY" : "ETHERSCAN_API_KEY";
+    banner.innerHTML = `<i class="fa-solid fa-gauge-simple"></i><span>${t("flow_provider_label")}: <strong>${p.source}</strong> &bull; ${t("flow_provider_limited")} ${p.max_depth} hop / ${p.max_fanout} ${t("flow_branches_word")}. ${t("flow_provider_hint")} <code>${keyName}</code></span>`;
+  }
+}
+
+function flowFormParams() {
+  const tokens = [...document.querySelectorAll("#flowTokens input:checked")].map(i => i.value);
+  return {
+    chain: document.getElementById("flowChain").value,
+    direction: document.getElementById("flowDirection").value,
+    depth: Number(document.getElementById("flowDepth").value),
+    fanout: Number(document.getElementById("flowFanout").value),
+    min_native: document.getElementById("flowMinNative").value,
+    min_stable_usd: document.getElementById("flowMinStable").value,
+    tokens
+  };
+}
+
+async function handleFlowSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btnSubmitFlow");
+  const container = document.getElementById("flowResultContainer");
+  const seeds = [...new Set(document.getElementById("flowSeeds").value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean))];
+  if (!seeds.length) {
+    renderError(container, t("flow_title"), t("flow_need_seed"));
+    return;
+  }
+  if (seeds.length > 10) showToast(t("flow_seeds_trimmed"));
+  await ensureFlowInit();
+  const params = flowFormParams();
+  if (!params.tokens.length) {
+    renderError(container, t("flow_title"), t("flow_need_token"));
+    return;
+  }
+  const { info } = flowChainInfo();
+  setLoading(btn, true);
+  renderLoading(container, t("btn_tracing_flow"),
+    `${esc(info?.provider?.source || "")} &bull; ${params.depth} hop &bull; ${params.fanout} ${t("flow_branches_word")}${info && !info.provider.keyed && params.chain === "solana" ? " &bull; " + t("flow_slow_hint") : ""}`);
+
+  try {
+    const result = await apiFetch("flow", "/api/flow/trace", postJSON({ ...params, seeds: seeds.slice(0, 10) }));
+    if (!result) return;
+    if (!result.success) {
+      renderError(container, t("flow_failed"), result.error);
+      return;
+    }
+    flowParams = params;
+    flowData = result;
+    renderFlowResult(result, container);
+  } catch (err) {
+    renderError(container, t("network_error"), esc(err.message));
+  } finally {
+    if (!isBusy("flow")) setLoading(btn, false);
+  }
+}
+
+function deepUnesc(value) {
+  if (typeof value === "string") return unesc(value);
+  if (Array.isArray(value)) return value.map(deepUnesc);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const k in value) out[k] = deepUnesc(value[k]);
+    return out;
+  }
+  return value;
+}
+
+function shortAddr(a) {
+  return truncateAddress(unesc(a), 4);
+}
+
+function flowNodeCategory(n) {
+  if (n.isSeed) return "seed";
+  if ((n.roles || []).includes("cex_deposit")) return "deposit";
+  if (n.type === "cex") return "cex";
+  if (n.hub) return "hub";
+  return FLOW_COLORS[n.type] ? n.type : "wallet";
+}
+
+function fmtAmount(x) {
+  const n = Number(x || 0);
+  return n >= 1000 ? n.toLocaleString("en-US", { maximumFractionDigits: 0 }) : n.toLocaleString("en-US", { maximumFractionDigits: 4 });
+}
+
+function findingText(f) {
+  const cex = f.cex || "CEX";
+  switch (f.type) {
+    case "cex_deposit": return t("fd_cex_deposit").replace("{cex}", cex).replace("{share}", f.share).replace("{usd}", fmtUsd(f.usd));
+    case "shared_deposit": return t("fd_shared_deposit").replace("{count}", f.count).replace("{cex}", cex) + (f.multiSeed ? " " + t("fd_multi_seed") : "");
+    case "cex_star": return t("fd_cex_star").replace("{count}", f.count).replace("{cex}", cex);
+    case "consolidation": return t("fd_consolidation").replace("{count}", f.count).replace("{usd}", fmtUsd(f.usd));
+    case "peeling_chain": return t("fd_peeling").replace("{count}", f.count);
+    default: return f.type;
+  }
+}
+
+const FINDING_ICONS = {
+  shared_deposit: "fa-users-viewfinder", cex_deposit: "fa-building-columns", cex_star: "fa-star-of-life",
+  consolidation: "fa-arrows-to-circle", peeling_chain: "fa-scissors"
+};
+
+function renderFlowResult(data, container) {
+  const s = data.stats || {};
+  const notices = [];
+  if (s.truncated) notices.push(t(s.truncate_reason === "time_budget" ? "flow_trunc_time" : "flow_trunc_nodes"));
+  if ((data.notices || []).length) notices.push(t("flow_limited_notice"));
+  if (s.fetch_failed) notices.push(`${s.fetch_failed} ${t("flow_fetch_failed")}`);
+
+  container.style.display = "block";
+  container.innerHTML = `
+    <div class="card flow-summary">
+      <div class="flow-stat"><span>${t("flow_stat_nodes")}</span><strong>${s.nodes}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_edges")}</span><strong>${s.edges}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_scanned")}</span><strong>${s.fetched}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_dust")}</span><strong>${s.dust_filtered}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_spoofed")}</span><strong>${s.spoofed}</strong></div>
+      <div class="flow-stat"><span>${t("flow_stat_findings")}</span><strong class="text-lime">${(data.findings || []).length}</strong></div>
+      <div class="flow-stat-meta">${esc(data.chainName)} &bull; ${data.provider} ${elapsedBadge(s.elapsed_ms)}</div>
+    </div>
+    ${notices.length ? `<div class="flow-notice"><i class="fa-solid fa-circle-info"></i> ${notices.join(" &bull; ")}</div>` : ""}
+
+    <div class="flow-graph-wrap">
+      <div class="flow-graph-card card">
+        <div class="flow-graph-toolbar">
+          <div class="flow-legend">
+            ${["seed", "wallet", "deposit", "cex", "hub", "bridge", "contract"].map(k => `<span><i style="background:${FLOW_COLORS[k]}"></i>${t("lg_" + k)}</span>`).join("")}
+          </div>
+          <div class="flow-toolbar-actions">
+            <button type="button" class="icon-action-btn" data-action="flow-layout" title="${t("flow_layout_toggle")}"><i class="fa-solid fa-diagram-project"></i> ${t("flow_layout_toggle")}</button>
+            <button type="button" class="icon-action-btn" data-action="flow-fit"><i class="fa-solid fa-expand"></i> Fit</button>
+          </div>
+        </div>
+        <div id="flowGraph" class="flow-graph"><div class="flow-graph-loading"><i class="fa-solid fa-circle-notch fa-spin"></i></div></div>
+        <p class="flow-graph-hint">${t("flow_graph_hint")}</p>
+      </div>
+      <aside id="flowNodePanel" class="flow-node-panel card">
+        <p class="flow-panel-empty"><i class="fa-regular fa-hand-pointer"></i> ${t("flow_panel_empty")}</p>
+      </aside>
+    </div>
+
+    <div class="card flow-section">
+      <h4><i class="fa-solid fa-magnifying-glass-chart text-lime"></i> ${t("flow_findings_title")}</h4>
+      ${(data.findings || []).length ? `<ul class="flow-findings">${data.findings.map((f, i) => `
+        <li class="sev-${f.severity}" data-action="flow-focus" data-idx="${i}" tabindex="0">
+          <i class="fa-solid ${FINDING_ICONS[f.type] || "fa-circle"}"></i>
+          <span>${findingText(f)}</span>
+          <span class="flow-focus-hint">${t("flow_focus_hint")}</span>
+        </li>`).join("")}</ul>` : `<p class="flow-empty">${t("flow_no_findings")}</p>`}
+    </div>
+
+    ${(data.clusters || []).length ? `
+      <div class="card flow-section">
+        <h4><i class="fa-solid fa-users-viewfinder text-lime"></i> ${t("flow_clusters_title")}</h4>
+        <p class="flow-section-desc">${t("flow_clusters_desc")}</p>
+        ${data.clusters.map(c => `
+          <div class="flow-cluster">
+            <div class="flow-cluster-head">
+              <span class="flow-cluster-id">${c.id}</span>
+              <span>${t("flow_deposit_to")} <strong>${c.cex}</strong></span>
+              <button type="button" class="addr-copy-btn" data-copy="${c.depositAddress}" data-copy-label="Deposit address" title="${c.depositAddress}"><span>${shortAddr(c.depositAddress)}</span><i class="fa-regular fa-copy"></i></button>
+              ${c.multiSeed ? `<span class="risk-pill danger">${t("fd_multi_seed")}</span>` : ""}
+            </div>
+            <div class="flow-cluster-members">
+              ${c.members.map(m => `
+                <button type="button" class="flow-member ${m.relation}" data-copy="${m.address}" data-copy-label="${t("col_wallet_addr")}" title="${m.address}">
+                  ${m.isSeed ? '<i class="fa-solid fa-seedling"></i>' : ""}${shortAddr(m.address)} <em>${m.confidence}%</em>
+                </button>`).join("")}
+            </div>
+            <div class="flow-cluster-actions">
+              <button type="button" class="icon-action-btn" data-action="flow-cluster-copy" data-cluster="${c.id}"><i class="fa-regular fa-copy"></i> ${t("flow_copy_members")}</button>
+              <button type="button" class="icon-action-btn" data-action="flow-cluster-gmgn" data-cluster="${c.id}"><i class="fa-solid fa-file-arrow-down"></i> GMGN CSV</button>
+              <button type="button" class="icon-action-btn" data-action="flow-cluster-batch" data-cluster="${c.id}"><i class="fa-solid fa-diagram-project"></i> ${t("flow_cluster_to_tab3")}</button>
+            </div>
+          </div>`).join("")}
+      </div>` : ""}
+
+    <div class="card flow-section">
+      <div class="flow-section-head">
+        <h4><i class="fa-solid fa-right-left text-lime"></i> ${t("flow_edges_title")} (${data.edges.length})</h4>
+        <div class="flow-toolbar-actions">
+          <button type="button" class="icon-action-btn" data-action="flow-export-csv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button type="button" class="icon-action-btn" data-action="flow-export-json"><i class="fa-solid fa-file-code"></i> JSON</button>
+        </div>
+      </div>
+      <div class="flow-table-wrap">
+        <table class="flow-table">
+          <thead><tr><th>${t("flow_col_from")}</th><th>${t("flow_col_to")}</th><th>${t("flow_col_amount")}</th><th>USD</th><th>Tx</th></tr></thead>
+          <tbody>
+            ${data.edges.slice(0, 60).map(e => `
+              <tr class="hover-row">
+                <td><button type="button" class="addr-copy-btn" data-copy="${e.from}" title="${e.from}"><span>${shortAddr(e.from)}</span><i class="fa-regular fa-copy"></i></button></td>
+                <td><button type="button" class="addr-copy-btn" data-copy="${e.to}" title="${e.to}"><span>${shortAddr(e.to)}</span><i class="fa-regular fa-copy"></i></button></td>
+                <td>${fmtAmount(e.amount)} ${e.token}${e.count > 1 ? ` <small>(${e.count} tx)</small>` : ""}</td>
+                <td>$${fmtUsd(e.usd)}</td>
+                <td>${e.txUrl ? `<a href="${e.txUrl}" target="_blank" rel="noopener noreferrer" class="icon-action-btn-mini" title="Explorer"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ""}
+                    ${e.tx ? `<button type="button" class="icon-action-btn-mini" data-action="track-tx" data-tx="${e.tx}" title="${t("track_source_hint")}"><i class="fa-solid fa-route"></i></button>` : ""}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      ${data.edges.length > 60 ? `<p class="flow-section-desc">${t("flow_edges_more")}</p>` : ""}
+    </div>
+  `;
+  drawFlowGraph(data);
+}
+
+let flowHierarchical = true;
+
+async function drawFlowGraph(data) {
+  const el = document.getElementById("flowGraph");
+  if (!el) return;
+  try {
+    await loadVis();
+  } catch (err) {
+    el.innerHTML = `<p class="flow-empty">${esc(err.message)}</p>`;
+    return;
+  }
+  const reverse = data.direction === "backward";
+  const nodes = data.nodes.map(n => {
+    const cat = flowNodeCategory(n);
+    const color = FLOW_COLORS[cat];
+    const name = n.label ? unesc(n.label) : shortAddr(n.address);
+    return {
+      id: unesc(n.id),
+      label: n.label && cat !== "wallet" ? `${name}\n${shortAddr(n.address)}` : name,
+      title: `${unesc(n.address)}\n${t("lg_" + cat)}${n.cex ? " -> " + unesc(n.cex) : ""}\nIn $${fmtUsd(n.inUsd)} / Out $${fmtUsd(n.outUsd)}`,
+      shape: cat === "cex" ? "diamond" : (cat === "hub" ? "square" : (cat === "seed" ? "star" : "dot")),
+      size: cat === "cex" ? 26 : (cat === "seed" ? 24 : (cat === "deposit" ? 18 : 13)),
+      color: { background: color, border: (n.roles || []).includes("fetch_failed") ? "#ef4444" : color,
+               highlight: { background: "#ffffff", border: color } },
+      borderWidth: n.expanded ? 1 : 3,
+      shapeProperties: { borderDashes: n.expanded || n.type !== "wallet" ? false : [4, 3] },
+      font: { color: "#e2e8f0", size: 12, face: "JetBrains Mono" },
+      level: reverse ? -n.depth : n.depth
+    };
+  });
+  const edges = data.edges.map((e, i) => ({
+    id: `e${i}`,
+    from: unesc(e.from),
+    to: unesc(e.to),
+    arrows: "to",
+    width: Math.min(12, 1 + 2 * Math.log10(Math.max(1, e.usd))),
+    label: `${fmtAmount(e.amount)} ${e.token}`,
+    title: `${fmtAmount(e.amount)} ${e.token} ($${fmtUsd(e.usd)})${e.count > 1 ? ` - ${e.count} tx` : ""}`,
+    color: { color: ["USDC", "USDT", "USDG"].includes(e.token) ? "rgba(158,255,0,0.55)" : "rgba(0,240,255,0.55)", highlight: "#ffffff" },
+    font: { color: "#94a3b8", size: 10, strokeWidth: 3, strokeColor: "#06080c", align: "middle" },
+    smooth: { type: "curvedCW", roundness: 0.15 }
+  }));
+
+  el.innerHTML = "";
+  if (flowNetwork) flowNetwork.destroy();
+  flowNetwork = new vis.Network(el, { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) }, {
+    layout: flowHierarchical
+      ? { hierarchical: { enabled: true, direction: "LR", sortMethod: "directed", levelSeparation: 230, nodeSpacing: 90 } }
+      : { improvedLayout: true },
+    physics: flowHierarchical ? false : { solver: "barnesHut", stabilization: { iterations: 250 }, barnesHut: { springLength: 160 } },
+    interaction: { hover: true, tooltipDelay: 120, multiselect: true },
+    edges: { selectionWidth: 2 }
+  });
+  // Physics only until the layout settles, then freeze for smooth panning.
+  flowNetwork.once("stabilizationIterationsDone", () => flowNetwork.setOptions({ physics: false }));
+  flowNetwork.on("click", params => {
+    if (params.nodes.length) showFlowNodePanel(params.nodes[0]);
+  });
+  flowNetwork.on("doubleClick", params => {
+    if (params.nodes.length) expandFlowNode(params.nodes[0]);
+  });
+}
+
+function findFlowNode(id) {
+  return flowData?.nodes.find(n => unesc(n.id) === id);
+}
+
+function showFlowNodePanel(id) {
+  const n = findFlowNode(id);
+  const panel = document.getElementById("flowNodePanel");
+  if (!n || !panel) return;
+  const cat = flowNodeCategory(n);
+  const ins = flowData.edges.filter(e => unesc(e.to) === id);
+  const outs = flowData.edges.filter(e => unesc(e.from) === id);
+  const firstIn = [...ins].sort((a, b) => (a.ts || 0) - (b.ts || 0))[0];
+  const canExpand = !n.expanded && !["cex", "bridge", "contract", "mixer"].includes(n.type) && !n.hub;
+  panel.innerHTML = `
+    <div class="flow-panel-head">
+      <span class="flow-panel-dot" style="background:${FLOW_COLORS[cat]}"></span>
+      <strong>${n.label || t("lg_" + cat)}</strong>
+    </div>
+    <button type="button" class="flow-panel-addr" data-copy="${n.address}" data-copy-label="${t("col_wallet_addr")}" title="${t("copy_btn")}">${n.address} <i class="fa-regular fa-copy"></i></button>
+    <div class="flow-panel-tags">
+      <span class="proto-tag">${t("lg_" + cat)}</span>
+      <span class="proto-tag">hop ${n.depth}</span>
+      ${(n.roles || []).map(r => `<span class="proto-tag">${t("role_" + r) || r}</span>`).join("")}
+      ${(n.clusters || []).map(c => `<span class="proto-tag flow-tag-cluster">${c}</span>`).join("")}
+    </div>
+    ${n.cex ? `<p class="flow-panel-cex"><i class="fa-solid fa-building-columns"></i> ${t("flow_deposit_to")} <strong>${n.cex}</strong></p>` : ""}
+    <div class="flow-panel-flows">
+      <div><span>In</span><strong>$${fmtUsd(n.inUsd)}</strong><small>${ins.length} ${t("flow_links")}</small></div>
+      <div><span>Out</span><strong>$${fmtUsd(n.outUsd)}</strong><small>${outs.length} ${t("flow_links")}</small></div>
+    </div>
+    <div class="flow-panel-actions">
+      ${canExpand ? `<button type="button" class="icon-action-btn primary" data-action="flow-expand" data-addr="${n.address}"><i class="fa-solid fa-plus"></i> ${t("flow_expand")}</button>` : ""}
+      ${n.explorerUrl ? `<a class="icon-action-btn" href="${n.explorerUrl}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Explorer</a>` : ""}
+      <button type="button" class="icon-action-btn" data-action="analyze-dest" data-addr="${n.address}" data-chain="${flowData.chain}"><i class="fa-solid fa-diagram-project"></i> ${t("flow_open_tab3")}</button>
+      ${firstIn?.tx ? `<button type="button" class="icon-action-btn" data-action="track-tx" data-tx="${firstIn.tx}"><i class="fa-solid fa-route"></i> ${t("flow_track_first_in")}</button>` : ""}
+      <button type="button" class="icon-action-btn" data-action="flow-add-seed" data-addr="${n.address}"><i class="fa-solid fa-seedling"></i> ${t("flow_add_seed")}</button>
+    </div>
+    ${!n.expanded && canExpand ? `<p class="flow-panel-note">${t("flow_not_expanded")}</p>` : ""}
+  `;
+  if (window.matchMedia("(max-width: 900px)").matches) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function expandFlowNode(address) {
+  address = unesc(address);
+  const n = findFlowNode(address);
+  if (!flowData || !n || n.expanded || n.hub || n.type !== "wallet") return;
+  showToast(t("flow_expanding"));
+  const graph = {
+    chain: flowData.chain,
+    seeds: flowData.seeds.map(unesc),
+    nodes: flowData.nodes.map(x => ({ id: unesc(x.id), depth: x.depth, expanded: x.expanded, hub: x.hub, roles: x.roles })),
+    edges: flowData.edges.map(e => ({ from: unesc(e.from), to: unesc(e.to), token: e.token, amount: e.amount, usd: e.usd,
+                                      count: e.count, tx: unesc(e.tx), ts: e.ts, txUrl: unesc(e.txUrl) }))
+  };
+  try {
+    const result = await apiFetch("flowexp", "/api/flow/expand", postJSON({ ...flowParams, address, graph }));
+    if (!result) return;
+    if (!result.success) {
+      showToast(unesc(result.error));
+      return;
+    }
+    result.stats.elapsed_ms = result.stats.elapsed_ms ?? 0;
+    flowData = result;
+    renderFlowResult(result, document.getElementById("flowResultContainer"));
+    showToast(`+${result.stats.addedNodes || 0} ${t("flow_nodes_added")}`);
+    setTimeout(() => {
+      flowNetwork?.selectNodes([address]);
+      showFlowNodePanel(address);
+    }, 300);
+  } catch (err) {
+    showToast(err.message);
+  }
+}
+
+function focusFinding(idx) {
+  const f = flowData?.findings?.[idx];
+  if (!f || !flowNetwork) return;
+  const ids = f.nodes.map(unesc);
+  flowNetwork.selectNodes(ids);
+  flowNetwork.fit({ nodes: ids, animation: { duration: 500 } });
+  showFlowNodePanel(ids[0]);
+  document.getElementById("flowGraph").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function flowCluster(id) {
+  return flowData?.clusters?.find(c => c.id === id);
+}
+
+// Open Tab 5 pre-filled from another tab and run it.
+async function openFlow(seeds, chain, opts = {}) {
+  seeds = (seeds || []).map(unesc).filter(Boolean);
+  if (!seeds.length) return;
+  switchTab("flow");
+  await ensureFlowInit();
+  pickChainOption(document.getElementById("flowChain"), unesc(chain || ""), seeds[0], "ethereum");
+  onFlowChainChange();
+  document.getElementById("flowSeeds").value = seeds.slice(0, 10).join("\n");
+  document.getElementById("flowDirection").value = opts.direction || "forward";
+  if (opts.depth) {
+    const depthEl = document.getElementById("flowDepth");
+    depthEl.value = Math.min(opts.depth, Number(depthEl.max));
+    document.getElementById("flowDepthVal").textContent = depthEl.value;
+  }
+  submitForm("flowForm");
+  document.getElementById("tabContentFlow")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function handleFlowAction(action, el) {
+  switch (action) {
+    case "flow-sample": {
+      const s = FLOW_SAMPLES[el.dataset.sample];
+      if (s) openFlow(s.seeds, s.chain, s);
+      return true;
+    }
+    case "flow-expand": expandFlowNode(el.dataset.addr); return true;
+    case "flow-focus": focusFinding(Number(el.dataset.idx)); return true;
+    case "flow-fit": flowNetwork?.fit({ animation: { duration: 400 } }); return true;
+    case "flow-layout":
+      flowHierarchical = !flowHierarchical;
+      if (flowData) drawFlowGraph(flowData);
+      return true;
+    case "flow-add-seed": {
+      const box = document.getElementById("flowSeeds");
+      const addr = unesc(el.dataset.addr);
+      if (!box.value.split(/\s+/).includes(addr)) box.value = (box.value.trim() + "\n" + addr).trim();
+      showToast(t("flow_seed_added"));
+      return true;
+    }
+    case "flow-cluster-copy": {
+      const c = flowCluster(el.dataset.cluster);
+      if (c) copyToClipboard(c.members.map(m => m.address).join("\n"), `${c.members.length} ${t("addresses_word")}`);
+      return true;
+    }
+    case "flow-cluster-gmgn": {
+      const c = flowCluster(el.dataset.cluster);
+      if (c) {
+        downloadCsv(`cluster_${c.id}_${flowData.chain}_gmgn.csv`, [["Address", "Tag", "Chain"]].concat(
+          c.members.map(m => [m.address, `Cluster_${c.id}_${m.relation}`, flowData.chain]),
+          [[c.depositAddress, `Cluster_${c.id}_deposit_${unesc(c.cex).replace(/[^A-Za-z0-9]+/g, "")}`, flowData.chain]]));
+        showToast(t("gmgn_csv_downloaded"));
+      }
+      return true;
+    }
+    case "flow-cluster-batch": {
+      const c = flowCluster(el.dataset.cluster);
+      if (c) {
+        setDiscoveryMode("batch");
+        document.getElementById("genealogyBatchInput").value = c.members.map(m => unesc(m.address)).slice(0, 20).join("\n");
+        pickChainOption(document.getElementById("genealogyChainSelect"), flowData.chain, unesc(c.members[0].address));
+        switchTab("genealogy");
+        submitForm("genealogyForm");
+      }
+      return true;
+    }
+    case "flow-export-csv":
+      if (flowData) {
+        downloadCsv(`fund_flow_${flowData.chain}_${Date.now()}.csv`, [["From", "To", "Token", "Amount", "USD", "TxCount", "FirstTx"]].concat(
+          flowData.edges.map(e => [e.from, e.to, e.token, e.amount, e.usd, e.count, e.tx])));
+      }
+      return true;
+    case "flow-export-json":
+      if (flowData) {
+        const url = URL.createObjectURL(new Blob([JSON.stringify(deepUnesc(flowData), null, 2)], { type: "application/json" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `fund_flow_${flowData.chain}_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      return true;
+    case "flow-open":
+      openFlow((el.dataset.seeds || "").split(","), el.dataset.chain);
+      return true;
+    case "flow-from-tab3":
+      openFlow(currentFlowSeedsFromTab3, currentSelectedChain);
+      return true;
+    case "flow-from-deposit":
+      if (lastDepositData?.qualified_senders?.length) {
+        const seeds = lastDepositData.qualified_senders.slice(0, 10).map(s => s.sender_address);
+        openFlow(seeds, lastDepositData.qualified_senders[0].chain);
+      }
+      return true;
+    default:
+      return false;
+  }
+}
+
+let currentFlowSeedsFromTab3 = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const chainSel = document.getElementById("flowChain");
+  chainSel?.addEventListener("change", onFlowChainChange);
+  for (const id of ["flowDepth", "flowFanout"]) {
+    document.getElementById(id)?.addEventListener("input", e => {
+      document.getElementById(id + "Val").textContent = e.target.value;
+    });
+  }
+  document.getElementById("flowSeeds")?.addEventListener("keydown", e => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      submitForm("flowForm");
+    }
+  });
+  document.getElementById("flowResultContainer")?.addEventListener("keydown", e => {
+    if (e.key === "Enter" && e.target.matches("[data-action='flow-focus']")) focusFinding(Number(e.target.dataset.idx));
+  });
+  if (store.get("omniroute_tab", "") === "flow") ensureFlowInit();
 });
