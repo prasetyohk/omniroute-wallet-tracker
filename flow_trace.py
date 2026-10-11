@@ -111,16 +111,35 @@ def _cached(key: Tuple[str, str], fn: Callable[[], Any]) -> Any:
     return value
 
 
+_ETHERSCAN_SUPPORT: Dict[str, bool] = {}
+_ETHERSCAN_PROBE_ADDR = "0x0000000000000000000000000000000000000001"
+
+
+def etherscan_supports(chain: str) -> bool:
+    """Whether the configured Etherscan key may query this chain. The free tier excludes some
+    chains (e.g. Base, Optimism, BNB Chain); the answer is probed once and cached."""
+    if not ETHERSCAN_API_KEY or chain not in ETHERSCAN_CHAIN_IDS:
+        return False
+    if chain not in _ETHERSCAN_SUPPORT:
+        data = rc._get_json(f"https://api.etherscan.io/v2/api?chainid={ETHERSCAN_CHAIN_IDS[chain]}&module=account"
+                            f"&action=balance&address={_ETHERSCAN_PROBE_ADDR}&apikey={ETHERSCAN_API_KEY}", timeout=8)
+        if data is None:
+            return True  # network hiccup: try Etherscan, fetch falls back if it refuses
+        _ETHERSCAN_SUPPORT[chain] = "not supported" not in str(data.get("result", "")).lower()
+    return _ETHERSCAN_SUPPORT[chain]
+
+
 def provider_info(chain: str) -> Dict[str, Any]:
     """Which data source will be used, and the safe limits that follow from it."""
     if chain == "solana":
         if HELIUS_API_KEY:
             return {"source": "Helius", "keyed": True, "workers": 4, "max_depth": MAX_DEPTH, "max_fanout": MAX_FANOUT}
         return {"source": "Solana public RPC", "keyed": False, "workers": 1, "max_depth": 2, "max_fanout": 3}
-    if ETHERSCAN_API_KEY:
+    if etherscan_supports(chain):
         return {"source": "Etherscan v2", "keyed": True, "workers": 4, "max_depth": MAX_DEPTH, "max_fanout": MAX_FANOUT}
     if not rc.get_chain_info(chain).get("blockscoutApi"):
-        return {"source": "none", "keyed": False, "workers": 1, "max_depth": 0, "max_fanout": 0}
+        return {"source": "none", "keyed": False, "workers": 1, "max_depth": 0, "max_fanout": 0,
+                "plan_required": bool(ETHERSCAN_API_KEY)}
     return {"source": "Blockscout", "keyed": False, "workers": 3, "max_depth": MAX_DEPTH, "max_fanout": MAX_FANOUT}
 
 
@@ -172,6 +191,9 @@ def _etherscan_list(chain: str, action: str, address: str) -> Optional[List[Dict
         if isinstance(data, dict):
             if isinstance(data.get("result"), list):
                 return data["result"]
+            if "not supported" in str(data.get("result", "")).lower():
+                _ETHERSCAN_SUPPORT[chain] = False
+                return None
             if "rate limit" in str(data.get("result", "")).lower():
                 time.sleep(0.6 * (attempt + 1))
                 continue
@@ -183,7 +205,7 @@ def fetch_evm_transfers(chain: str, address: str) -> Tuple[List[Dict[str, Any]],
     address = rc.to_checksum(address)
 
     def run():
-        if ETHERSCAN_API_KEY:
+        if etherscan_supports(chain):
             fetch, source = (lambda action: _etherscan_list(chain, action, address)), "Etherscan v2"
         else:
             api = rc.get_chain_info(chain).get("blockscoutApi")

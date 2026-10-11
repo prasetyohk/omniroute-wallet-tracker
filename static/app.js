@@ -253,6 +253,7 @@ const translations = {
     btn_tracing_flow: "Menelusuri hop demi hop...",
     vis_load_failed: "Library graf gagal dimuat (cek koneksi internet).",
     flow_provider_none: "Chain ini butuh ETHERSCAN_API_KEY di file .env (tidak ada sumber data publik).",
+    flow_provider_plan: "Key Etherscan gratis tidak mencakup chain ini (perlu paket berbayar) dan tidak ada sumber publik. Gunakan chain lain.",
     flow_provider_label: "Sumber data",
     flow_provider_limited: "mode publik dibatasi maks.",
     flow_branches_word: "cabang",
@@ -573,6 +574,7 @@ const translations = {
     btn_tracing_flow: "Tracing hop by hop...",
     vis_load_failed: "Graph library failed to load (check your internet connection).",
     flow_provider_none: "This chain needs ETHERSCAN_API_KEY in the .env file (no public data source).",
+    flow_provider_plan: "The free Etherscan key doesn't cover this chain (paid plan required) and there is no public source. Use another chain.",
     flow_provider_label: "Data source",
     flow_provider_limited: "public mode capped at",
     flow_branches_word: "branches",
@@ -2582,7 +2584,7 @@ function onFlowChainChange() {
   banner.style.display = "flex";
   banner.className = `flow-provider-banner ${p.keyed ? "ok" : "warn"}`;
   if (p.source === "none") {
-    banner.innerHTML = `<i class="fa-solid fa-key"></i><span>${t("flow_provider_none")}</span>`;
+    banner.innerHTML = `<i class="fa-solid fa-key"></i><span>${t(p.plan_required ? "flow_provider_plan" : "flow_provider_none")}</span>`;
   } else if (p.keyed) {
     banner.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${t("flow_provider_label")}: <strong>${p.source}</strong></span>`;
   } else {
@@ -2855,6 +2857,14 @@ async function drawFlowGraph(data) {
   });
 }
 
+// Select only ids that exist in the graph currently drawn (a newer trace may have replaced it).
+function selectFlowNodes(ids) {
+  if (!flowNetwork) return [];
+  const present = ids.filter(id => flowNetwork.body.data.nodes.get(id));
+  if (present.length) flowNetwork.selectNodes(present);  // never wipe the user's selection
+  return present;
+}
+
 function findFlowNode(id) {
   return flowData?.nodes.find(n => unesc(n.id) === id);
 }
@@ -2920,9 +2930,10 @@ async function expandFlowNode(address) {
     flowData = result;
     renderFlowResult(result, document.getElementById("flowResultContainer"));
     showToast(`+${result.stats.addedNodes || 0} ${t("flow_nodes_added")}`);
+    const merged = result;
     setTimeout(() => {
-      flowNetwork?.selectNodes([address]);
-      showFlowNodePanel(address);
+      if (flowData !== merged) return;  // a newer trace replaced this graph
+      if (selectFlowNodes([address]).length) showFlowNodePanel(address);
     }, 300);
   } catch (err) {
     showToast(err.message);
@@ -2932,8 +2943,8 @@ async function expandFlowNode(address) {
 function focusFinding(idx) {
   const f = flowData?.findings?.[idx];
   if (!f || !flowNetwork) return;
-  const ids = f.nodes.map(unesc);
-  flowNetwork.selectNodes(ids);
+  const ids = selectFlowNodes(f.nodes.map(unesc));
+  if (!ids.length) return;
   flowNetwork.fit({ nodes: ids, animation: { duration: 500 } });
   showFlowNodePanel(ids[0]);
   document.getElementById("flowGraph").scrollIntoView({ behavior: "smooth", block: "center" });
