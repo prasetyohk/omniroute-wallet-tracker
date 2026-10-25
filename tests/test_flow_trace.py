@@ -361,3 +361,21 @@ def test_detect_account_kinds_batches_and_caches(monkeypatch):
     assert ft.detect_account_kinds("ethereum", addrs) == {addrs[0]: "eoa", addrs[1]: "contract"}
     assert ft.detect_account_kinds("ethereum", addrs) == {addrs[0]: "eoa", addrs[1]: "contract"}
     assert calls == [2]  # second call served from cache
+
+
+def test_portfolio_urls():
+    import relay_core as rc
+    # Test Solana address inspection
+    sol_addr = "So11111111111111111111111111111111111111112"
+    sol_res = rc.inspect_address_details(sol_addr)
+    assert sol_res["is_valid"] is True
+    assert sol_res["portfolio_url"] == f"https://jup.ag/portfolio/{sol_addr}"
+    assert sol_res["portfolio_label"] == "Jup"
+
+    # Test EVM address inspection
+    evm_addr = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+    evm_res = rc.inspect_address_details(evm_addr, "ethereum")
+    assert evm_res["is_valid"] is True
+    assert evm_res["portfolio_url"] == f"https://debank.com/profile/{evm_addr}"
+    assert evm_res["portfolio_label"] == "DeBank"
+

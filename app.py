@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, jsonify
 import relay_core
 import flow_trace
 import storage
+import counterparties
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["JSON_SORT_KEYS"] = False
@@ -124,6 +125,35 @@ def deposit_trace():
     )
     key = ("deposit",) + tuple(sorted(params.items()))
     return jsonify(cached_call(key, lambda: relay_core.trace_deposit_inflow(**params)))
+
+
+# ==================== TAB 6: TOP COUNTERPARTIES ====================
+
+@app.route("/api/wallet/counterparties", methods=["POST"])
+def wallet_counterparties():
+    data = _payload()
+    address = _str(data, "address")
+    chain = _str(data, "chain", "auto")
+    time_range = _str(data, "time_range", "all").lower()
+    direction = _str(data, "direction", "all").lower()
+    sort_by = _str(data, "sort_by", "usd").lower()
+
+    if not address:
+        return bad_request("Alamat dompet tidak boleh kosong / Wallet address cannot be empty.")
+    if len(address) > 100:
+        return bad_request("Alamat tidak valid / Invalid address.")
+
+    if time_range not in ("1h", "24h", "1w", "1m", "all"):
+        time_range = "all"
+    if direction not in ("all", "in", "out"):
+        direction = "all"
+    if sort_by not in ("usd", "tx"):
+        sort_by = "usd"
+
+    key = ("counterparties", address.lower(), chain.lower(), time_range, direction, sort_by)
+    return jsonify(cached_call(key, lambda: counterparties.analyze_top_counterparties(
+        address, chain=chain, time_range=time_range, direction=direction, sort_by=sort_by
+    )))
 
 
 # ==================== TAB 5: FUND FLOW GRAPH ====================
@@ -278,6 +308,16 @@ def samples():
             "address": "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a",
             "chain": "base",
             "label": "EVM Active Deposit Address"
+        },
+        "counterparty_solana": {
+            "address": "2S1zLXppAyd9st2Y9BSn4ZMsTUHU3s7cB44yBXDdEJ1h",
+            "chain": "solana",
+            "label": "Solana Active Trader (26 Counterparties, $169k Vol)"
+        },
+        "counterparty_evm": {
+            "address": "0x0532da9a4248daa5a48b4d7c6c1c8fe447b1320a",
+            "chain": "base",
+            "label": "Base Active Wallet (Multi-Hop Counterparties)"
         }
     })
 

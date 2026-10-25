@@ -365,7 +365,54 @@ const translations = {
     flow_mark_save: "Simpan tanda",
     flow_mark_default: "Ditandai",
     flow_marked_ok: "Alamat ditandai — akan tersorot di setiap trace",
-    flow_unmarked_ok: "Tanda dihapus"
+    flow_unmarked_ok: "Tanda dihapus",
+
+    // Tab 6: Top Counterparties (ID)
+    tab_cp_title: "6 · Top Counterparties",
+    tab_cp_desc: "Volume USD, TX Count, In/Out & Time-Range Filter",
+    cp_section_title: "Top Counterparties Analyzer",
+    cp_section_desc: "Analisis mitra transaksi dompet terbanyak berdasarkan volume saldo USD atau frekuensi jumlah tx. Dilengkapi filter rentang waktu (1h, 24h, 1w, 1m, all) dan arah aliran dana (all, in, out).",
+    guide_cp_1: "Tempel alamat wallet & pilih jaringan (atau Auto-Detect)",
+    guide_cp_2: "Atur rentang waktu (1h, 24h, 1w, 1m, all) & arah aliran (in/out/all)",
+    guide_cp_3: "Urutkan berdasarkan Saldo USD atau Jumlah TX",
+    guide_cp_tip: "Tip: Klik salah satu counterparty untuk langsung melacak hubungannya di Tab 3 atau membuat graf aliran di Tab 5.",
+    ph_cp: "Tempel alamat wallet (0x… atau Solana Base58 public key)...",
+    cp_time_range_label: "Rentang Waktu:",
+    cp_direction_label: "Arah Aliran (Flow):",
+    cp_sort_label: "Urutkan Berdasarkan:",
+    range_all: "All (Semua)",
+    dir_all: "Semua Aliran",
+    dir_in: "In (Masuk)",
+    dir_out: "Out (Keluar)",
+    sort_usd: "Saldo USD ($)",
+    sort_tx: "Jumlah TX",
+    btn_analyze_cp: "Analisis Top Counterparties Sekarang",
+    btn_analyzing_cp: "Memindai Semua Transaksi & Menghitung Saldo...",
+    cp_metrics_volume: "Total Volume USD",
+    cp_metrics_count: "Mitra Transaksi Unik",
+    cp_metrics_txs: "Total Transaksi",
+    cp_metrics_top: "Mitra Dominan (#1)",
+    col_cp_address: "Alamat Mitra (Counterparty)",
+    col_cp_flow: "Arah Aliran",
+    col_cp_volume: "Total Volume USD",
+    col_cp_txs: "Jumlah TX",
+    col_cp_last: "Aktivitas Terakhir",
+    flow_in_label: "INFLOW",
+    flow_out_label: "OUTFLOW",
+    flow_both_label: "IN & OUT",
+    export_cp_csv: "📥 Ekspor GMGN CSV",
+    copy_cp_addrs: "📋 Salin Semua Alamat",
+    export_cp_json: "💾 Ekspor JSON",
+    search_cp_placeholder: "Cari alamat, label entitas, atau token...",
+    no_cp_found: "Tidak ada counterparty yang sesuai dengan filter saat ini.",
+    no_cp_export: "Tidak ada data counterparty untuk diekspor.",
+    cp_csv_downloaded: "File CSV Top Counterparties berhasil diunduh!",
+    cp_json_downloaded: "File JSON Top Counterparties berhasil diunduh!",
+    cp_set_target: "Jadikan Target Baru",
+    btn_trace_cp_tab3: "👉 Trace Relasi (Tab 3)",
+    btn_flow_cp_tab5: "Graf Aliran (Tab 5)",
+    cp_failed: "Gagal Menganalisis Counterparties",
+    enter_cp_address: "Masukkan alamat dompet yang valid!"
   },
   en: {
     tagline: "Cross-Chain Swap & Bridge Destination Wallet Resolver",
@@ -732,7 +779,54 @@ const translations = {
     flow_mark_save: "Save mark",
     flow_mark_default: "Marked",
     flow_marked_ok: "Address marked — it will be highlighted in every trace",
-    flow_unmarked_ok: "Mark removed"
+    flow_unmarked_ok: "Mark removed",
+
+    // Tab 6: Top Counterparties (EN)
+    tab_cp_title: "6 · Top Counterparties",
+    tab_cp_desc: "Volume USD, TX Count, In/Out & Time-Range Filter",
+    cp_section_title: "Top Counterparties Analyzer",
+    cp_section_desc: "Analyze top wallet counterparties ranked by USD volume or transaction frequency. Includes time-range filters (1h, 24h, 1w, 1m, all) and directional flow filters (all, in, out).",
+    guide_cp_1: "Paste wallet address & select network (or Auto-Detect)",
+    guide_cp_2: "Select time range (1h, 24h, 1w, 1m, all) & flow direction (in/out/all)",
+    guide_cp_3: "Rank by USD Volume or Transaction Frequency",
+    guide_cp_tip: "Tip: Click any counterparty to trace their relations in Tab 3 or build a flow graph in Tab 5.",
+    ph_cp: "Paste wallet address (0x… or Solana Base58 public key)...",
+    cp_time_range_label: "Time Range:",
+    cp_direction_label: "Flow Direction:",
+    cp_sort_label: "Sort / Rank By:",
+    range_all: "All Time",
+    dir_all: "All Flows",
+    dir_in: "In (Incoming)",
+    dir_out: "Out (Outgoing)",
+    sort_usd: "USD Volume ($)",
+    sort_tx: "TX Count",
+    btn_analyze_cp: "Analyze Top Counterparties Now",
+    btn_analyzing_cp: "Scanning All Transactions & Valuing Volumes...",
+    cp_metrics_volume: "Total Transaction Volume",
+    cp_metrics_count: "Unique Counterparties",
+    cp_metrics_txs: "Total Transactions",
+    cp_metrics_top: "Dominant Counterparty (#1)",
+    col_cp_address: "Counterparty Address",
+    col_cp_flow: "Flow Direction",
+    col_cp_volume: "Total Volume USD",
+    col_cp_txs: "TX Count",
+    col_cp_last: "Last Active",
+    flow_in_label: "INFLOW",
+    flow_out_label: "OUTFLOW",
+    flow_both_label: "IN & OUT",
+    export_cp_csv: "📥 Export GMGN CSV",
+    copy_cp_addrs: "📋 Copy All Addresses",
+    export_cp_json: "💾 Export JSON",
+    search_cp_placeholder: "Search address, entity label, or token...",
+    no_cp_found: "No counterparties found matching current filter.",
+    no_cp_export: "No counterparty data to export.",
+    cp_csv_downloaded: "Top Counterparties CSV file downloaded!",
+    cp_json_downloaded: "Top Counterparties JSON file downloaded!",
+    cp_set_target: "Analyze This Wallet",
+    btn_trace_cp_tab3: "👉 Trace Relations (Tab 3)",
+    btn_flow_cp_tab5: "Flow Graph (Tab 5)",
+    cp_failed: "Failed to Analyze Counterparties",
+    enter_cp_address: "Please enter a valid wallet address!"
   }
 };
 
@@ -943,7 +1037,8 @@ const TABS = {
   address: ["tabBtnAddress", "tabContentAddress"],
   genealogy: ["tabBtnGenealogy", "tabContentGenealogy"],
   deposit: ["tabBtnDeposit", "tabContentDeposit"],
-  flow: ["tabBtnFlow", "tabContentFlow"]
+  flow: ["tabBtnFlow", "tabContentFlow"],
+  counterparties: ["tabBtnCounterparties", "tabContentCounterparties"]
 };
 
 // Tab Switching
@@ -1030,6 +1125,71 @@ function truncateAddress(addr, len = 6) {
 
 function fmtUsd(n) {
   return Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ==================== PORTFOLIO LINK HELPERS (DeBank / Jupiter) ====================
+function getPortfolioLinkInfo(addr, chain = "") {
+  if (!addr || typeof addr !== "string") return null;
+  const clean = addr.trim();
+  if (!clean || clean.length < 20 || clean.includes(" ") || clean.includes("/")) return null;
+
+  const chainLower = String(chain || "").toLowerCase();
+
+  // Solana: chain is solana or base58 address
+  if (chainLower.includes("solana") || (!clean.startsWith("0x") && SOLANA_ADDR_RE.test(clean))) {
+    return {
+      type: "solana",
+      service: "Jupiter",
+      label: "Jup ↗",
+      url: `https://jup.ag/portfolio/${clean}`,
+      title: currentLang === "id" ? `Buka portfolio ${truncateAddress(clean, 4)} di Jupiter (jup.ag)` : `Open portfolio for ${truncateAddress(clean, 4)} on Jupiter (jup.ag)`,
+      icon: "fa-solid fa-chart-pie"
+    };
+  }
+
+  // EVM: starts with 0x
+  if (clean.startsWith("0x")) {
+    return {
+      type: "evm",
+      service: "DeBank",
+      label: "DeBank ↗",
+      url: `https://debank.com/profile/${clean}`,
+      title: currentLang === "id" ? `Buka profil ${truncateAddress(clean, 4)} di DeBank (debank.com)` : `Open profile for ${truncateAddress(clean, 4)} on DeBank (debank.com)`,
+      icon: "fa-solid fa-wallet"
+    };
+  }
+
+  return null;
+}
+
+function renderPortfolioBoxLine(addr, chain = "") {
+  const info = getPortfolioLinkInfo(addr, chain);
+  if (!info) return "";
+  const labelText = info.type === "solana" ? "Jupiter Portfolio" : "DeBank Profile";
+  return `
+    <div class="address-portfolio-meta">
+      <span class="portfolio-meta-label"><i class="${info.icon}"></i> ${labelText}:</span>
+      <a href="${info.url}" target="_blank" rel="noopener noreferrer" class="portfolio-small-link ${info.type}" title="${info.title}">
+        <span>${info.label}</span>
+      </a>
+    </div>
+  `;
+}
+
+function renderPortfolioSmallLink(addr, chain = "") {
+  const info = getPortfolioLinkInfo(addr, chain);
+  if (!info) return "";
+  return `<a href="${info.url}" target="_blank" rel="noopener noreferrer" class="portfolio-small-link ${info.type}" title="${info.title}"><span>${info.label}</span></a>`;
+}
+
+function renderPortfolioActionBtn(addr, chain = "") {
+  const info = getPortfolioLinkInfo(addr, chain);
+  if (!info) return "";
+  return `
+    <a href="${info.url}" target="_blank" rel="noopener noreferrer" class="icon-action-btn portfolio-btn ${info.type}" title="${info.title}">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> ${info.service} ↗
+    </a>
+  `;
 }
 
 
@@ -1121,6 +1281,7 @@ function renderTxBreakdown(tx, container, elapsedMs) {
           </div>
           <div class="address-box">
             <div class="address-text" title="${tx.from_wallet}">${tx.from_wallet || 'Unknown'}</div>
+            ${renderPortfolioBoxLine(tx.from_wallet, originChain.display_name || originChain.name || originChain.id)}
           </div>
           <div class="card-detail-line" style="flex-direction: column; align-items: flex-start; gap: 4px;">
             <div style="display: flex; justify-content: space-between; width: 100%; align-items: baseline;">
@@ -1144,6 +1305,7 @@ function renderTxBreakdown(tx, container, elapsedMs) {
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> ${dict.explorer_btn}
               </a>
             ` : ''}
+            ${renderPortfolioActionBtn(tx.from_wallet, originChain.display_name || originChain.name || originChain.id)}
           </div>
         </div>
 
@@ -1203,6 +1365,7 @@ function renderTxBreakdown(tx, container, elapsedMs) {
             <div class="address-text" title="${tx.to_wallet_tujuan}">
               ${tx.to_wallet_tujuan || 'Pending / In-Transit'}
             </div>
+            ${renderPortfolioBoxLine(tx.to_wallet_tujuan, destChain.display_name || destChain.name || destChain.id)}
           </div>
           <div class="card-detail-line" style="flex-direction: column; align-items: flex-start; gap: 4px;">
             <div style="display: flex; justify-content: space-between; width: 100%; align-items: baseline;">
@@ -1255,6 +1418,7 @@ function renderTxBreakdown(tx, container, elapsedMs) {
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> ${dict.explorer_wallet_btn || (currentLang === 'id' ? 'Explorer Dompet' : 'Wallet Explorer')}
               </a>
             ` : ''}
+            ${renderPortfolioActionBtn(tx.to_wallet_tujuan, destChain.display_name || destChain.name || destChain.id)}
             ${destChain.tx_explorer_url ? `
               <a href="${destChain.tx_explorer_url}" target="_blank" rel="noopener noreferrer" class="icon-action-btn fill-highlight-btn" title="${dict.fill_tx_btn || 'Received Tx ↗'}">
                 <i class="fa-solid fa-receipt"></i> ${dict.fill_tx_btn || (currentLang === 'id' ? 'Tx Penerimaan ↗' : 'Received Tx ↗')}
@@ -1318,8 +1482,9 @@ function renderWalletHistory(res, container) {
       <h3 class="card-title" style="margin-bottom: 8px;">
         <i class="fa-solid fa-list-check text-lime"></i> ${currentLang === 'id' ? 'Riwayat Swap / Bridge Wallet' : 'Wallet Cross-Chain History'} (${items.length})
       </h3>
-      <p style="color: var(--text-muted); font-size: 0.9rem;">
-        ${currentLang === 'id' ? 'Alamat dompet' : 'Wallet address'}: <code class="text-lime" style="font-family: var(--font-mono);">${res.address}</code>
+      <p style="color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span>${currentLang === 'id' ? 'Alamat dompet' : 'Wallet address'}:</span> <code class="text-lime" style="font-family: var(--font-mono);">${res.address}</code>
+        ${renderPortfolioSmallLink(res.address)}
       </p>
     </div>
 
@@ -1340,14 +1505,18 @@ function renderWalletHistory(res, container) {
               <div class="text-lime" style="font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; margin-top: 2px;">
                 ${item.to_wallet_tujuan}
               </div>
+              <div style="margin-top: 4px;">
+                ${renderPortfolioSmallLink(item.to_wallet_tujuan, item.destination_chain?.display_name || item.destination_chain?.name)}
+              </div>
             </div>
             <button class="icon-action-btn" data-copy="${item.to_wallet_tujuan}" data-copy-label="${dict.step3_title}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
           </div>
-          <div style="margin-top: 12px; font-size: 0.82rem; display: flex; gap: 18px;">
+          <div style="margin-top: 12px; font-size: 0.82rem; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
             ${item.origin_chain.tx_explorer_url ? `<a href="${item.origin_chain.tx_explorer_url}" target="_blank" style="color: #fff; text-decoration: none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Origin Tx</a>` : ''}
             ${item.destination_chain.tx_explorer_url ? `<a href="${item.destination_chain.tx_explorer_url}" target="_blank" style="color: var(--accent-lime); text-decoration: none; font-weight: 700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Dest Tx</a>` : ''}
+            ${renderPortfolioSmallLink(item.to_wallet_tujuan, item.destination_chain?.display_name || item.destination_chain?.name)}
           </div>
         </div>
       `).join('')}
@@ -1384,11 +1553,13 @@ function renderAddressInspection(data, container, customMsg = "") {
           <div class="metric-value text-lime" style="font-size: 0.96rem;">
             ${data.checksum_address || data.address}
           </div>
-          <div class="address-actions" style="margin-top: 12px;">
+          ${renderPortfolioBoxLine(data.checksum_address || data.address, data.chain)}
+          <div class="address-actions" style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
             <button class="icon-action-btn" data-copy="${data.checksum_address || data.address}" data-copy-label="${dict.checksum_official}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
             ${data.explorer_url ? `<a href="${data.explorer_url}" target="_blank" class="icon-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${dict.open_in_explorer}</a>` : ''}
+            ${renderPortfolioActionBtn(data.checksum_address || data.address, data.chain)}
           </div>
         </div>
 
@@ -1684,6 +1855,7 @@ function renderGenealogyDashboard(data, container) {
             <span class="genealogy-addr-pill" title="${data.targetAddress}">
               ${data.targetAddress}
             </span>
+            ${renderPortfolioSmallLink(data.targetAddress, data.chain)}
             <button class="icon-action-btn" data-copy="${data.targetAddress}" data-copy-label="${dict.col_wallet_addr}">
               <i class="fa-regular fa-copy"></i> ${dict.copy_btn}
             </button>
@@ -1731,9 +1903,12 @@ function renderGenealogyDashboard(data, container) {
               </div>
               <div class="funder-addr" title="${genesis.address}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <span style="font-family: var(--font-mono); word-break: break-all;">${genesis.address}</span>
-                <button class="icon-action-btn-mini" data-copy="${genesis.address}" data-copy-label="${dict.funder_gas_title || 'Genesis Funder'}" title="Copy funder address" style="flex-shrink: 0;">
-                  <i class="fa-regular fa-copy"></i>
-                </button>
+                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                  ${renderPortfolioSmallLink(genesis.address, data.chain)}
+                  <button class="icon-action-btn-mini" data-copy="${genesis.address}" data-copy-label="${dict.funder_gas_title || 'Genesis Funder'}" title="Copy funder address">
+                    <i class="fa-regular fa-copy"></i>
+                  </button>
+                </div>
               </div>
               <div class="funder-meta-row">
                 <div class="funder-amount">
@@ -1805,9 +1980,12 @@ function renderGenealogyDashboard(data, container) {
                     </div>
                     <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                       <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.sender, 10)} &bull; ${item.txCount} txs</span>
-                      <button class="icon-action-btn-mini" data-copy="${item.sender}" data-copy-label="Sender" title="Copy full wallet address">
-                        <i class="fa-regular fa-copy"></i> Copy
-                      </button>
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        ${renderPortfolioSmallLink(item.sender, data.chain)}
+                        <button class="icon-action-btn-mini" data-copy="${item.sender}" data-copy-label="Sender" title="Copy full wallet address">
+                          <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                      </div>
                     </div>
                     <div class="progress-bar-wrap">
                       <div class="progress-fill inflow" style="width: ${pct}%;"></div>
@@ -1857,9 +2035,12 @@ function renderGenealogyDashboard(data, container) {
                     </div>
                     <div class="flow-addr-sub" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                       <span style="font-family: var(--font-mono); font-size: 0.74rem;">${truncateAddress(item.recipient, 10)} &bull; ${item.txCount} txs</span>
-                      <button class="icon-action-btn-mini outflow-copy" data-copy="${item.recipient}" data-copy-label="Exit Target" title="Copy full wallet address">
-                        <i class="fa-regular fa-copy"></i> Copy
-                      </button>
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        ${renderPortfolioSmallLink(item.recipient, data.chain)}
+                        <button class="icon-action-btn-mini outflow-copy" data-copy="${item.recipient}" data-copy-label="Exit Target" title="Copy full wallet address">
+                          <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                      </div>
                     </div>
                     <div class="progress-bar-wrap">
                       <div class="progress-fill outflow" style="width: ${pct}%;"></div>
@@ -2088,7 +2269,10 @@ function renderBatchSybilDashboard(data, container) {
               ${linkedWallets.map(w => `
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                   <td style="padding: 12px 8px; font-family: var(--font-mono); color: var(--text-pure);">
-                    ${truncateAddress(w.address, 10)}
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span>${truncateAddress(w.address, 10)}</span>
+                      ${renderPortfolioSmallLink(w.address, w.chain || chainKey)}
+                    </div>
                   </td>
                   <td style="padding: 12px 8px;">
                     <span class="proto-tag" style="font-size: 0.74rem;">${w.role}</span>
@@ -2348,6 +2532,7 @@ function renderDepositResults(data, container) {
                 <td style="padding: 12px 8px; font-family: var(--font-mono); color: var(--text-pure); font-weight: 600;">
                   <button type="button" class="addr-copy-btn" data-copy="${s.sender_address}" data-copy-label="${dict.col_sender_address}" title="${s.sender_address}"><span>${truncateAddress(s.sender_address, 10)}</span><i class="fa-regular fa-copy"></i></button>
                   <span class="chain-badge" style="font-size: 0.68rem; margin-left: 6px; padding: 2px 6px;">${s.chain}</span>
+                  ${renderPortfolioSmallLink(s.sender_address, s.chain)}
                 </td>
                 <td style="padding: 12px 8px;">
                   <strong class="text-lime" style="font-size: 0.95rem;">
@@ -2417,6 +2602,7 @@ function renderDepositResults(data, container) {
               <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
                 <td style="padding: 8px; font-family: var(--font-mono); color: var(--text-dim);">
                   <button type="button" class="addr-copy-btn muted" data-copy="${f.sender_address}" data-copy-label="${dict.col_sender_address}" title="${f.sender_address}"><span>${truncateAddress(f.sender_address, 10)}</span><i class="fa-regular fa-copy"></i></button>
+                  ${renderPortfolioSmallLink(f.sender_address, f.chain || data.chain)}
                 </td>
                 <td style="padding: 8px;">
                   <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; ${
@@ -2473,6 +2659,606 @@ function copyQualifiedSenders() {
   copyToClipboard(senders.map(s => s.sender_address).join("\n"), `${senders.length} ${t("addresses_word")}`);
 }
 
+// ==================== TAB 6: TOP COUNTERPARTIES ====================
+
+let lastCounterpartiesData = null;
+let lastFilteredCpList = null;
+let currentDisplayedCounterparties = [];
+let currentCpTimeRange = "all";
+let currentCpDirection = "all";
+let currentCpSortBy = "usd";
+let currentCpSearch = "";
+
+function setCpTimeRange(range) {
+  currentCpTimeRange = range;
+  document.querySelectorAll("#cpTimeRangePills .filter-pill").forEach(p => {
+    p.classList.toggle("active", p.dataset.range === range);
+  });
+  if (lastCounterpartiesData) {
+    applyCounterpartyFilters();
+  }
+}
+
+function setCpDirection(dir) {
+  currentCpDirection = dir;
+  document.querySelectorAll("#cpDirectionPills .filter-pill").forEach(p => {
+    p.classList.toggle("active", p.dataset.dir === dir);
+  });
+  if (lastCounterpartiesData) {
+    applyCounterpartyFilters();
+  }
+}
+
+function setCpSortBy(sort) {
+  currentCpSortBy = sort;
+  document.querySelectorAll("#cpSortPills .filter-pill").forEach(p => {
+    p.classList.toggle("active", p.dataset.sort === sort);
+  });
+  if (lastCounterpartiesData) {
+    applyCounterpartyFilters();
+  }
+}
+
+function clearCpInput() {
+  const el = document.getElementById("cpAddressInput");
+  if (el) { el.value = ""; el.focus(); }
+}
+
+async function loadCounterpartySample(type) {
+  try {
+    const res = await apiFetch("samples", "/api/samples");
+    const key = type === "solana" ? "counterparty_solana" : "counterparty_evm";
+    const s = res?.[key];
+    if (s) {
+      document.getElementById("cpAddressInput").value = s.address;
+      document.getElementById("cpChainSelect").value = s.chain;
+      handleCounterpartiesSubmit();
+    }
+  } catch (err) {
+    showToast(err.message);
+  }
+}
+
+async function handleCounterpartiesSubmit(event) {
+  if (event) event.preventDefault();
+  const address = (document.getElementById("cpAddressInput")?.value || "").trim();
+  const chain = document.getElementById("cpChainSelect")?.value || "auto";
+  const container = document.getElementById("counterpartiesResultContainer");
+  const submitBtn = document.getElementById("btnSubmitCounterparties");
+
+  if (!address) {
+    showToast(t("enter_cp_address"));
+    return;
+  }
+
+  const btnText = submitBtn?.querySelector(".btn-text");
+  const btnLoader = submitBtn?.querySelector(".btn-loader");
+  if (btnText) btnText.style.display = "none";
+  if (btnLoader) btnLoader.style.display = "inline-flex";
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const data = await apiFetch("cp_analyze", "/api/wallet/counterparties", {
+      method: "POST",
+      body: JSON.stringify({
+        address,
+        chain,
+        time_range: currentCpTimeRange,
+        direction: currentCpDirection,
+        sort_by: currentCpSortBy
+      })
+    });
+
+    if (!data.success) {
+      throw new Error(data.error || t("cp_failed"));
+    }
+
+    lastCounterpartiesData = data;
+    lastFilteredCpList = data.counterparties || [];
+    currentDisplayedCounterparties = lastFilteredCpList;
+    renderCounterpartiesDashboard(data, container);
+  } catch (err) {
+    if (container) {
+      container.style.display = "block";
+      container.innerHTML = `
+        <div class="card" style="padding: 24px; border: 1px solid rgba(255, 77, 77, 0.3); background: rgba(30, 10, 15, 0.6); text-align: center;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: #ff6b6b; margin-bottom: 12px;"></i>
+          <h4 style="color: #ff6b6b; font-weight: 800; margin-bottom: 8px;">${t("cp_failed")}</h4>
+          <p style="color: var(--text-dim); font-size: 0.9rem;">${escapeHtml(err.message)}</p>
+        </div>`;
+    }
+    showToast(err.message);
+  } finally {
+    if (btnText) btnText.style.display = "inline-flex";
+    if (btnLoader) btnLoader.style.display = "none";
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function applyCounterpartyFilters() {
+  if (!lastCounterpartiesData || !lastCounterpartiesData.all_transfers) return;
+  const nowTs = Math.floor(Date.now() / 1000);
+  const timeLimits = {
+    "1h": 3600,
+    "24h": 86400,
+    "1w": 604800,
+    "1m": 2592000,
+    "all": null
+  };
+  const maxAge = timeLimits[currentCpTimeRange];
+  const targetLower = (lastCounterpartiesData.target_address || "").toLowerCase();
+
+  const transfers = lastCounterpartiesData.all_transfers;
+  const cpMap = {};
+
+  for (const t of transfers) {
+    const ts = t.ts || nowTs;
+    if (maxAge !== null && (nowTs - ts) > maxAge) continue;
+    if (currentCpDirection === "in" && t.dir !== "in") continue;
+    if (currentCpDirection === "out" && t.dir !== "out") continue;
+
+    const cp = t.counterparty;
+    if (!cp || cp.toLowerCase() === targetLower) continue;
+
+    if (!cpMap[cp]) {
+      cpMap[cp] = {
+        address: cp,
+        label: t.label || "",
+        category: t.category || "private_eoa",
+        chain: t.chain || lastCounterpartiesData.chain,
+        chain_name: t.chain_name || lastCounterpartiesData.chain_name || t.chain,
+        total_volume_usd: 0,
+        in_volume_usd: 0,
+        out_volume_usd: 0,
+        total_tx_count: 0,
+        in_tx_count: 0,
+        out_tx_count: 0,
+        first_seen_ts: ts,
+        last_seen_ts: ts,
+        tokens: {},
+        latest_tx_hash: t.tx || ""
+      };
+    }
+
+    const rec = cpMap[cp];
+    const usd = Number(t.usd) || 0;
+    rec.total_volume_usd += usd;
+    rec.total_tx_count += 1;
+    if (t.dir === "in") {
+      rec.in_volume_usd += usd;
+      rec.in_tx_count += 1;
+    } else {
+      rec.out_volume_usd += usd;
+      rec.out_tx_count += 1;
+    }
+    rec.first_seen_ts = Math.min(rec.first_seen_ts, ts);
+    rec.last_seen_ts = Math.max(rec.last_seen_ts, ts);
+    if (ts >= rec.last_seen_ts) rec.latest_tx_hash = t.tx || "";
+
+    const sym = t.token || "TOKEN";
+    if (!rec.tokens[sym]) rec.tokens[sym] = { symbol: sym, amount: 0, usd: 0 };
+    rec.tokens[sym].amount += Number(t.amount) || 0;
+    rec.tokens[sym].usd += usd;
+  }
+
+  const entityMeta = {};
+  for (const orig of (lastCounterpartiesData.counterparties || [])) {
+    entityMeta[orig.address] = orig;
+  }
+
+  let cpList = Object.values(cpMap).map(rec => {
+    const meta = entityMeta[rec.address] || {};
+    const inC = rec.in_tx_count;
+    const outC = rec.out_tx_count;
+    const flowType = (inC > 0 && outC > 0) ? "both" : (inC > 0 ? "in" : "out");
+    const tokList = Object.values(rec.tokens).sort((a, b) => b.usd - a.usd);
+
+    return {
+      address: rec.address,
+      label: meta.label || rec.label || "",
+      category: meta.category || rec.category || "private_eoa",
+      is_noisy: meta.is_noisy || false,
+      is_contract: meta.is_contract || false,
+      is_cex: meta.is_cex || false,
+      total_volume_usd: Math.round(rec.total_volume_usd * 100) / 100,
+      in_volume_usd: Math.round(rec.in_volume_usd * 100) / 100,
+      out_volume_usd: Math.round(rec.out_volume_usd * 100) / 100,
+      net_volume_usd: Math.round((rec.in_volume_usd - rec.out_volume_usd) * 100) / 100,
+      total_tx_count: rec.total_tx_count,
+      in_tx_count: inC,
+      out_tx_count: outC,
+      flow_type: flowType,
+      tokens: tokList,
+      first_seen_ts: rec.first_seen_ts,
+      last_seen_ts: rec.last_seen_ts,
+      first_seen_days_ago: Math.max(0, Math.floor((nowTs - rec.first_seen_ts) / 86400)),
+      last_seen_days_ago: Math.max(0, Math.floor((nowTs - rec.last_seen_ts) / 86400)),
+      latest_tx_hash: rec.latest_tx_hash,
+      chain: rec.chain,
+      chain_name: rec.chain_name,
+      explorer_url: meta.explorer_url || ""
+    };
+  });
+
+  if (currentCpSortBy === "tx") {
+    cpList.sort((a, b) => b.total_tx_count - a.total_tx_count || b.total_volume_usd - a.total_volume_usd);
+  } else {
+    cpList.sort((a, b) => b.total_volume_usd - a.total_volume_usd || b.total_tx_count - a.total_tx_count);
+  }
+  cpList.forEach((c, idx) => { c.rank = idx + 1; });
+
+  const totalVol = cpList.reduce((acc, c) => acc + c.total_volume_usd, 0);
+  const totalIn = cpList.reduce((acc, c) => acc + c.in_volume_usd, 0);
+  const totalOut = cpList.reduce((acc, c) => acc + c.out_volume_usd, 0);
+  const totalTx = cpList.reduce((acc, c) => acc + c.total_tx_count, 0);
+  const topCp = cpList[0] || null;
+
+  const filteredData = {
+    ...lastCounterpartiesData,
+    counterparties: cpList,
+    summary: {
+      total_counterparties: cpList.length,
+      total_volume_usd: Math.round(totalVol * 100) / 100,
+      total_inflow_usd: Math.round(totalIn * 100) / 100,
+      total_outflow_usd: Math.round(totalOut * 100) / 100,
+      inflow_share_pct: totalVol > 0 ? Math.round((totalIn / totalVol) * 1000) / 10 : 0,
+      outflow_share_pct: totalVol > 0 ? Math.round((totalOut / totalVol) * 1000) / 10 : 0,
+      total_tx_count: totalTx,
+      top_counterparty: topCp ? {
+        address: topCp.address,
+        label: topCp.label,
+        total_volume_usd: topCp.total_volume_usd,
+        total_tx_count: topCp.total_tx_count,
+        flow_type: topCp.flow_type,
+        dominance_pct: totalVol > 0 ? Math.round((topCp.total_volume_usd / totalVol) * 1000) / 10 : 0
+      } : null
+    }
+  };
+
+  lastFilteredCpList = cpList;
+  currentDisplayedCounterparties = cpList;
+  const container = document.getElementById("counterpartiesResultContainer");
+  renderCounterpartiesDashboard(filteredData, container);
+  if (currentCpSearch) {
+    filterCounterpartiesTable(currentCpSearch);
+  }
+}
+
+function renderCounterpartiesDashboard(data, container) {
+  if (!container) return;
+  const dict = translations[currentLang] || translations.id;
+  const summary = data.summary || {};
+  const counterparties = data.counterparties || [];
+  const topCp = summary.top_counterparty;
+  const totalVol = summary.total_volume_usd || 0;
+  const inShare = summary.inflow_share_pct || 0;
+  const inVol = summary.total_inflow_usd || 0;
+  const outVol = summary.total_outflow_usd || 0;
+
+  lastFilteredCpList = counterparties;
+  currentDisplayedCounterparties = counterparties;
+
+  container.style.display = "block";
+  container.innerHTML = `
+    <!-- Header Target Info Card -->
+    <div class="card" style="padding: 22px 26px; margin-bottom: 22px; background: rgba(14, 18, 26, 0.95); border: 1px solid var(--border-subtle);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-users-viewfinder text-amber" style="font-size: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.76rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">
+              ${dict.col_wallet_addr || "Target Wallet"}
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px;">
+              <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: #fff;">
+                ${escapeHtml(data.target_address)}
+              </span>
+              <button type="button" class="icon-action-btn-mini" data-copy="${data.target_address}" data-copy-label="${dict.col_wallet_addr}" title="Copy Address">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+              <span class="chain-badge" style="font-size: 0.72rem; padding: 2px 8px;">${escapeHtml(data.chain_name || data.chain)}</span>
+              ${renderPortfolioSmallLink(data.target_address, data.chain)}
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sample" style="border-color: var(--accent-lime); color: var(--accent-lime);" data-action="trace-sender" data-addr="${data.target_address}" data-chain="${data.chain}">
+            <i class="fa-solid fa-diagram-project"></i> ${dict.btn_trace_cp_tab3}
+          </button>
+          <button type="button" class="btn btn-sample" style="border-color: var(--accent-purple); color: var(--accent-purple);" onclick="openFlow(['${data.target_address}'], '${data.chain}')">
+            <i class="fa-solid fa-circle-nodes"></i> ${dict.btn_flow_cp_tab5}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Grid -->
+    <div class="details-grid" style="margin-bottom: 24px;">
+      <!-- Total Volume USD -->
+      <div class="detail-metric-card">
+        <div class="metric-label">${dict.cp_metrics_volume}</div>
+        <div class="metric-value text-amber" style="font-size: 1.45rem;">
+          $${totalVol.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+        <div class="metric-sub" style="margin-top: 4px;">
+          <span class="text-lime">↓ In: $${inVol.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+          <span style="margin: 0 4px; color: var(--text-dim);">•</span>
+          <span style="color: #f87171;">↑ Out: $${outVol.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+        </div>
+        <div class="split-bar-wrap" title="Inflow: ${inShare}% | Outflow: ${(100 - inShare).toFixed(1)}%">
+          <div class="split-bar-in" style="width: ${inShare}%;"></div>
+        </div>
+      </div>
+
+      <!-- Unique Counterparties -->
+      <div class="detail-metric-card">
+        <div class="metric-label">${dict.cp_metrics_count}</div>
+        <div class="metric-value text-lime" style="font-size: 1.5rem;">
+          ${summary.total_counterparties || 0}
+        </div>
+        <div class="metric-sub">${currentLang === "id" ? "Mitra interaksi aktif" : "Active counterparty wallets"}</div>
+      </div>
+
+      <!-- Total Transactions -->
+      <div class="detail-metric-card">
+        <div class="metric-label">${dict.cp_metrics_txs}</div>
+        <div class="metric-value text-cyan" style="font-size: 1.5rem;">
+          ${summary.total_tx_count || 0}
+        </div>
+        <div class="metric-sub">${currentLang === "id" ? "Total transfer dianalisis" : "Total transfers analyzed"}</div>
+      </div>
+
+      <!-- Dominant Counterparty (#1) -->
+      <div class="detail-metric-card">
+        <div class="metric-label">${dict.cp_metrics_top}</div>
+        <div class="metric-value" style="font-size: 1.45rem; color: #fff;">
+          ${topCp ? topCp.dominance_pct + "%" : "-"}
+        </div>
+        <div class="metric-sub" style="word-break: break-all;">
+          ${topCp ? (topCp.label ? `${topCp.label} (${truncateAddress(topCp.address, 6)})` : truncateAddress(topCp.address, 10)) : "-"}
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Toolbar (Export & Search) -->
+    <div class="cp-toolbar">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <button type="button" class="btn btn-sample" style="border-color: var(--accent-lime); color: var(--accent-lime);" onclick="exportCpGMGN()">
+          <i class="fa-solid fa-file-arrow-down"></i> ${dict.export_cp_csv}
+        </button>
+        <button type="button" class="btn btn-sample" onclick="copyAllCpAddresses()">
+          <i class="fa-solid fa-copy"></i> ${dict.copy_cp_addrs}
+        </button>
+        <button type="button" class="btn btn-sample" onclick="exportCpJSON()">
+          <i class="fa-solid fa-floppy-disk"></i> ${dict.export_cp_json}
+        </button>
+      </div>
+
+      <!-- Realtime Search Box -->
+      <div class="cp-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input 
+          type="text" 
+          id="cpSearchInput" 
+          class="cp-search-input" 
+          placeholder="${dict.search_cp_placeholder}"
+          value="${escapeHtml(currentCpSearch)}"
+          oninput="filterCounterpartiesTable(this.value)"
+        />
+      </div>
+    </div>
+
+    <!-- Ranked Counterparties Table Card -->
+    <div class="card" style="padding: 24px; margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h4 style="font-size: 1.05rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-list-ol text-amber"></i>
+          <span>${dict.cp_section_title}</span>
+          <span class="chain-badge" id="cpFilteredCount" style="margin-left: 6px; font-size: 0.72rem; padding: 2px 7px;">
+            ${counterparties.length}
+          </span>
+        </h4>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.84rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-dim); text-align: left;">
+              <th style="padding: 10px 8px; width: 44px; text-align: center;">#</th>
+              <th style="padding: 10px 8px;">${dict.col_cp_address}</th>
+              <th style="padding: 10px 8px;">${dict.col_cp_flow}</th>
+              <th style="padding: 10px 8px;">${dict.col_cp_volume}</th>
+              <th style="padding: 10px 8px;">${dict.col_cp_txs}</th>
+              <th style="padding: 10px 8px;">${dict.col_tokens_transferred || "Tokens"}</th>
+              <th style="padding: 10px 8px;">${dict.col_cp_last}</th>
+              <th style="padding: 10px 8px; text-align: right;">${dict.col_actions}</th>
+            </tr>
+          </thead>
+          <tbody id="cpTableBody">
+            ${counterparties.length === 0 ? `
+              <tr>
+                <td colspan="8" style="padding: 32px; text-align: center; color: var(--text-dim);">
+                  <i class="fa-solid fa-filter-circle-xmark" style="font-size: 1.5rem; margin-bottom: 8px; display: block; opacity: 0.5;"></i>
+                  ${dict.no_cp_found}
+                </td>
+              </tr>
+            ` : counterparties.map((cp, idx) => renderCounterpartyRow(cp, idx + 1, data.chain)).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderCounterpartyRow(cp, rank, defaultChain) {
+  const dict = translations[currentLang] || translations.id;
+  const flowType = cp.flow_type || "both";
+  const flowBadgeClass = flowType === "in" ? "in" : (flowType === "out" ? "out" : "both");
+  const flowIcon = flowType === "in" ? "fa-arrow-down-left" : (flowType === "out" ? "fa-arrow-up-right" : "fa-arrows-rotate");
+  const flowLabel = flowType === "in" ? dict.dir_in : (flowType === "out" ? dict.dir_out : "IN & OUT");
+
+  const rankClass = rank === 1 ? "rank-1" : (rank === 2 ? "rank-2" : (rank === 3 ? "rank-3" : ""));
+
+  const tokensHtml = (cp.tokens || []).slice(0, 3).map(tok => `
+    <span class="token-chip" title="${Number(tok.amount).toLocaleString('en-US', { maximumFractionDigits: 4 })} ${tok.symbol} (~$${Number(tok.usd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})">
+      ${tok.symbol}
+    </span>
+  `).join("") + ((cp.tokens && cp.tokens.length > 3) ? `<span class="token-chip" style="opacity: 0.7;">+${cp.tokens.length - 3}</span>` : "");
+
+  const lastSeenStr = cp.last_seen_days_ago === 0 
+    ? (currentLang === "id" ? "Hari ini" : "Today")
+    : `${cp.last_seen_days_ago} ${currentLang === "id" ? "hari lalu" : "d ago"}`;
+
+  return `
+    <tr style="border-bottom: 1px solid var(--border-subtle); transition: background 0.15s ease;">
+      <td style="padding: 12px 8px; text-align: center;">
+        <span class="rank-badge ${rankClass}">#${rank}</span>
+      </td>
+      <td style="padding: 12px 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="addr-copy-btn" data-copy="${cp.address}" data-copy-label="${dict.col_cp_address}" title="${cp.address}">
+            <span style="font-family: var(--font-mono); font-weight: 600;">${truncateAddress(cp.address, 10)}</span>
+            <i class="fa-regular fa-copy"></i>
+          </button>
+          ${renderPortfolioSmallLink(cp.address, cp.chain || defaultChain)}
+          ${cp.label ? `<span class="proto-tag" style="font-size: 0.72rem; padding: 2px 7px;">${escapeHtml(cp.label)}</span>` : ""}
+          ${cp.is_contract ? `<span class="proto-tag" style="font-size: 0.68rem; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;"><i class="fa-solid fa-file-code"></i> Contract</span>` : ""}
+          ${cp.is_cex ? `<span class="proto-tag" style="font-size: 0.68rem; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #fbbf24;"><i class="fa-solid fa-building-columns"></i> CEX</span>` : ""}
+        </div>
+      </td>
+      <td style="padding: 12px 8px;">
+        <span class="flow-badge ${flowBadgeClass}">
+          <i class="fa-solid ${flowIcon}"></i> ${flowLabel}
+        </span>
+      </td>
+      <td style="padding: 12px 8px;">
+        <strong style="color: #fff; font-size: 0.95rem;">
+          $${Number(cp.total_volume_usd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </strong>
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
+          <span class="text-lime">↓ $${Number(cp.in_volume_usd).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+          <span style="margin: 0 4px;">•</span>
+          <span style="color: #f87171;">↑ $${Number(cp.out_volume_usd).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+        </div>
+      </td>
+      <td style="padding: 12px 8px; font-weight: 600; color: #fff;">
+        <span>${cp.total_tx_count} txs</span>
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
+          <span>In: ${cp.in_tx_count}</span> <span style="margin: 0 2px;">|</span> <span>Out: ${cp.out_tx_count}</span>
+        </div>
+      </td>
+      <td style="padding: 12px 8px;">
+        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+          ${tokensHtml || '<span style="color: var(--text-dim); font-size: 0.75rem;">-</span>'}
+        </div>
+      </td>
+      <td style="padding: 12px 8px; color: var(--text-dim); font-size: 0.78rem; white-space: nowrap;">
+        ${lastSeenStr}
+      </td>
+      <td style="padding: 12px 8px; text-align: right;">
+        <div style="display: inline-flex; gap: 6px; align-items: center;">
+          ${cp.explorer_url ? `
+            <a href="${cp.explorer_url}" target="_blank" rel="noopener noreferrer" class="icon-action-btn-mini" title="Explorer">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>` : ""}
+          <button type="button" class="btn btn-sample" style="padding: 3px 8px; font-size: 0.74rem; border-color: var(--accent-lime); color: var(--accent-lime);" data-action="trace-sender" data-addr="${cp.address}" data-chain="${cp.chain || defaultChain}" title="${dict.btn_trace_cp_tab3}">
+            <i class="fa-solid fa-diagram-project"></i> <span>Tab 3</span>
+          </button>
+          <button type="button" class="btn btn-sample" style="padding: 3px 8px; font-size: 0.74rem; border-color: var(--accent-purple); color: var(--accent-purple);" onclick="openFlow(['${cp.address}'], '${cp.chain || defaultChain}')" title="${dict.btn_flow_cp_tab5}">
+            <i class="fa-solid fa-circle-nodes"></i> <span>Tab 5</span>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+}
+
+function filterCounterpartiesTable(searchQuery) {
+  currentCpSearch = (searchQuery || "").trim().toLowerCase();
+  const tbody = document.getElementById("cpTableBody");
+  const countBadge = document.getElementById("cpFilteredCount");
+  if (!tbody || !lastCounterpartiesData) return;
+
+  const fullList = lastFilteredCpList || lastCounterpartiesData.counterparties || [];
+  const filtered = currentCpSearch
+    ? fullList.filter(cp => 
+        cp.address.toLowerCase().includes(currentCpSearch) ||
+        (cp.label && cp.label.toLowerCase().includes(currentCpSearch)) ||
+        (cp.tokens && cp.tokens.some(t => t.symbol.toLowerCase().includes(currentCpSearch)))
+      )
+    : fullList;
+
+  currentDisplayedCounterparties = filtered;
+  if (countBadge) countBadge.textContent = filtered.length;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="padding: 32px; text-align: center; color: var(--text-dim);">
+          <i class="fa-solid fa-filter-circle-xmark" style="font-size: 1.5rem; margin-bottom: 8px; display: block; opacity: 0.5;"></i>
+          ${t("no_cp_found")}
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((cp, idx) => renderCounterpartyRow(cp, idx + 1, lastCounterpartiesData.chain)).join("");
+}
+
+function exportCpGMGN() {
+  const list = currentDisplayedCounterparties || lastCounterpartiesData?.counterparties || [];
+  if (!list.length) {
+    showToast(t("no_cp_export"));
+    return;
+  }
+  const chain = lastCounterpartiesData?.chain || "multi";
+  const rows = [["Address", "Tag", "Chain", "Volume_USD", "Tx_Count"]].concat(
+    list.map(cp => [
+      cp.address,
+      (cp.label || (cp.flow_type === "in" ? "Inflow_Sender" : cp.flow_type === "out" ? "Outflow_Target" : "Counterparty")).replace(/,/g, "_"),
+      cp.chain || chain,
+      cp.total_volume_usd,
+      cp.total_tx_count
+    ])
+  );
+  downloadCsv(`counterparties_gmgn_${chain}_${Date.now()}.csv`, rows);
+  showToast(t("cp_csv_downloaded"));
+}
+
+function copyAllCpAddresses() {
+  const list = currentDisplayedCounterparties || lastCounterpartiesData?.counterparties || [];
+  if (!list.length) {
+    showToast(t("no_cp_export"));
+    return;
+  }
+  copyToClipboard(list.map(c => c.address).join("\n"), `${list.length} ${t("addresses_word", "addresses")}`);
+}
+
+function exportCpJSON() {
+  if (!lastCounterpartiesData || !lastCounterpartiesData.counterparties?.length) {
+    showToast(t("no_cp_export"));
+    return;
+  }
+  const cleanAddr = (lastCounterpartiesData.target_address || "wallet").slice(0, 10);
+  const chain = lastCounterpartiesData.chain || "chain";
+  downloadJson(`counterparties_${chain}_${cleanAddr}_${Date.now()}.json`, lastCounterpartiesData);
+  showToast(t("cp_json_downloaded"));
+}
+
+function downloadJson(filename, obj) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 // ==================== GLOBAL EVENT WIRING ====================
 
 // One delegated listener for every dynamic button (copy / hand-off / export).
@@ -2518,10 +3304,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Keyboard shortcuts: Alt+1..4 switch tabs.
+  // Keyboard shortcuts: Alt+1..6 switch tabs.
   document.addEventListener("keydown", e => {
     if (!e.altKey || e.ctrlKey || e.metaKey) return;
-    const tab = { "1": "tx", "2": "address", "3": "genealogy", "4": "deposit", "5": "flow" }[e.key];
+    const tab = { "1": "tx", "2": "address", "3": "genealogy", "4": "deposit", "5": "flow", "6": "counterparties" }[e.key];
     if (tab) {
       e.preventDefault();
       switchTab(tab);
@@ -3007,6 +3793,7 @@ function showFlowNodePanel(id) {
       <strong>${n.label || t("lg_" + cat)}</strong>
     </div>
     <button type="button" class="flow-panel-addr" data-copy="${n.address}" data-copy-label="${t("col_wallet_addr")}" title="${t("copy_btn")}">${n.address} <i class="fa-regular fa-copy"></i></button>
+    ${renderPortfolioBoxLine(n.address, flowData?.chain)}
     <div class="flow-panel-account acct-${n.account || "unknown"}">
       <i class="fa-solid ${["contract", "program", "pda"].includes(n.account) ? "fa-file-code" : (n.account === "smart_account" ? "fa-user-gear" : "fa-user")}"></i>
       <span>${accountLabel(n.account)}</span>
@@ -3025,6 +3812,7 @@ function showFlowNodePanel(id) {
     <div class="flow-panel-actions">
       ${canExpand ? `<button type="button" class="icon-action-btn primary" data-action="flow-expand" data-addr="${n.address}"><i class="fa-solid fa-plus"></i> ${t("flow_expand")}</button>` : ""}
       ${n.explorerUrl ? `<a class="icon-action-btn" href="${n.explorerUrl}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Explorer</a>` : ""}
+      ${renderPortfolioActionBtn(n.address, flowData?.chain)}
       <button type="button" class="icon-action-btn" data-action="analyze-dest" data-addr="${n.address}" data-chain="${flowData.chain}"><i class="fa-solid fa-diagram-project"></i> ${t("flow_open_tab3")}</button>
       ${firstIn?.tx ? `<button type="button" class="icon-action-btn" data-action="track-tx" data-tx="${firstIn.tx}"><i class="fa-solid fa-route"></i> ${t("flow_track_first_in")}</button>` : ""}
       <button type="button" class="icon-action-btn" data-action="flow-add-seed" data-addr="${n.address}"><i class="fa-solid fa-seedling"></i> ${t("flow_add_seed")}</button>

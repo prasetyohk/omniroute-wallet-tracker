@@ -182,9 +182,20 @@
           <span class="tab-hint" data-i18n="tab_flow_desc">Multi-hop tracing & CEX clustering</span>
         </div>
       </button>
+
+      <!-- Tab 6: Top Counterparties Analyzer -->
+      <button class="tab-btn" role="tab" id="tabBtnCounterparties" onclick="switchTab('counterparties')">
+        <div class="tab-icon-wrap" style="color: var(--accent-amber);">
+          <i class="fa-solid fa-users-viewfinder"></i>
+        </div>
+        <div class="tab-text-wrap">
+          <span class="tab-main-title" data-i18n="tab_cp_title">6 · Top Counterparties</span>
+          <span class="tab-hint" data-i18n="tab_cp_desc">Volume USD, TX Count, In/Out & Time-Range Filter</span>
+        </div>
+      </button>
     </div>
 
-    <p class="shortcuts-hint"><i class="fa-regular fa-keyboard"></i> <span data-i18n="shortcuts_hint">Alt+1…4</span></p>
+    <p class="shortcuts-hint"><i class="fa-regular fa-keyboard"></i> <span data-i18n="shortcuts_hint">Alt+1…6</span></p>
 
     <!-- ==================== TAB 1: MULTI-PROTOCOL TX TRACKER ==================== -->
     <section id="tabContentTx" class="tab-section active">
@@ -704,6 +715,145 @@
       </div>
 
       <div id="flowResultContainer" class="result-area" style="display: none;"></div>
+    </section>
+
+    <!-- ==================== TAB 6: TOP COUNTERPARTIES ==================== -->
+    <section id="tabContentCounterparties" class="tab-section">
+      <div class="card search-card">
+        <div class="card-header">
+          <div class="header-info">
+            <h3 class="card-title">
+              <i class="fa-solid fa-users-viewfinder text-lime"></i> 
+              <span data-i18n="cp_section_title">Top Counterparties Analyzer</span>
+            </h3>
+            <p class="card-desc" data-i18n="cp_section_desc">
+              Analisis mitra transaksi dompet terbanyak berdasarkan volume saldo USD atau frekuensi jumlah tx. Dilengkapi filter rentang waktu (1h, 24h, 1w, 1m, all) dan arah aliran dana (all, in, out).
+            </p>
+          </div>
+
+          <!-- Quick Samples for Counterparties -->
+          <div class="samples-group">
+            <span class="samples-label" data-i18n="quick_examples">Contoh Cepat:</span>
+            <button type="button" class="btn btn-sample" onclick="loadCounterpartySample('solana')">
+              <i class="fa-brands fa-hive text-lime"></i> Solana Trader ($169k Vol)
+            </button>
+            <button type="button" class="btn btn-sample" onclick="loadCounterpartySample('base')">
+              <i class="fa-solid fa-cube text-lime"></i> Base Active Wallet
+            </button>
+          </div>
+        </div>
+
+        <div class="how-guide">
+          <span class="how-guide-label"><i class="fa-regular fa-lightbulb"></i> <span data-i18n="guide_label">Cara pakai</span></span>
+          <ol class="how-guide-steps">
+            <li><span class="guide-num">1</span><span data-i18n="guide_cp_1">Tempel alamat wallet & pilih jaringan (atau Auto-Detect)</span></li>
+            <li><span class="guide-num">2</span><span data-i18n="guide_cp_2">Atur rentang waktu (1h, 24h, 1w, 1m, all) & arah aliran (in/out/all)</span></li>
+            <li><span class="guide-num">3</span><span data-i18n="guide_cp_3">Urutkan berdasarkan Saldo USD atau Jumlah TX</span></li>
+          </ol>
+          <p class="how-guide-tip" data-i18n="guide_cp_tip">Tip: Klik salah satu counterparty untuk langsung melacak hubungannya di Tab 3 atau membuat graf aliran di Tab 5.</p>
+        </div>
+
+        <form id="counterpartiesForm" onsubmit="handleCounterpartiesSubmit(event)" class="search-form">
+          <!-- Address Input & Chain Row -->
+          <div class="input-group-row" style="margin-bottom: 16px;">
+            <div class="input-wrapper flex-grow">
+              <i class="fa-solid fa-wallet input-icon"></i>
+              <input 
+                type="text" 
+                id="cpAddressInput" 
+                class="main-input" 
+                data-i18n-placeholder="ph_cp"
+                placeholder="Tempel alamat wallet (0x... atau Solana Base58 public key)..." 
+                autocomplete="off"
+                required
+              />
+              <button type="button" class="clear-btn" onclick="clearCpInput()" title="Bersihkan input">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="select-wrapper" style="min-width: 180px;">
+              <select id="cpChainSelect" class="chain-select chain-select-full">
+                <option value="auto" data-i18n="chain_auto">Auto-Detect Chain</option>
+                <option value="solana">Solana (SVM)</option>
+                <option value="base">Base</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="arbitrum">Arbitrum</option>
+                <option value="bsc">BNB Chain</option>
+                <option value="polygon">Polygon</option>
+                <option value="optimism">Optimism</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Controls Bar (Time Range, Direction, Sort By) -->
+          <div class="card" style="padding: 16px 20px; margin-bottom: 20px; background: rgba(0,0,0,0.35); border: 1px solid var(--border-color);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; align-items: center;">
+              
+              <!-- Time Range Selector -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                  <i class="fa-regular fa-clock text-lime"></i> <span data-i18n="cp_time_range_label">Rentang Waktu:</span>
+                </label>
+                <div class="filter-pills-wrap" id="cpTimeRangePills">
+                  <button type="button" class="filter-pill" data-range="1h" onclick="setCpTimeRange('1h')">1h</button>
+                  <button type="button" class="filter-pill" data-range="24h" onclick="setCpTimeRange('24h')">24h</button>
+                  <button type="button" class="filter-pill" data-range="1w" onclick="setCpTimeRange('1w')">1w</button>
+                  <button type="button" class="filter-pill" data-range="1m" onclick="setCpTimeRange('1m')">1m</button>
+                  <button type="button" class="filter-pill active" data-range="all" onclick="setCpTimeRange('all')" data-i18n="range_all">All</button>
+                </div>
+              </div>
+
+              <!-- Direction Filter -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                  <i class="fa-solid fa-arrows-left-right text-lime"></i> <span data-i18n="cp_direction_label">Arah Aliran (Flow):</span>
+                </label>
+                <div class="filter-pills-wrap" id="cpDirectionPills">
+                  <button type="button" class="filter-pill active" data-dir="all" onclick="setCpDirection('all')">
+                    <i class="fa-solid fa-asterisk"></i> <span data-i18n="dir_all">All</span>
+                  </button>
+                  <button type="button" class="filter-pill" data-dir="in" onclick="setCpDirection('in')">
+                    <i class="fa-solid fa-arrow-down-left"></i> <span data-i18n="dir_in">In (Masuk)</span>
+                  </button>
+                  <button type="button" class="filter-pill" data-dir="out" onclick="setCpDirection('out')">
+                    <i class="fa-solid fa-arrow-up-right"></i> <span data-i18n="dir_out">Out (Keluar)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sort By Switcher -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                  <i class="fa-solid fa-arrow-down-wide-short text-lime"></i> <span data-i18n="cp_sort_label">Urutkan Berdasarkan:</span>
+                </label>
+                <div class="filter-pills-wrap" id="cpSortPills">
+                  <button type="button" class="filter-pill active" data-sort="usd" onclick="setCpSortBy('usd')">
+                    <i class="fa-solid fa-dollar-sign"></i> <span data-i18n="sort_usd">Saldo USD ($)</span>
+                  </button>
+                  <button type="button" class="filter-pill" data-sort="tx" onclick="setCpSortBy('tx')">
+                    <i class="fa-solid fa-list-ol"></i> <span data-i18n="sort_tx">Jumlah TX</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-lime-pill" id="btnSubmitCounterparties">
+            <span class="btn-text">
+              <i class="fa-solid fa-users-viewfinder"></i> 
+              <span id="submitCounterpartiesLabel" data-i18n="btn_analyze_cp">Analisis Top Counterparties Sekarang</span>
+            </span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> 
+              <span data-i18n="btn_analyzing_cp">Memindai Semua Transaksi & Menghitung Saldo...</span>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Counterparties Result Container -->
+      <div id="counterpartiesResultContainer" class="result-area" style="display: none;"></div>
     </section>
   </main>
 

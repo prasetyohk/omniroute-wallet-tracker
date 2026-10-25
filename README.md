@@ -119,7 +119,7 @@ Berikan satu alamat deposit bursa (misal deposit Binance, Bybit, OKX, atau perso
 * **Pemindaian paralel** — Tab 1 mengecek Relay, Li.Fi, Across, LayerZero dan RPC 7 chain secara bersamaan (bukan satu per satu). Transaksi Relay/Li.Fi biasanya selesai < 1 detik.
 * **Cache pintar** — hasil yang sama dalam 60 detik (ganti bahasa, klik ulang) tampil instan tanpa memanggil API lagi; harga token & data chain di-cache otomatis.
 * **Tempel = lacak** — menempel link explorer / TX hash di Tab 1 langsung memulai pelacakan.
-* **Pintasan** — `Alt+1…4` pindah tab, `Ctrl+Enter` mengirim isian batch / CSV. Tab & bahasa terakhir diingat.
+* **Pintasan** — `Alt+1…6` pindah tab, `Ctrl+Enter` mengirim isian batch / CSV. Tab & bahasa terakhir diingat.
 * **Batas sumber data publik** — RPC Solana publik hanya mengizinkan ±10 transaksi / 10 detik, jadi pemindaian deposit Solana (25 tx) butuh ±30–40 detik. Bila Blockscout membatasi permintaan, aplikasi menampilkan pesan jelas (bukan hasil kosong).
 
 #### 🕸️ Tab 5: Fund Flow Graph (Graf Aliran Dana Multi-Hop)
@@ -140,6 +140,18 @@ Menelusuri dana melewati beberapa hop dari 1–10 dompet seed, lalu menampilkann
    * Klik node, lalu **Tandai alamat** dengan label, warna, dan catatan. Alamat yang ditandai tersorot di setiap trace berikutnya.
    * **Simpan trace** menyimpan hasil beserta pengaturannya. Dari daftar *Trace tersimpan*, **Buka** menampilkan snapshot tanpa memanggil API, sedangkan **Trace ulang** menjalankan ulang dan menandai node **BARU** sejak terakhir disimpan.
    * Data tersimpan di folder lokal `data/` dan tidak ikut ter-upload ke GitHub.
+
+#### 👥 Tab 6: Top Counterparties Analyzer (Analisis Mitra Transaksi Teratas)
+
+Menganalisis mitra transaksi dompet terbanyak berdasarkan volume saldo USD atau frekuensi jumlah transaksi:
+1. **Filter Arah Aliran (Flow Direction):**
+   * **All:** Mengagregasi seluruh transfer masuk dan keluar.
+   * **In (Masuk):** Menyaring mitra penyetor dana (*inflow senders*) dan total volume masuk.
+   * **Out (Keluar):** Menyaring mitra penerima dana (*outflow targets*) dan total volume keluar.
+2. **Filter Rentang Waktu:** `1h`, `24h`, `1w`, `1m`, dan `All` dengan *instant client-side re-aggregation*.
+3. **Metrik & Visualisasi Lengkap:** Visual split bar rasio Inflow vs Outflow, rincian token yang ditransfer, klasifikasi entitas (CEX / Contract / EOA), dan dominasi mitra #1.
+4. **Pencarian & Ekspor:** Kotak pencarian real-time, ekspor GMGN Watchlist CSV, salin semua alamat, dan ekspor JSON.
+5. **Integrasi Antar Tab:** Langsung buka hubungan mitra di Tab 3 (*Relationship Tracer*) atau petakan di Tab 5 (*Fund Flow Graph*) dengan 1 klik.
 
 **RPC PublicNode (gratis, tanpa key):** Ethereum, Base, Arbitrum, Optimism, Polygon, BNB Chain, opBNB, Robinhood, Ink, Arc, dan Solana. Endpoint ini dipakai sebagai RPC cadangan dan untuk mendeteksi EOA vs kontrak (`eth_getCode` / `getMultipleAccounts`). PublicNode **tidak** menyediakan riwayat transaksi per alamat, jadi penelusuran tetap memakai Helius/Etherscan/Blockscout. RPC kustom per chain bisa diisi di `.env` (`RPC_ETHEREUM=...`).
 
@@ -289,7 +301,7 @@ Given an exchange deposit address, OmniRoute scans and aggregates all incoming f
 * **Parallel scanning** — Tab 1 queries Relay, Li.Fi, Across, LayerZero and 7 chain RPCs at the same time instead of one by one. Relay/Li.Fi transactions usually resolve in under 1 second.
 * **Smart caching** — repeating a lookup within 60s (language switch, re-click) is instant; token prices and chain data are cached automatically.
 * **Paste = track** — pasting an explorer link / TX hash into Tab 1 starts tracking immediately.
-* **Shortcuts** — `Alt+1…4` switch tabs, `Ctrl+Enter` submits the batch / CSV box. Last tab and language are remembered.
+* **Shortcuts** — `Alt+1…6` switch tabs, `Ctrl+Enter` submits the batch / CSV box. Last tab and language are remembered.
 * **Public data-source limits** — the public Solana RPC allows ~10 transactions per 10s, so a Solana deposit scan (25 txs) takes ~30–40s. When Blockscout rate-limits requests, the app shows a clear message instead of an empty result.
 
 #### 🕸️ Tab 5: Fund Flow Graph (Multi-Hop Tracing)
@@ -310,6 +322,18 @@ Traces funds across several hops from 1–10 seed wallets and shows them as an i
    * Click a node, then **Mark this address** with a label, colour, and note. Marked addresses are highlighted in every later trace.
    * **Save trace** stores the result together with its settings. From *Saved traces*, **Open** shows the snapshot without any API call, and **Re-trace** runs it again and tags every node that is **NEW** since it was saved.
    * Data lives in the local `data/` folder and is never uploaded to GitHub.
+
+#### 👥 Tab 6: Top Counterparties Analyzer
+
+Analyzes top wallet transaction counterparties ranked by USD volume or transaction frequency (TX count):
+1. **Flow Direction Filter:**
+   * **All:** Aggregates both incoming and outgoing transfers.
+   * **In (Inflow):** Filters senders providing capital and incoming volumes.
+   * **Out (Outflow):** Filters destinations and cashout volumes.
+2. **Time-Range Filters:** `1h`, `24h`, `1w`, `1m`, and `All` with instant client-side re-aggregation.
+3. **Comprehensive Metrics & Breakdown:** Inflow vs Outflow visual split bar, transferred tokens list, entity tags (CEX / Contract / EOA), and #1 counterparty dominance %.
+4. **Search & Export:** Real-time search filter, GMGN CSV export, copy all addresses, and JSON export.
+5. **Cross-Tab Shortcuts:** One-click jump to Tab 3 (*Relationship Tracer*) or Tab 5 (*Fund Flow Graph*).
 
 **PublicNode RPCs (free, no key):** Ethereum, Base, Arbitrum, Optimism, Polygon, BNB Chain, opBNB, Robinhood, Ink, Arc, and Solana. These endpoints serve as fallback RPCs and power EOA-vs-contract detection (`eth_getCode` / `getMultipleAccounts`). PublicNode does **not** serve per-address transaction history, so tracing still uses Helius/Etherscan/Blockscout. Custom per-chain RPCs can be set in `.env` (`RPC_ETHEREUM=...`).
 

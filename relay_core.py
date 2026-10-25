@@ -612,9 +612,14 @@ def _parse_relay_request(req: Dict[str, Any], tx_hash: str = "") -> Dict[str, An
     origin_side.update(
         sender_explorer_url=build_explorer_addr_url(origin_chain_id, from_wallet),
         depository_explorer_url=build_explorer_addr_url(origin_chain_id, depository),
+        sender_portfolio_url=f"https://jup.ag/portfolio/{from_wallet}" if SOLANA_ADDR_RE.match(from_wallet) else f"https://debank.com/profile/{from_wallet}",
+        sender_portfolio_label="Jup" if SOLANA_ADDR_RE.match(from_wallet) else "DeBank",
     )
     dest_side = _chain_side(dest_chain_id, dest_info, dest_tx)
     dest_side["recipient_explorer_url"] = build_explorer_addr_url(dest_chain_id, to_wallet) if dest_chain_id and to_wallet else ""
+    is_dest_solana = str(dest_chain_id) in ("792703809", "solana") or bool(SOLANA_ADDR_RE.match(to_wallet or ""))
+    dest_side["recipient_portfolio_url"] = (f"https://jup.ag/portfolio/{to_wallet}" if is_dest_solana else f"https://debank.com/profile/{to_wallet}") if to_wallet else ""
+    dest_side["recipient_portfolio_label"] = ("Jup" if is_dest_solana else "DeBank") if to_wallet else ""
 
     sent = _asset(in_symbol, in_name, sent_amount, curr_in.get("amountUsd"), raw_in)
     return {
@@ -1002,7 +1007,9 @@ def inspect_address_details(address: str, chain_id_or_name: str = "ethereum") ->
             "type": "Solana Wallet / Program",
             "is_contract": False,
             "note": "Alamat Solana Base58 valid.",
-            "explorer_url": f"https://solscan.io/account/{addr}"
+            "explorer_url": f"https://solscan.io/account/{addr}",
+            "portfolio_url": f"https://jup.ag/portfolio/{addr}",
+            "portfolio_label": "Jup"
         }
 
     if not Web3.is_address(addr):
@@ -1023,7 +1030,9 @@ def inspect_address_details(address: str, chain_id_or_name: str = "ethereum") ->
         "chain_id": chain_info.get("id"),
         "known_protocol": entity["name"],
         "entity_category": entity["category"],
-        "explorer_url": build_explorer_addr_url(chain_info.get("id"), checksum_addr)
+        "explorer_url": build_explorer_addr_url(chain_info.get("id"), checksum_addr),
+        "portfolio_url": f"https://debank.com/profile/{checksum_addr}",
+        "portfolio_label": "DeBank"
     }
 
     urls = rpc_candidates(chain_info.get("name") or str(chain_id_or_name))
@@ -2136,7 +2145,9 @@ def trace_deposit_inflow(
             "last_deposit_days_ago": max(0, (now_ts - data["last"]) // 86400),
             "tokens": token_breakdowns,
             "chain": ", ".join(chains_list),
-            "explorer_url": _sender_explorer_url(s_addr, chains_list[0].lower())
+            "explorer_url": _sender_explorer_url(s_addr, chains_list[0].lower()),
+            "portfolio_url": f"https://jup.ag/portfolio/{s_addr}" if (SOLANA_ADDR_RE.match(s_addr) or "solana" in chains_list[0].lower()) else f"https://debank.com/profile/{s_addr}",
+            "portfolio_label": "Jup" if (SOLANA_ADDR_RE.match(s_addr) or "solana" in chains_list[0].lower()) else "DeBank"
         }
 
         if filter_phishing and data["has_phishing_token"]:
@@ -2189,3 +2200,7 @@ def trace_deposit_inflow(
 
 # Backward compatibility alias
 track_relay = track_cross_chain
+
+def analyze_top_counterparties(*args, **kwargs):
+    import counterparties
+    return counterparties.analyze_top_counterparties(*args, **kwargs)
